@@ -1,3 +1,6 @@
 [submodule "docker/docker-apache"]
 	path = docker/docker-apache
 	url = https://github.com/invisabuble/docker-apache.git
+[submodule "docker/docker-mysql"]
+	path = docker/docker-mysql
+	url = https://github.com/invisabuble/docker-mysql.git
