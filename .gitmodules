@@ -1,0 +1,3 @@
+[submodule "docker/docker-apache"]
+	path = docker/docker-apache
+	url = https://github.com/invisabuble/docker-apache.git
