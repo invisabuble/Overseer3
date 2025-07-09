@@ -2,7 +2,7 @@
 
 
 # Initialise/update the submodules.
-git submodule update --init --recursive
+git submodule update --force --init --recursive
 
 
 source Overseer.env
