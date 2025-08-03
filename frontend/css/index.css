@@ -1,0 +1,223 @@
+:root {
+    --bg: #111217;
+    --gap: 10px;
+    --gap_2: calc(var(--gap) / 2);
+    --logo_height: 70px;
+    --logo_header_height: calc(var(--logo_height) + var(--gap));
+
+    --green: rgba(52,199,89,1);
+    --green2:rgba(0,137,50,1);
+    --red:  rgba(255,56,60,1);
+    --red2: rgba(233,41,45,1);
+
+    /* SWITCH CONSTANTS */
+    --switch_length: 100px;
+    --switch_padding: 2px;
+}
+
+body {
+    background: var(--bg);
+    margin: auto;
+}
+
+.display-flex {
+    display: flex;
+}
+
+.display-flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+devices {
+    padding: var(--gap);
+    gap: var(--gap);
+}
+
+._font {
+    font-family: poppins;
+    color: #C8CAD7;
+}
+
+/* - Page Header - */
+
+page_header {
+    width: 100%;
+    height: auto;
+    background: #191B20;
+    border-bottom: 1px solid #222629;
+    overflow: hidden;
+    transition: 0.3s ease all;
+}
+
+page_header.collapsed {
+    height: var(--logo_header_height);
+}
+
+logo_container {
+    padding: var(--gap_2);
+}
+
+logo {
+    width: var(--logo_height);
+    height: var(--logo_height);
+}
+
+logo_text {
+    font-size: var(--logo_height);
+    padding-left: var(--gap_2);
+    line-height: 1;
+    max-height: var(--logo_height);
+}
+
+/* - Container - */
+
+container {
+    background:#191B20;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 5px;
+    overflow: hidden;
+    align-items: flex-start;
+    border: 1px solid #222629;
+    opacity: 0;
+    animation: fade_in 0.5s ease forwards;
+}
+
+header {
+    width: calc(100% - 2 * var(--gap));
+    gap: var(--gap);
+    padding-left: var(--gap);
+    padding-right: var(--gap);
+    align-items: center;
+    justify-content: space-between;
+}
+
+container-label, container-extras {
+    font-size: 20px;
+}
+
+container-extras {
+    align-items: center;
+    gap: var(--gap);
+    color: #718BCC;
+}
+
+status {
+    width: var(--gap);
+    height: var(--gap);
+    background: var(--bg);
+    border-radius: var(--gap);
+    transition: all 0.3s ease;
+}
+
+status.connected {
+    animation: status_connected 0.8s ease infinite alternate;
+}
+
+status.disconnected {
+    animation: status_disconnected 0.4s ease infinite alternate;
+}
+
+config {
+    width: 100%;
+    height: auto;
+    background: rgba(34,38,41, 0.5);
+    padding-bottom: var(--gap_2);
+    overflow: hidden;
+    transition: 0.3s ease all;
+}
+
+config.collapsed {
+    height: 0;
+    padding: 0;
+    border: none;
+}
+
+pre {
+    padding: var(--gap_2);
+    margin: 0;
+    max-width: calc(0.6em * 40);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+pre:focus {
+    outline: none;
+}
+
+button {
+    background: green;
+    align-self: center;
+    color: white;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    padding-left: var(--gap);
+    padding-right: var(--gap);
+    font-family: poppins;
+    border: 1px solid rgba(0,0,0,0.2);
+}
+
+button:active {
+    transform: translateY(1px);
+    background: rgba(4, 150, 255);
+}
+
+
+content {
+    width: 100%;
+    padding-right: var(--gap);
+    padding-bottom: var(--gap_2);
+    gap: var(--gap_2);
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes status_connected {
+    0% {
+        background: var(--green);
+    }
+    100% {
+        background: var(--green2);
+    }
+
+}
+
+@keyframes status_disconnected {
+    0% {
+        background: var(--red);
+    }
+    100% {
+        background: var(--red2);
+    }
+}
+
+@keyframes fade_in {
+    100% {
+        opacity: 1;
+    }
+}
+
+clock {
+  font-family: "EmojiSymbols-Regular"; 
+}
+
+/* - Switch - */
+
+switch {
+    width: var(--switch_length);
+    height: calc(var(--switch_length) / 2);
+    border-radius: var(--switch_length);
+    padding: var(--switch_padding);
+    transition: 0.3s ease-in-out;
+    background: red;
+}
+
+toggler {
+    width: calc(var(--switch_length) / 2);
+    height: calc(var(--switch_length) / 2);
+    border-radius: calc(var(--switch_length) / 2);
+    margin-left: 0px;
+    transition: 0.3s ease-in-out;
+    background: gray;
+}

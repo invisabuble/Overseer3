@@ -21,4 +21,4 @@ services:
     network_mode: "host"
     extra_hosts:
       - "Overseer_FE:127.0.1.1"
-      - "overseer.home:${HOST_IP:-192.168.0.33}"
+      - "overseer.home:${HOST_IP:-127.0.0.1}"
