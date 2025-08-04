@@ -5,6 +5,8 @@
     --logo_height: 70px;
     --logo_header_height: calc(var(--logo_height) + var(--gap));
 
+    --default_colour: #23395B;
+
     --green: rgba(52,199,89,1);
     --green2:rgba(0,137,50,1);
     --red:  rgba(255,56,60,1);
@@ -173,6 +175,12 @@ content {
     justify-content: center;
 }
 
+.panel {
+    flex-direction: column;
+    gap: var(--gap_2);
+    align-items: flex-end;
+}
+
 @keyframes status_connected {
     0% {
         background: var(--green);
@@ -204,13 +212,18 @@ clock {
 
 /* - Switch - */
 
+switch_container {
+    align-items: center;
+    gap: var(--gap);
+}
+
 switch {
     width: var(--switch_length);
     height: calc(var(--switch_length) / 2);
     border-radius: var(--switch_length);
     padding: var(--switch_padding);
     transition: 0.3s ease-in-out;
-    background: red;
+    background: var(--default_colour);
 }
 
 toggler {
@@ -219,5 +232,5 @@ toggler {
     border-radius: calc(var(--switch_length) / 2);
     margin-left: 0px;
     transition: 0.3s ease-in-out;
-    background: gray;
+    background: #C8CAD7;
 }

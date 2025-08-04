@@ -11,7 +11,7 @@ services:
       dockerfile: apache.dockerfile
     env_file: ./docker/docker-apache/apache.env
     volumes:
-      - ./docker/docker-apache/web/public:/var/www/html
+      - ./frontend:/var/www/html
     expose:
       - '80'
       - '8080'

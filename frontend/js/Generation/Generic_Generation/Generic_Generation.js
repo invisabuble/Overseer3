@@ -40,9 +40,9 @@ export class Generic_Generation {
         Object.keys(element_json).forEach(element => {
 
             const ELMNT    = element_json[element];
-            const ATTR     = this.get_CI_value("ATTR",     {}, ELMNT); // \
-            const CHILDREN = this.get_CI_value("CHILDREN", {}, ELMNT); //  | - Get the values associated with ATTR, CHILDREN, TEXT.
-            const TEXT     = this.get_CI_value("TEXT",     "", ELMNT); // /    Case Insensitive so can be     attr, Children, tExT.
+            const ATTR     = this.get_CI_value("ATTR",     ELMNT, {}); // \
+            const CHILDREN = this.get_CI_value("CHILDREN", ELMNT, {}); //  | - Get the values associated with ATTR, CHILDREN, TEXT.
+            const TEXT     = this.get_CI_value("TEXT",     ELMNT); // /    Case Insensitive so can be     attr, Children, tExT.
 
             var new_element = this.create_element(element, ATTR, TEXT);
             this.COM[element] = new_element;
@@ -86,7 +86,7 @@ export class Generic_Generation {
     }
 
 
-    get_CI_value (key_value, default_value = "", object=null) {
+    get_CI_value (key_value, object=null, default_value = "") {
         /*
         Returns the value or default value associated with a key. This makes retrieval case insensitive.
         */

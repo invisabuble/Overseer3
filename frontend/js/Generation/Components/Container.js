@@ -1,6 +1,6 @@
 import { Generic_Generation } from "../Generic_Generation/Generic_Generation.js";
 
-export class Container extends Generic_Generation {
+export default class Container extends Generic_Generation {
 
     constructor (parent, config, uuid, ip="") {
         super();
@@ -9,10 +9,12 @@ export class Container extends Generic_Generation {
         var UUID             = uuid;
         var IP               = ip;
         var CONT_NAME        = this.get_component_name(config);
-        var STYLE            = this.get_CI_value("STYLE", "", config[CONT_NAME]);
+        var STYLE            = this.get_CI_value("STYLE", config[CONT_NAME]);
 
         this.parent_cont     = config[CONT_NAME]
         this._CONFIG_PRESENT = true;
+
+        this.PANELS = {};
         
         // JSON for building the container element with recursive create.
         var CONTAINER_JSON = {
@@ -112,28 +114,37 @@ export class Container extends Generic_Generation {
         // Generate the container.
         this.recursive_generate(CONTAINER_JSON, parent);
 
-        // Process the containers elements.
-        
-        Object.keys(this.parent_cont).forEach( (child) => {
+        // Process the container's elements
+        Object.entries(this.parent_cont).forEach(([child, config]) => {
 
-            // If the child is STYLE or __CONFIG__ then skip to the next itteration.
-            if (["STYLE", "__CONFIG__"].includes(child.toUpperCase())) {return;}
+            const TYPE = this.get_CI_value("TYPE", config)?.toLowerCase();
+            if (!TYPE) return;
 
-            // Get the childs type.
-            const TYPE = this.get_CI_value("TYPE", "", this.parent_cont[child])
+            // Set default parent
+            let parent_object = this.COM.content;
 
-            // Assemble the CHILD's JSON.
-            const CHILD_JSON = { [child]: this.parent_cont[child] };
+            // If not a container, ensure panel exists and update parent for child to be added to.
+            if (TYPE !== "container") {
 
-            console.log(CHILD_JSON)
+                const panelKey = `${TYPE}_panel`;
 
-            try {
-                this.COM[child] = new window[TYPE.toLowerCase()](this.COM.content, CHILD_JSON, UUID);
-            } catch (error) {
-                console.log(`Error creating ${TYPE.toLowerCase()} : ${error}`)
+                if (!this.COM[panelKey]) {
+                    this.COM[panelKey] = this.create_element(`${TYPE}_panel`, { class: "display-flex panel" });
+                    this.append_element(this.COM.content, this.COM[panelKey]);
+                }
+
+                parent_object = this.COM[panelKey];
+                
             }
 
+            // Construct the component
+            try {
+                this.COM[child] = new window.OS_Components[TYPE](parent_object, { [child]: config }, UUID);
+            } catch (error) {
+                console.error(`Error creating component of type '${TYPE}':`, error);
+            }
         });
+
         
          // Start the up timer.
         this.update_container_timer();
