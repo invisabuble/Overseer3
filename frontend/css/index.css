@@ -210,12 +210,12 @@ clock {
   font-family: "EmojiSymbols-Regular"; 
 }
 
-/* - Switch - */
-
-switch_container {
+.component_container {
     align-items: center;
     gap: var(--gap);
 }
+
+/* - Switch - */
 
 switch {
     width: var(--switch_length);
@@ -226,11 +226,39 @@ switch {
     background: var(--default_colour);
 }
 
-toggler {
+switch_toggler {
     width: calc(var(--switch_length) / 2);
     height: calc(var(--switch_length) / 2);
     border-radius: calc(var(--switch_length) / 2);
     margin-left: 0px;
     transition: 0.3s ease-in-out;
     background: #C8CAD7;
+}
+
+/* - Button - */
+
+os_button {
+    width: calc(var(--switch_length) / 2);
+    height: calc(var(--switch_length) / 2);
+    background: var(--default_colour);
+    border-radius: calc(var(--switch_length) / 2);
+    padding: var(--switch_padding);
+    transition: 0.3s ease-in-out;
+    justify-content: center;
+}
+
+button_toggler {
+    width: calc(var(--switch_length) / 4);
+    height: calc(var(--switch_length) / 4);
+    border-radius: calc(var(--switch_length) / 2);
+    margin-top: 0px;
+    transition: 0.3s ease-in-out;
+    background: #C8CAD7;
+}
+
+/* - Reading - */
+
+.reading_text {
+    color: #ff006e;
+    font-size: 40px;
 }

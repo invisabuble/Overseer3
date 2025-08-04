@@ -94,7 +94,7 @@ export default class Container extends Generic_Generation {
 
                     "content" : {
                         "ATTR" : {
-                            "class" : "display-flex"
+                            "class" : "display-flex component_container"
                         }
                     }
 
@@ -134,7 +134,7 @@ export default class Container extends Generic_Generation {
                 }
 
                 parent_object = this.COM[panelKey];
-                
+
             }
 
             // Construct the component
