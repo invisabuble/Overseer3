@@ -3,6 +3,12 @@ import { minimax } from "./misc/misc.js";
 window.OS_Components = {};
 window.minimax=minimax;
 
+// Get the host location of the frontend.
+// This same location is also the host of the WSS.
+var os_host = window.location.origin;
+const ipAddressRegex = /(?<=https?:\/\/).*/g;
+var os_host = os_host.match(ipAddressRegex);
+
 var DYNAMIC_IMPORT_FINISHED = false;
 
 
@@ -22,4 +28,22 @@ const COMPONENTS = ["Container", "Switch", "Button", "Reading"];
 
     DYNAMIC_IMPORT_FINISHED = true;
     console.info("DYNAMIC IMPORT OF COMPONENTS COMPLETE.");
+
+    // Create the OS control panel.
+    window.control_panel = new window.OS_Components["container"](
+        document.getElementById("control_panel_container"),
+        {
+            "Control Panel" : {
+
+                "__CONFIG__":{"SSID":"ssid","PSWD":"pswd","PORT":"port","HOST":"host","USER":"Admin","KEY":"sdjfsnjdfljsndf"},
+                "STYLE" : {},
+
+                "Server Status": {"TYPE":"Reading"}
+
+            }
+        },
+        "control_panel",
+        os_host
+    );
 })();
+

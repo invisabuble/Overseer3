@@ -72,6 +72,10 @@ logo_text {
     max-height: var(--logo_height);
 }
 
+control_panel_container {
+    padding: var(--gap);
+}
+
 /* - Container - */
 
 container {
