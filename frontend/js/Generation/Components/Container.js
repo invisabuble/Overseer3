@@ -15,6 +15,7 @@ export default class Container extends Generic_Generation {
         this._CONFIG_PRESENT = true;
 
         this.PANELS = {};
+        this.all = {};
         
         // JSON for building the container element with recursive create.
         var CONTAINER_JSON = {
@@ -114,7 +115,7 @@ export default class Container extends Generic_Generation {
         // Generate the container.
         this.recursive_generate(CONTAINER_JSON, parent);
 
-        // Process the container's elements
+        // Process the container's contents
         Object.entries(this.parent_cont).forEach(([child, config]) => {
 
             const TYPE = this.get_CI_value("TYPE", config)?.toLowerCase();
@@ -123,7 +124,7 @@ export default class Container extends Generic_Generation {
             // Set default parent
             let parent_object = this.COM.content;
 
-            // If not a container, ensure panel exists and update parent for child to be added to.
+            // If not a container, ensure a component panel exists and update the parent for the child to be added to.
             if (TYPE !== "container") {
 
                 const panelKey = `${TYPE}_panel`;
@@ -139,15 +140,24 @@ export default class Container extends Generic_Generation {
 
             // Construct the component
             try {
-                this.COM[child] = new window.OS_Components[TYPE](parent_object, { [child]: config }, UUID);
+                const component = new window.OS_Components[TYPE](parent_object, { [child]: config }, UUID);
+                this.COM[child] = component;
+                this.all[child] = component;  // Add the component to the COM and also to the all map.
+
+                // If the component is a container and has an `all` property, merge it into this.all
+                // This allows us to access every element, no matter how deeply nested from the top container layer.
+                if (TYPE === "container" && component.all) {Object.assign(this.all, component.all);}
+
             } catch (error) {
                 console.error(`Error creating component of type '${TYPE}':`, error);
             }
+
         });
 
         
          // Start the up timer.
         this.update_container_timer();
+        
 
     }
 

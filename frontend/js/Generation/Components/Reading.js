@@ -5,6 +5,7 @@ export default class Reading extends Generic_Generation {
         super();
 
         this.NAME = this.get_component_name(json);
+        var initial_text = this.get_CI_value("TEXT", json[this.NAME]);
 
         // JSON for building the container element with recursive create.
         var READING_JSON = {
@@ -28,7 +29,8 @@ export default class Reading extends Generic_Generation {
                     "content" : {
                         "ATTR" : {
                             "class" : "display-flex component_container reading_text"
-                        }
+                        },
+                        "TEXT" : initial_text
                     }
                 }
             }

@@ -1,4 +1,5 @@
 <html>
+    
     <head>
         <title>Overseer 3</title>
         <link rel="stylesheet" href="css/index.css">
@@ -7,8 +8,8 @@
     </head>
 
     <body>
-        <page_header id="cnf0C" class="display-flex-col _font collapsed" onclick="window.minimax('cnf0', 'var(--logo_header_height)')">
-            <logo_container class="display-flex">
+        <page_header id="cnf0C" class="display-flex-col _font collapsed">
+            <logo_container class="display-flex" onclick="window.minimax('cnf0', 'var(--logo_header_height)')">
                 <logo>
                     <img src="svg/eye.svg">
                 </logo>
@@ -20,43 +21,9 @@
             </control_panel_container>
         </page_header>
         <devices id="devices" class="display-flex">
-            <!--<container id="cnt1" class="display-flex-col _font">
-                <header id="cnt1H" class="display-flex" onclick="window.minimax('cnt1')">
-                    <container-label>Container 0</container-label>
-                    <container-extras class="display-flex">
-                        <timer title="Up time"><clock>🕐</clock> 10m</timer>
-                        <status title="Connected" class="connected"></status>
-                    </container-extras>
-                </header>
-                <config id="cnt1C" class="display-flex-col collapsed">
-                    <pre contenteditable="true">
-"container 0" {
-    "__CONFIG__":{
-        "SSID":"ssid",
-        "PSWD":"pswd",
-        "PORT":"port",
-        "HOST":"host",
-        "USER":"Admin",
-        "KEY":"sdjfsnjdfljsndf"
-    },
-
-    "STYLE":"border: 1px solid blue;",
-
-    "container 1" {
-        "GPIO":"19",
-        "TYPE":"Switch",
-        "STYLE":"background:red;"
-    }
-}
-</pre>
-                    <button>Send</button>
-                </config>
-                <content class="display-flex">
-                    Fill me up ;D
-                </content>
-            </container>-->
         </devices>
     </body>
 
     <script type="module" src="./js/Overseer.js"></script>
+
 </html>

@@ -38,7 +38,22 @@ const COMPONENTS = ["Container", "Switch", "Button", "Reading"];
                 "__CONFIG__":{"SSID":"ssid","PSWD":"pswd","PORT":"port","HOST":"host","USER":"Admin","KEY":"sdjfsnjdfljsndf"},
                 "STYLE" : {},
 
-                "Server Status": {"TYPE":"Reading"}
+                "Server Status": {
+                    "TYPE":"Reading",
+                    "TEXT": "READY!"
+                },
+
+                "Reboot" : {
+                    "TYPE" : "Button"
+                },
+
+                "Shutdown" : {
+                    "TYPE" : "Button"
+                },
+
+                "Option 1" : {
+                    "TYPE" : "Switch"
+                }
 
             }
         },
