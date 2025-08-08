@@ -13,7 +13,7 @@ var DYNAMIC_IMPORT_FINISHED = false;
 
 
 // A list of components to be imported.
-const COMPONENTS = ["Container", "Switch", "Button", "Reading"];
+const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal"];
 
 
 // Dynamically import all components within the above list and add them to the window object.
@@ -38,9 +38,8 @@ const COMPONENTS = ["Container", "Switch", "Button", "Reading"];
                 "__CONFIG__":{"SSID":"ssid","PSWD":"pswd","PORT":"port","HOST":"host","USER":"Admin","KEY":"sdjfsnjdfljsndf"},
                 "STYLE" : {},
 
-                "Server Status": {
-                    "TYPE":"Reading",
-                    "TEXT": "READY!"
+                "Option 1" : {
+                    "TYPE" : "Switch"
                 },
 
                 "Reboot" : {
@@ -51,8 +50,9 @@ const COMPONENTS = ["Container", "Switch", "Button", "Reading"];
                     "TYPE" : "Button"
                 },
 
-                "Option 1" : {
-                    "TYPE" : "Switch"
+                "Server Status": {
+                    "TYPE":"Reading",
+                    "TEXT": "READY!"
                 }
 
             }

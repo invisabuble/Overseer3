@@ -12,9 +12,23 @@
     --red:  rgba(255,56,60,1);
     --red2: rgba(233,41,45,1);
 
+    --server_text: #ff006e; 
+
     /* SWITCH CONSTANTS */
     --switch_length: 100px;
     --switch_padding: 2px;
+}
+
+/* Removing background of scroller for Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+}
+
+/*  Removing background of scroller for Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #888 transparent;
 }
 
 body {
@@ -263,6 +277,71 @@ button_toggler {
 /* - Reading - */
 
 .reading_text {
-    color: #ff006e;
+    color: var(--server_text);
     font-size: 40px;
+}
+
+/* - Terminal - */
+
+.terminal_text {
+    color: #6AB547;
+}
+
+.terminal_window {
+    min-width: 400px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal_content {
+    flex: 1 1 auto;
+    overflow: hidden;
+    gap: 0px;
+}
+
+stdout {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    width: calc(100% - 2 * var(--gap));
+    gap: var(--gap_2);
+    display: flex;
+    flex-direction: column;
+}
+
+cmdline {
+    padding-top: 2px;
+    flex: 0 0 auto;
+    width: calc(100% - 2 * var(--gap));
+    display: flex;
+    align-items: flex-start;
+    border-top: 1px solid #222629;
+    gap: var(--gap_2);
+}
+
+stdin {
+    flex-grow: 1;
+    max-height: fit-content;
+    max-width: 400px;
+    padding-left: var(--gap_2);
+    overflow: hidden;
+}
+
+stdin:focus{
+    outline: none;
+}
+
+output_line {
+    width: calc(100% - 2 * var(--gap));
+    line-height: 1;
+    word-break: break-all;
+}
+
+_prefix {
+    padding-right: var(--gap_2);
+}
+
+.return_line {
+    padding-left: calc(var(--gap) * 2);
+    color: var(--server_text);
 }

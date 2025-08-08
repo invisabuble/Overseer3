@@ -24,7 +24,10 @@ This way we can build up arbitrarily complex structures using JSON.
 */
 export class Generic_Generation {
 
-    constructor () {
+    constructor (uuid) {
+
+        // Keep a record of the UUID
+        this.UUID = uuid;
 
         // Make a note of the time the object was created
         this.CREATION_TIME = Math.floor(Date.now() / 1000);
@@ -42,7 +45,7 @@ export class Generic_Generation {
             const ELMNT    = element_json[element];
             const ATTR     = this.get_CI_value("ATTR",     ELMNT, {}); // \
             const CHILDREN = this.get_CI_value("CHILDREN", ELMNT, {}); //  | - Get the values associated with ATTR, CHILDREN, TEXT.
-            const TEXT     = this.get_CI_value("TEXT",     ELMNT); // /    Case Insensitive so can be     attr, Children, tExT.
+            const TEXT     = this.get_CI_value("TEXT",     ELMNT);     // /    Case Insensitive so can be     attr, Children, tExT.
 
             var new_element = this.create_element(element, ATTR, TEXT);
             this.COM[element] = new_element;

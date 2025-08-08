@@ -2,7 +2,14 @@ import { Generic_Generation } from "../Generic_Generation/Generic_Generation.js"
 
 export default class Reading extends Generic_Generation {
     constructor (parent, json, uuid) {
-        super();
+        /* Create a Reading component.
+
+        This component can be invoked using the following type:
+
+        "TYPE" : "Reading"
+
+        */
+        super(uuid);
 
         this.NAME = this.get_component_name(json);
         var initial_text = this.get_CI_value("TEXT", json[this.NAME]);

@@ -3,13 +3,14 @@ import { Generic_Generation } from "../Generic_Generation/Generic_Generation.js"
 export default class Container extends Generic_Generation {
 
     constructor (parent, config, uuid, ip="") {
-        super();
+        super(uuid);
         
         // Extract information needed to build the container.
         var UUID             = uuid;
         var IP               = ip;
         var CONT_NAME        = this.get_component_name(config);
         var STYLE            = this.get_CI_value("STYLE", config[CONT_NAME]);
+        var creation_time    = new Date().toLocaleString();
 
         this.parent_cont     = config[CONT_NAME]
         this._CONFIG_PRESENT = true;
@@ -49,7 +50,7 @@ export default class Container extends Generic_Generation {
                                 "CHILDREN" : {
                                     "timer" : {
                                         "ATTR" : {
-                                            "title" : "Up time"
+                                            "title" : creation_time
                                         },
                                         "CHILDREN" : {
                                             "clock" : {
@@ -115,51 +116,64 @@ export default class Container extends Generic_Generation {
         // Generate the container.
         this.recursive_generate(CONTAINER_JSON, parent);
 
-        // Process the container's contents
         Object.entries(this.parent_cont).forEach(([child, config]) => {
 
             const TYPE = this.get_CI_value("TYPE", config)?.toLowerCase();
             if (!TYPE) return;
 
-            // Set default parent
             let parent_object = this.COM.content;
 
-            // If not a container, ensure a component panel exists and update the parent for the child to be added to.
             if (TYPE !== "container") {
-
                 const panelKey = `${TYPE}_panel`;
-
                 if (!this.COM[panelKey]) {
                     this.COM[panelKey] = this.create_element(`${TYPE}_panel`, { class: "display-flex panel" });
                     this.append_element(this.COM.content, this.COM[panelKey]);
                 }
-
                 parent_object = this.COM[panelKey];
-
             }
 
-            // Construct the component
             try {
                 const component = new window.OS_Components[TYPE](parent_object, { [child]: config }, UUID);
                 this.COM[child] = component;
-                this.all[child] = component;  // Add the component to the COM and also to the all map.
-
-                // If the component is a container and has an `all` property, merge it into this.all
-                // This allows us to access every element, no matter how deeply nested from the top container layer.
-                if (TYPE === "container" && component.all) {Object.assign(this.all, component.all);}
-
             } catch (error) {
                 console.error(`Error creating component of type '${TYPE}':`, error);
             }
-
         });
 
         
          // Start the up timer.
         this.update_container_timer();
-        
+
+        // Register all components into the top level 'all' property.
+        this.register_all(this);
 
     }
+
+    register_all(component = this, path = []) {
+        /*
+        Iterate through all child elements adding only those with an `update` method
+        to the "all" property of the top-level container.
+        Elements in different containers with the same names are allowed.
+        Two elements on the same level cannot have the same name.
+        */
+        const prefix = path.join("/");
+
+        for (const key in component.COM) {
+            const child = component.COM[key];
+            const fullKey = prefix ? `${prefix}/${key}` : key;
+
+            // Only add elements that have an 'update' method
+            if (typeof child.update === "function") {
+                this.all[fullKey] = child;
+            }
+
+            // Recursively register children if they also have a COM and all
+            if (child.COM && child.all) {
+                this.register_all(child, [...path, key]);
+            }
+        }
+    }
+
 
     is_connected (connected = null) {
         /*

@@ -2,7 +2,14 @@ import { Generic_Commander } from "../Generic_Generation/Generic_Commander.js";
 
 export default class Button extends Generic_Commander {
     constructor (parent, json, uuid) {
-        super();
+        /* Create a Button component.
+
+        This component can be invoked using the following type:
+
+        "TYPE" : "Button"
+
+        */
+        super(uuid);
 
         this.NAME = this.get_component_name(json);
 
@@ -29,7 +36,7 @@ export default class Button extends Generic_Commander {
         this.recursive_generate(BUTTON_JSON, parent);
 
         // Bind the send command method to the toggler.
-        this.COM.os_button.addEventListener('click', this.send_command.bind(this));
+        this.COM.os_button.addEventListener('click', this.send_command.bind(this, `activate : ${this.NAME}`));
 
     }
 
