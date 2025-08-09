@@ -116,27 +116,33 @@ export default class Container extends Generic_Generation {
         // Generate the container.
         this.recursive_generate(CONTAINER_JSON, parent);
 
+        // Generate all the child components within the container.
         Object.entries(this.parent_cont).forEach(([child, config]) => {
 
+            // If the child doesnt have a type then skip over creating it.
             const TYPE = this.get_CI_value("TYPE", config)?.toLowerCase();
             if (!TYPE) return;
 
             let parent_object = this.COM.content;
 
             if (TYPE !== "container") {
+                // If the type isnt a container then generate a component panel to store the components in an organised manner.
                 const panelKey = `${TYPE}_panel`;
                 if (!this.COM[panelKey]) {
                     this.COM[panelKey] = this.create_element(`${TYPE}_panel`, { class: "display-flex panel" });
                     this.append_element(this.COM.content, this.COM[panelKey]);
                 }
+                // If the type isnt a container then switch the parent above to the panel,
+                // so the component ends up in the panel once created.
                 parent_object = this.COM[panelKey];
             }
 
             try {
+                // Try generating the component.
                 const component = new window.OS_Components[TYPE](parent_object, { [child]: config }, UUID);
                 this.COM[child] = component;
             } catch (error) {
-                console.error(`Error creating component of type '${TYPE}':`, error);
+                console.error(`Error creating component: ${child} of type '${TYPE}':`, error);
             }
         });
 

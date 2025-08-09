@@ -13,7 +13,7 @@ var DYNAMIC_IMPORT_FINISHED = false;
 
 
 // A list of components to be imported.
-const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal"];
+const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal", "Line_Chart"];
 
 
 // Dynamically import all components within the above list and add them to the window object.
@@ -53,6 +53,10 @@ const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal"];
                 "Server Status": {
                     "TYPE":"Reading",
                     "TEXT": "READY!"
+                },
+
+                "Server Terminal" : {
+                    "TYPE" : "Terminal"
                 }
 
             }

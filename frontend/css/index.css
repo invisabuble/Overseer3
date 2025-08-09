@@ -46,6 +46,8 @@ body {
 }
 
 devices {
+    max-width: 100%;
+    flex-wrap: wrap;
     padding: var(--gap);
     gap: var(--gap);
 }
@@ -96,6 +98,8 @@ container {
     background:#191B20;
     width: fit-content;
     height: fit-content;
+    min-width: fit-content;
+    min-height: fit-content;
     border-radius: 5px;
     overflow: hidden;
     align-items: flex-start;
@@ -344,4 +348,15 @@ _prefix {
 .return_line {
     padding-left: calc(var(--gap) * 2);
     color: var(--server_text);
+}
+
+/* - Line Chart - */
+
+.generic_chart {
+    display: flex;
+}
+
+.Line_Chart {
+    max-width: 800px;
+    height: 200px;
 }

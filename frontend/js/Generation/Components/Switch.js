@@ -9,9 +9,7 @@ export default class Switch extends Generic_Commander {
 
     */
     constructor (parent, json, uuid) {
-        super(uuid);
-
-        this.NAME = this.get_component_name(json);
+        super(uuid, json);
 
         var SWITCH_JSON = {
             "switch_container" : {

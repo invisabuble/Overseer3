@@ -1,9 +1,9 @@
-import { Generic_Generation } from "./Generic_Generation.js";
+import { Generic_Active_Component } from "./Generic_Active_Component.js";
 
-export class Generic_Commander extends Generic_Generation {
+export class Generic_Commander extends Generic_Active_Component {
 
-    constructor (uuid) {
-        super(uuid);
+    constructor (uuid, json) {
+        super(uuid, json);
     }
 
     send_command (command) {

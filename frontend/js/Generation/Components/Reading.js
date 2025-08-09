@@ -1,6 +1,6 @@
-import { Generic_Generation } from "../Generic_Generation/Generic_Generation.js";
+import { Generic_Active_Component } from "../Generic_Generation/Generic_Active_Component.js";
 
-export default class Reading extends Generic_Generation {
+export default class Reading extends Generic_Active_Component {
     constructor (parent, json, uuid) {
         /* Create a Reading component.
 
@@ -9,12 +9,11 @@ export default class Reading extends Generic_Generation {
         "TYPE" : "Reading"
 
         */
-        super(uuid);
+        super(uuid, json);
 
-        this.NAME = this.get_component_name(json);
         var initial_text = this.get_CI_value("TEXT", json[this.NAME]);
 
-        // JSON for building the container element with recursive create.
+        // JSON for building the reading element with recursive create.
         var READING_JSON = {
             "container" : {
                 "ATTR" : {
@@ -53,3 +52,5 @@ export default class Reading extends Generic_Generation {
     }
 
 }
+
+console.info("Loaded : Reading.js");

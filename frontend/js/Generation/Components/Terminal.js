@@ -10,9 +10,8 @@ export default class Terminal extends Generic_Commander {
     */
 
     constructor (parent, json, uuid) {
-        super(uuid);
+        super(uuid, json);
 
-        this.NAME = this.get_component_name(json);
         this.command_count = 0;
         this.command_selector = 0;
 
@@ -85,9 +84,12 @@ export default class Terminal extends Generic_Commander {
                 event.preventDefault();
                 const command = this.get_stdin_command();
                 this.add_text_to_stdout(command);
+
+                // Scroll to the bottom of the stdout when pressing enter.
                 if (this.COM.stdout.scrollHeight - this.COM.stdout.scrollTop - 50 <= this.COM.stdout.clientHeight) {
                     this.COM.stdout.scrollTop = this.COM.stdout.scrollHeight;
                 }
+
                 this.send_command(command);
             }
             // Go back through previously issued commands.
@@ -187,3 +189,5 @@ export default class Terminal extends Generic_Commander {
         this.add_text_to_stdout(state, "└▻", "return_line", colour);
     }
 }
+
+console.info("Loaded : Terminal.js");

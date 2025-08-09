@@ -9,9 +9,7 @@ export default class Button extends Generic_Commander {
         "TYPE" : "Button"
 
         */
-        super(uuid);
-
-        this.NAME = this.get_component_name(json);
+        super(uuid, json);
 
         var BUTTON_JSON = {
             "button_container" : {
