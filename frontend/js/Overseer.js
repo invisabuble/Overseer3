@@ -13,7 +13,7 @@ var DYNAMIC_IMPORT_FINISHED = false;
 
 
 // A list of components to be imported.
-const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal", "Line_Chart"];
+const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal", "Bar", "Line_Chart", "Bar_Chart", "Pie_Chart"];
 
 
 // Dynamically import all components within the above list and add them to the window object.

@@ -16,6 +16,8 @@ export class Generic_Graph extends Generic_Generation{
             - scatter: Plots individual data points on X and Y axes, great for showing relationships or distributions.
             - area: Essentially a line chart with the area below the line filled, emphasizing volume or magnitude over time.
 
+        Any updates sent to charts that have more than one measurement 
+
         */
         super(uuid);
 
@@ -29,7 +31,7 @@ export class Generic_Graph extends Generic_Generation{
 
         // Split the type of chart out into lowercase so that chart.js can understand it.
         this.CHART_JS_TYPE = this.CHART_TYPE.split("_")[0].toLowerCase();
-        this.DEFAULT_LENGTH = Number(this.get_CI_value("LENGTH", json[this.NAME],"10"));
+        this.DEFAULT_LENGTH = Number(this.get_CI_value("LENGTH", json[this.NAME], "10"));
 
         // Datastructure used for the chart.
         this.DATA       = {
@@ -41,22 +43,40 @@ export class Generic_Graph extends Generic_Generation{
         this.IO_LIST    = this.get_CI_value("IO", json[this.NAME], []);
         this.LABELS     = this.get_CI_value("LABELS", json[this.NAME]);
 
-        // Combine the IO and LABEL lists into an object.
-        // We combine the lists so we can match up labels to IO
-        const combined = this.IO_LIST
-                .map((io, index) => [io, this.LABELS[index]])
-                .filter(([key, value]) => value !== undefined);
+        switch (this.CHART_TYPE) {
 
-        // Iterate through the combined list and add the datasets to the DATA object
-        for (const IO_LAB of combined) {
+            case "Pie_Chart":
+                // Setup the datastructure for a pie chart.
+                var io_dataset = {
+                    data: [],
+                };
+                // Create an array of the length of the number of IO's
+                io_dataset.data = Array(this.IO_LIST.length).fill(1);
+                this.DATA.labels = this.LABELS;
+                this.DATA.datasets.push(io_dataset);
+                break;
 
-            var io_dataset = {
-                data:[],
-                label:String(IO_LAB[1])
-            }
+            default:
+                // Iterate through the combined list and add the datasets to the DATA object.
+                // This is the default behaviour but special cases require other methods to setup their datastructures.
+                // Combine the IO and LABEL lists into an object.
+                // We combine the lists so we can match up labels to IO
+                const combined = this.IO_LIST
+                        .map((io, index) => [io, this.LABELS[index]])
+                        .filter(([key, value]) => value !== undefined);
+                        
+                for (const IO_LAB of combined) {
 
-            this.DATA.datasets.push(io_dataset);  // Add the dataset to the DATA object.
-            this.CHART_NUM ++;                    // Increment this number to keep track of the number of measurements on this chart.
+                    var io_dataset = {
+                        data:[],
+                        label:String(IO_LAB[1])
+                    };
+
+                    this.DATA.datasets.push(io_dataset);  // Add the dataset to the DATA object.
+                    this.CHART_NUM ++;                    // Increment this number to keep track of the number of measurements on this chart.
+                }
+                break;
+
         }
 
         // Default options for building the chart.
@@ -139,6 +159,43 @@ export class Generic_Graph extends Generic_Generation{
             }
         );
 
+    }
+
+    update (data) {
+        /*
+        Generic update function for updating charts with one or more measurements.
+        */
+
+        // Initialise counter if it doesn't exist.
+        if (!this.pointCounter) this.pointCounter = 0;
+
+        // Increment point counter for the new label.
+        this.pointCounter++;
+        this.DATA.labels.push(this.pointCounter);
+
+        // Push new data points for each dataset.
+        data.forEach((value, index) => {
+            this.DATA.datasets[index].data.push(value);
+        });
+
+        // Adjust visible range to only show last DEFAULT_LENGTH points.
+        const min = Math.max(0, this.pointCounter - this.DEFAULT_LENGTH);
+        const max = this.pointCounter;
+
+        this.CHART.options.scales.x.min = min;
+        this.CHART.options.scales.x.max = max;
+
+        // Update the chart to show the changes.
+        this.CHART.update();
+
+    }
+
+    add_random () {
+        /*
+        TEST FUNCTION
+        */
+        const nums = Array.from({ length: this.CHART_NUM }, () => Math.floor(Math.random() * 101));
+        this.update(nums);
     }
 
 }

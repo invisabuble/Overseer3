@@ -17,6 +17,15 @@
     /* SWITCH CONSTANTS */
     --switch_length: 100px;
     --switch_padding: 2px;
+
+    /* CHART CONSTANTS */
+    --chart_height: 300px;
+
+    /* BAR CONSTANTS */
+    --bar_height: 50px;
+    --bar_length: var(--chart_height);
+    --bar_padding: 2px;
+    --d_bar_number: calc(var(--bar_height) - 10px);
 }
 
 /* Removing background of scroller for Chrome, Edge, Safari */
@@ -350,13 +359,56 @@ _prefix {
     color: var(--server_text);
 }
 
-/* - Line Chart - */
+/* - Charts - */
 
 .generic_chart {
     display: flex;
+    min-height: var(--chart_height);
+    max-height: var(--chart_height);
 }
 
 .Line_Chart {
     max-width: 800px;
-    height: 200px;
+}
+
+.Pie_Chart {
+    max-width: var(--chart_height);
+}
+
+/* - Bar - */
+
+bar_container {
+    gap: var(--gap);
+    align-items: center;
+}
+
+bar {
+    width: var(--bar_length);
+    height: var(--bar_height);
+    padding: var(--bar_padding);
+    border-radius: calc(var(--gap_2) + var(--bar_padding));
+    background: rgba(255,255,255,0.01);
+    border: 1px solid #222629;
+}
+
+bar_filler {
+    height: 100%;
+    width: 50%;
+    background: var(--default_colour);
+    align-items: center;
+    border-radius: var(--gap_2);
+    transition: 0.3s ease all;
+    justify-content: flex-end;
+}
+
+bar_number {
+    min-width: var(--d_bar_number);
+    min-height: var(--d_bar_number);
+    padding: var(--bar_padding);
+    border: 1px solid #222629;
+    border-radius: 1000px;
+    margin-right: -23px;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s ease all;
 }
