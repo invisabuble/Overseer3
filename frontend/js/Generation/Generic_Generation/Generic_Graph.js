@@ -25,6 +25,7 @@ export class Generic_Graph extends Generic_Generation{
         this.NAME           = this.get_component_name(json);
         this.CHART_TYPE     = this.get_CI_value("TYPE", json[this.NAME]);
         this.CHART_NUM      = 0;
+        var STYLE           = this.get_CI_value("STYLE", json[this.NAME]);
 
         // If OPTIONS was defined in the JSON then overwrite with the options from the JSON.
         OPTIONS = this.get_CI_value("OPTIONS", json[this.NAME]) || OPTIONS;
@@ -106,7 +107,7 @@ export class Generic_Graph extends Generic_Generation{
             },
             elements: {
                 line: {
-                    tension: 0.2
+                    tension: 0.4
                 }
             }
         };
@@ -137,7 +138,8 @@ export class Generic_Graph extends Generic_Generation{
                         "CHILDREN" : {
                             "canvas" : {
                                 "ATTR" : {
-                                    "class" : `generic_chart ${this.CHART_TYPE}`
+                                    "class" : `generic_chart ${this.CHART_TYPE}`,
+                                    "style" : STYLE
                                 }
                             }
                         }

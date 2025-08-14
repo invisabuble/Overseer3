@@ -57,6 +57,12 @@ const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal", "Bar
 
                 "Server Terminal" : {
                     "TYPE" : "Terminal"
+                },
+
+                "Connections" : {
+                    "TYPE" : "Line_chart",
+                    "IO":["Number_of_devices"],
+                    "LABELS":["Number of Devices"]
                 }
 
             }

@@ -9,16 +9,24 @@
 
     <body>
         <page_header id="cnf0C" class="display-flex-col _font collapsed">
-            <logo_container class="display-flex" onclick="window.minimax('cnf0', 'var(--logo_header_height)')">
-                <logo>
-                    <img src="svg/eye.svg">
-                </logo>
-                <logo_text>
-                    Overseer
-                </logo_text>
-            </logo_container>
-            <control_panel_container id="control_panel_container">
-            </control_panel_container>
+            
+            <header_container class="display-flex">
+                <logo_container class="display-flex" onclick="window.minimax('cnf0', 'var(--logo_header_height)')">
+                    <logo>
+                        <img src="svg/eye.svg">
+                    </logo>
+                    <logo_text>
+                        Overseer
+                    </logo_text>
+                </logo_container>
+                <user_container class="display-flex">
+                    <username>Admin</username>
+                    <status id="server_status" class="connected"></status>
+                </user_container>
+            </header_container>
+            
+            <control_panel_container id="control_panel_container"></control_panel_container>
+           
         </page_header>
         <devices id="devices" class="display-flex">
         </devices>

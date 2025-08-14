@@ -77,6 +77,10 @@ page_header {
     transition: 0.3s ease all;
 }
 
+header_container {
+    justify-content: space-between;
+}
+
 page_header.collapsed {
     height: var(--logo_header_height);
 }
@@ -95,6 +99,16 @@ logo_text {
     padding-left: var(--gap_2);
     line-height: 1;
     max-height: var(--logo_height);
+}
+
+user_container {
+    gap: calc(var(--gap) * 2);
+    padding-right: calc(var(--gap) * 2);
+    align-items: center;
+}
+
+username {
+    font-size: 30px;
 }
 
 control_panel_container {
@@ -243,7 +257,10 @@ clock {
 
 .component_container {
     align-items: center;
+    padding-left: var(--gap_2);
+    padding-right: var(--gap_2);
     gap: var(--gap);
+    flex-wrap: wrap;
 }
 
 /* - Switch - */
