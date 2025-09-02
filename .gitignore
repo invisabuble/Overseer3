@@ -1,2 +1,3 @@
 __pycache__/
 docker/apache/web/private/certs
+volumes/db/*

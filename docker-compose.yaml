@@ -27,10 +27,17 @@ services:
     hostname: Overseer_DB
     container_name: Overseer_DB
     image: overseer_db:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MASTER_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_NAME}
+      MYSQL_PASSWORD: ${MASTER_PASSWORD}
     build:
       context: ./docker/docker-mysql
       dockerfile: mysql.dockerfile
-    env_file: ./docker/docker-mysql/mysql.env
+    env_file:
+      - ./Overseer.env
+      - ./docker/docker-mysql/mysql.env
     volumes:
       - ./volumes/database/db:/var/lib/mysql
       - ./volumes/database/config/Overseer.cnf:/etc/mysql/conf.d/mariadb.cnf
