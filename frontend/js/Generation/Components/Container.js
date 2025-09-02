@@ -161,6 +161,7 @@ export default class Container extends Generic_Generation {
         to the "all" property of the top-level container.
         Elements in different containers with the same names are allowed.
         Two elements on the same level cannot have the same name.
+        This means that all lower level components are acessible from the top layer.
         */
         const prefix = path.join("/");
 

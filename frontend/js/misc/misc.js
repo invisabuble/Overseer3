@@ -37,4 +37,49 @@ export function minimax (element,  defaultHeight="0px") {
 }
 
 
+export function CreateInfoWindow () {
+    // Create the OS control panel.
+    window.control_panel = new window.OS_Components["container"](
+        document.getElementById("control_panel_container"),
+        {
+            "Control Panel" : {
+
+                "__CONFIG__":{"SSID":"ssid","PSWD":"pswd","PORT":"port","HOST":"host","USER":"Admin","KEY":"sdjfsnjdfljsndf"},
+                "STYLE" : {},
+
+                "Option 1" : {
+                    "TYPE" : "Switch"
+                },
+
+                "Reboot" : {
+                    "TYPE" : "Button"
+                },
+
+                "Shutdown" : {
+                    "TYPE" : "Button"
+                },
+
+                "Server Status": {
+                    "TYPE":"Reading",
+                    "TEXT": "READY!"
+                },
+
+                "Server Terminal" : {
+                    "TYPE" : "Terminal"
+                },
+
+                "Connections" : {
+                    "TYPE" : "Line_chart",
+                    "IO":["Number_of_devices"],
+                    "LABELS":["Number of Devices"]
+                }
+
+            }
+        },
+        "control_panel",
+        window.os_host
+    );
+}
+
+
 console.info("Loaded : misc.js");
