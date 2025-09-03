@@ -12,7 +12,7 @@ const ipAddressRegex = /(?<=https?:\/\/).*/g;
 window.os_host = os_host.match(ipAddressRegex);
 
 // A list of components to be imported.
-const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal", "Bar", "Line_Chart", "Bar_Chart", "Pie_Chart"];
+const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal", "Bar", "Line_Chart", "Bar_Chart", "Pie_Chart", "Login"];
 
 // Dynamically import all components within the above list and add them to the window object.
 (async () => {

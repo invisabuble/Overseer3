@@ -1,3 +1,7 @@
+/* Switch to the Overseer database */
+
+CREATE DATABASE IF NOT EXISTS Overseer;
+USE Overseer;
 
 /* Create the users table */
 
