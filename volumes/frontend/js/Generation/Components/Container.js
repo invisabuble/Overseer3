@@ -147,7 +147,7 @@ export default class Container extends Generic_Generation {
         });
 
         
-         // Start the up timer.
+        // Start the up timer.
         this.update_container_timer();
 
         // Register all components into the top level 'all' property.

@@ -97,6 +97,9 @@ export default class Login extends Generic_Generation {
                                 }
                             },
                             "button" : {
+                                "ATTR" : {
+                                    "type" : "submit"
+                                },
                                 "TEXT" : "Login"
                             }
                         }

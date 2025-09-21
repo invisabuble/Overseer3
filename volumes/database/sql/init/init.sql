@@ -1,8 +1,3 @@
-/* Switch to the Overseer database */
-
-CREATE DATABASE IF NOT EXISTS Overseer;
-USE Overseer;
-
 /* Create the users table */
 
 CREATE TABLE Overseer_users (
@@ -20,6 +15,7 @@ CREATE TABLE Overseer_users (
 
 CREATE TABLE Overseer_devices (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    verified VARCHAR(255),
     device_name VARCHAR(255),
     parent INT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -14,7 +14,7 @@
 
     <body id="body" class="login-body display-flex-col">
 
-        <logo_container class="display-flex">
+        <logo_container class="display-flex noselect">
             <logo>
                 <img src="svg/eye.svg">
             </logo>
@@ -22,6 +22,10 @@
                 Overseer
             </logo_text>
         </logo_container>
+
+        <?php if (isset($login_error)): ?>
+            <span class="_font"><?= htmlspecialchars($login_error) ?></span>  
+        <?php endif; ?>
 
     </body>
 

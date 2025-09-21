@@ -14,7 +14,7 @@
         <page_header id="cnf0C" class="display-flex-col _font collapsed">
             
             <header_container class="display-flex">
-                <logo_container class="display-flex" onclick="window.minimax('cnf0', 'var(--logo_header_height)')">
+                <logo_container class="display-flex noselect" onclick="window.minimax('cnf0', 'var(--logo_header_height)')">
                     <logo>
                         <img src="svg/eye.svg">
                     </logo>
