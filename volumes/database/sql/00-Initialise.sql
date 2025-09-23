@@ -21,6 +21,3 @@ CREATE TABLE Overseer_devices (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (parent) REFERENCES Overseer_users(id)
 );
-
-/* Create the Overseer admin user */
-

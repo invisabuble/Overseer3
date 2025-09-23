@@ -36,7 +36,7 @@ services:
     volumes:
       - ./volumes/database/db:/var/lib/mysql
       - ./volumes/database/config/Overseer.cnf:/etc/mysql/conf.d/mariadb.cnf
-      - ./volumes/database/sql:/docker-entrypoint-initdb.d/
+      - ./volumes/database/sql/:/docker-entrypoint-initdb.d/
     expose:
       - '3306'
     tty: true
