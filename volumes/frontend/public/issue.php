@@ -14,7 +14,20 @@
 
     <body id="body" class="login-body display-flex-col">
 
-        Error in loading page.
+        <logo_container class="display-flex noselect">
+            <logo>
+                <img src="svg/eye.svg">
+            </logo>
+            <logo_text>
+                Overseer
+            </logo_text>
+        </logo_container>
+
+        <br>
+
+        <logo_text style="font-size: 30px; text-align: center;">
+            Error in loading page, Click <a href="index.php">here</a> to retry.
+        </logo_text>
 
     </body>
 
