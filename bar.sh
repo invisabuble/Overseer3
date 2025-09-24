@@ -5,9 +5,6 @@ git submodule update --force --init --recursive
 
 source Overseer.env
 
-# Initialise the apache container
-./docker/docker-apache/apache_init.sh
-
 function port_check () {
 	# Check a list of ports and print out any process using them.
     ALL_PORTS_FREE=1
@@ -27,6 +24,8 @@ function port_check () {
     fi
 }
 
+# Check that the apache certificates have been built
+./docker/docker-apache/apache_init.sh
 
 # Build the docker containers.
 if [[ $1 = "build" ]]; then
