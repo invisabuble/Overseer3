@@ -9,8 +9,7 @@ try {
     $OS_DB = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
     $OS_DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-    exit;
+    header("Location: issue.php");
 }
 
 ?>
