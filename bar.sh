@@ -24,11 +24,12 @@ function port_check () {
     fi
 }
 
-# Check that the apache certificates have been built
-./docker/docker-apache/apache_init.sh
-
 # Build the docker containers.
 if [[ $1 = "build" ]]; then
+
+	# Check that the apache certificates have been built
+	./docker/docker-apache/apache_init.sh
+
 	# Build the containers.
 	echo -e "\033[01;36mBuilding containers for Overseer...\033[0;0m\n"
 	docker compose build --no-cache
@@ -39,6 +40,7 @@ if [[ $1 = "build" ]]; then
 		echo -e "\n\033[01;91m BUILD FAILED \033[0;0m\n"
 		exit
 	fi
+	
 fi
 
 # Check that all required ports are free
