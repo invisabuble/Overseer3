@@ -9,9 +9,13 @@ services:
     build:
       context: ./docker/docker-apache
       dockerfile: apache.dockerfile
-    env_file: ./docker/docker-apache/apache.env
+    env_file:
+      - ./docker/docker-apache/apache.env 
+      - ./docker/docker-mysql/mysql.env
+      - ./Overseer.env
     volumes:
-      - ./volumes/frontend:/var/www/html
+      - ./volumes/frontend/public:/var/www/html
+      - ./volumes/frontend/private:/private
     expose:
       - '80'
       - '8080'

@@ -1,13 +1,12 @@
 #!/bin/bash
 
-
 # Initialise/update the submodules.
 git submodule update --force --init --recursive
 
-
 source Overseer.env
-source docker/docker-apache/apache.env
 
+# Initialise the apache container
+./docker/docker-apache/apache_init.sh
 
 function port_check () {
 	# Check a list of ports and print out any process using them.
