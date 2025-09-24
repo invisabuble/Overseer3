@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Initialise/update the submodules.
-git submodule update --force --init --recursive
+git submodule update --force --init --recursive 2>&1;
 
 source Overseer.env
 
@@ -40,7 +40,7 @@ if [[ $1 = "build" ]]; then
 		echo -e "\n\033[01;91m BUILD FAILED \033[0;0m\n"
 		exit
 	fi
-	
+
 fi
 
 # Check that all required ports are free
