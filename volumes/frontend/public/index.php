@@ -1,5 +1,9 @@
 <?php
-require '';
+
+session_start();
+
+require '/private/db_connection.php';
+
 ?>
 <html>
 
