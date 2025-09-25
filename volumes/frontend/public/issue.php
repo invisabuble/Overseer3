@@ -26,7 +26,7 @@
         <br>
 
         <logo_text style="font-size: 30px; text-align: center;">
-            Error in loading page, Click <a href="index.php">here</a> to retry.
+            <?= htmlspecialchars($_GET['issue']) ?>
         </logo_text>
 
     </body>
