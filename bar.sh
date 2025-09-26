@@ -32,7 +32,12 @@ if [[ $1 = "build" ]]; then
 
 	# Build the containers.
 	echo -e "\033[01;36mBuilding containers for Overseer...\033[0;0m\n"
-	docker compose build --no-cache
+
+	if [[ $2 = "-nc" ]]; then
+		docker compose build --no-cache
+	else
+		docker compose build
+	fi
 
 	if [ $? -eq 0 ]; then
 		echo -e "\n\033[01;102m BUILD COMPLETED \033[0;0m\n"
