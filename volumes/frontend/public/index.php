@@ -2,7 +2,7 @@
 
 session_start();
 
-require '/private/db_connection.php';
+require '/private/db_util.php';
 
 ?>
 <html>

@@ -2,6 +2,23 @@ version: '3.8'
 
 services:
 
+  Overseer:
+    hostname: Overseer
+    container_name: Overseer
+    image: overseer:latest
+    build:
+      context: ./docker/docker-overseer
+      dockerfile: overseerdockerfile
+    env_file:
+      - ./Overseer.env
+    volumes:
+      - ./volumes/overseer:/Overseer
+    expose:
+      - '3306'
+    tty: true
+    stdin_open: true
+    network_mode: "host"
+
   Overseer_FE:
     hostname: Overseer_FE
     container_name: Overseer_FE
