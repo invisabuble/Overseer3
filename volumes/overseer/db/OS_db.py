@@ -15,9 +15,9 @@ class OS_db:
         self.password=os.getenv('MASTER_PASSWORD')
         self.db=os.getenv('DB_NAME')
 
-        print(f"{self.host}, {self.user}, {self.password}, {self.db}")
+        asyncio.run(self._init_connection())
 
-    async def _init_ (self) :
+    async def _init_connection (self) :
         # Initialise the async connection to the database
 
         while not self.pool:
