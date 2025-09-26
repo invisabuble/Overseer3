@@ -51,3 +51,4 @@ echo -e "\033[0;0m\033[01;102mAll Overseer ports are free!\033[0;0m\n"
 # Run the docker containers in detached mode.
 docker compose up Overseer_FE -d
 docker compose up Overseer_DB -d
+docker compose up Overseer -d
