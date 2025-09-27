@@ -172,6 +172,9 @@ user_container {
 }
 
 username {
+    gap: var(--gap);
+    height: 30px;
+    align-items: center;
     font-size: 30px;
 }
 
