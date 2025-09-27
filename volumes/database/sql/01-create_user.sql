@@ -13,18 +13,27 @@ CREATE PROCEDURE create_user(
 BEGIN
     -- Check if the user already exists.
     IF NOT EXISTS (
+
         SELECT 1 FROM Overseer_users WHERE username = p_username
+
     ) THEN
-    -- If the user doesnt exist create them in the database.
+
+        -- If the user doesnt exist create them in the database.
         INSERT INTO Overseer_users (
             username, permissions, password_hash, secret_key
         ) VALUES (
             p_username, p_permissions, p_password_hash, p_secret_key
         );
+
+        -- Return a success message
+        SELECT 'SUCCESS' AS message;
+
     ELSE
+
         -- Raise a user error (45000) lowest user definable error.
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'User already exists';
+
     END IF;
 END$$
 

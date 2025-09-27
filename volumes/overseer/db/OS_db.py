@@ -60,7 +60,7 @@ class OS_db:
                 await asyncio.sleep(1)
 
         # Generate a password hash and a secret key from the master password.
-        hash, key = self.hash_pwd(self.password)
+        hash, key = OS_db.hash_pwd(self.password)
 
         # Generate the admin user if it hasnt been created.
         await self.call_procedure("create_user", f"{self.db}_admin", "*", hash, key)
