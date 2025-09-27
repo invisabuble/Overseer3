@@ -13,6 +13,7 @@
     --red2: rgba(233,41,45,1);
 
     --server_text: #ff006e; 
+    --font_colour: #C8CAD7;
 
     /* SWITCH CONSTANTS */
     --switch_length: 100px;
@@ -71,7 +72,7 @@ devices {
 
 ._font {
     font-family: poppins;
-    color: #C8CAD7;
+    color: var(--font_colour);
 }
 
 /* - Login - */
@@ -104,6 +105,27 @@ input:focus {
     padding-right: var(--gap);
     padding-bottom: var(--gap);
     width: calc(100% - var(--gap));
+}
+
+form {
+    margin: auto;
+}
+
+remember_container {
+    align-items: center;
+}
+
+btn_container {
+    height: 30px;
+    align-items: center;
+    gap: calc(1.5 * var(--gap));
+}
+
+vertical_divide {
+    min-width: 2px;
+    height: 100%;
+    background: var(--font_colour);
+    border-radius: 10px;
 }
 
 /* - Page Header - */
@@ -322,7 +344,7 @@ switch_toggler {
     border-radius: calc(var(--switch_length) / 2);
     margin-left: 0px;
     transition: 0.3s ease-in-out;
-    background: #C8CAD7;
+    background: var(--font_colour);
 }
 
 /* - Button - */
@@ -343,7 +365,7 @@ button_toggler {
     border-radius: calc(var(--switch_length) / 2);
     margin-top: 0px;
     transition: 0.3s ease-in-out;
-    background: #C8CAD7;
+    background: var(--font_colour);
 }
 
 /* - Reading - */

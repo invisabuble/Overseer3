@@ -68,17 +68,17 @@ export default class Login extends Generic_Generation {
                         }
                     },
 
-                    "content" : {
+                    "form" : {
                         "ATTR" : {
-                            "class" : "display-flex-col component_container login_content"
+                            "method" : "POST",
+                            "action" : "index.php"
                         },
-
                         "CHILDREN" : {
-                            "form" : {
+                            "content" : {
                                 "ATTR" : {
-                                    "method" : "POST",
-                                    "action" : "index.php"
+                                    "class" : "display-flex-col component_container login_content"
                                 },
+
                                 "CHILDREN" : {
                                     "username" : {
                                         "CHILDREN" : {
@@ -107,13 +107,28 @@ export default class Login extends Generic_Generation {
                                             "class" : "display-flex"
                                         },
                                         "CHILDREN" : {
-                                            "input" : {
+                                            "remember_container" : {
                                                 "ATTR" : {
-                                                    "type" : "checkbox",
-                                                    "name" : "remember_me",
-                                                    "value" : "yes"
+                                                    "class" : "display-flex"
+                                                },
+                                                "CHILDREN" : {
+                                                     "input" : {
+                                                        "ATTR" : {
+                                                            "type" : "checkbox",
+                                                            "name" : "remember_me",
+                                                            "id" : "remember_me",
+                                                            "value" : "yes"
+                                                        }
+                                                    },
+                                                    "label" : {
+                                                        "ATTR" : {
+                                                            "for" : "remember_me"
+                                                        },
+                                                        "TEXT" : "Remember"
+                                                    }
                                                 }
                                             },
+                                            "vertical_divide" : {},
                                             "button" : {
                                                 "ATTR" : {
                                                     "type" : "submit"
@@ -123,7 +138,6 @@ export default class Login extends Generic_Generation {
                                         }
                                     }
                                 }
-
                             }
                         }
                     }
