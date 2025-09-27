@@ -22,8 +22,8 @@ BEGIN
             p_username, p_permissions, p_password_hash, p_secret_key
         );
     ELSE
-        -- Raise a user error (1000)
-        SIGNAL SQLSTATE '1000'
+        -- Raise a user error (45000) lowest user definable error.
+        SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'User already exists';
     END IF;
 END$$

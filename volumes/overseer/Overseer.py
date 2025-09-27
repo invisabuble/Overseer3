@@ -5,8 +5,8 @@ db = OS_db()
 
 async def main () :
     # Main loop for overseer.
-    db.init_connection()
+    await db.init_connection()
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
-loop.run_until_complete(self.main())
+loop.run_until_complete(main())

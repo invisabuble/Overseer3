@@ -89,5 +89,7 @@ class OS_db:
     async def call_procedure (self, cursor, proc, *params) :
         # Call a procedure in the database and retrieve the result.
         await cursor.callproc(proc, params)
+        print(f"Executed {proc} [{params}]")
         ret = await cursor.fetchone()
+        print(f"{proc} returned : {ret}")
         return ret
