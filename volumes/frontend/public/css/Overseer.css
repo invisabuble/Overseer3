@@ -172,7 +172,7 @@ user_container {
 }
 
 header_username {
-    gap: var(--gap);
+    gap: calc(2 * var(--gap));
     height: 30px;
     align-items: center;
     font-size: 30px;
