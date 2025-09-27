@@ -35,13 +35,13 @@ if (!isset($_SESSION['username'])) {
                     </logo_text>
                 </logo_container>
                 <user_container class="display-flex">
-                    <username class="display-flex">
+                    <header_username class="display-flex">
                         <?php
                             echo htmlspecialchars($_SESSION['username']);
                         ?>
                         <vertical_divide></vertical_divide>
                         <a href="logout.php" class="OSS_link">Logout</a>
-                    </username>
+                    </header_username>
                     <status id="server_status" class="connected"></status>
                 </user_container>
             </header_container>

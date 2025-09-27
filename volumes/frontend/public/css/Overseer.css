@@ -171,10 +171,14 @@ user_container {
     align-items: center;
 }
 
-username {
+header_username {
     gap: var(--gap);
     height: 30px;
     align-items: center;
+    font-size: 30px;
+}
+
+username {
     font-size: 30px;
 }
 
