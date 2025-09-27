@@ -5,6 +5,7 @@ CREATE TABLE Overseer_users (
     username VARCHAR(50) NOT NULL UNIQUE,
     permissions VARCHAR(50) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    secret_key VARCHAR(255) NOT NULL,
     remember_token CHAR(64),
     remember_token_expiration DATETIME,
     devices INT NULL,

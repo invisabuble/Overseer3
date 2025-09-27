@@ -15,7 +15,7 @@ BEGIN
     -- Look up the user ID from the username.
     SELECT id INTO v_parent_id
     FROM Overseer_users
-    WHERE username = p_parent_username
+    WHERE username = p_parent
     LIMIT 1;
 
     -- Insert device into table.
