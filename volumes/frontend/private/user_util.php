@@ -2,6 +2,7 @@
 
 
 require '/private/db_util.php';
+$remember_token_expiry = 60 * 60 * 24 * 30;
 
 
 function validate_login ($username, $password) {
@@ -21,6 +22,16 @@ function validate_login ($username, $password) {
     $pass_valid = password_verify($password, $stored_hash['password_hash']);
 
     return $pass_valid; // Returns true if valid, false if invalid
+}
+
+
+function login_user ($username) {
+    // Logs a user in.
+    $_SESSION['username'] = $username;
+
+    // Redirect to the dashboard.
+    header("Location: dashboard.php");
+    exit;
 }
 
 
@@ -49,13 +60,20 @@ function check_token () {
 }
 
 
-function login_user ($username) {
-    // Logs a user in.
-    $_SESSION['username'] = $username;
+function set_token ($username, $prevent_javascript_access = true) {
+    // Generates a remember token valid for 30 days so that the user can be automatically re-logged in.
+    // Expiry should be passed in seconds.
+    global $db;
 
-    // Redirect to the dashboard.
-    header("Location: dashboard.php");
-    exit;
+    // Generate the token and the expiration date.
+    $token = bin2hex(random_bytes(32));
+    $expiration = date('Y-m-d H:i:s', time() + $remember_token_expiry);
+
+    // Set token and expiry in database.
+    db_execute("UPDATE " . $db . "_users SET remember_token = ?, remember_token_expiration = ? WHERE username = ?", [$token, $expiration, $username]);
+
+    // Set the cookie with the remember token, and set an expiration date (30 days time)
+    setcookie('remember_token', $token, time() + $expiry, "/", "", $prevent_javascript_access, $prevent_javascript_access);
 }
 
 

@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (validate_login($username, $password)) {
         // Set remember token only if checkbox was checked
         if ($rememberMe) {
-            //set_token('remember_token', $username, $remember_token_expiry, true);
+            set_token($username);
         }
 
         login_user($username);
