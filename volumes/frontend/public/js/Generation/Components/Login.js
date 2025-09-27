@@ -96,12 +96,27 @@ export default class Login extends Generic_Generation {
                                     }
                                 }
                             },
-                            "button" : {
+                            "btn_container" : {
                                 "ATTR" : {
-                                    "type" : "submit"
+                                    "class" : "display-flex"
                                 },
-                                "TEXT" : "Login"
+                                "CHILDREN" : {
+                                    "input" : {
+                                        "ATTR" : {
+                                            "type" : "checkbox",
+                                            "name" : "remember_me",
+                                            "value" : "yes"
+                                        }
+                                    },
+                                    "button" : {
+                                        "ATTR" : {
+                                            "type" : "submit"
+                                        },
+                                        "TEXT" : "Login"
+                                    }
+                                }
                             }
+                            
                         }
                     }
 

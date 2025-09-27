@@ -2,7 +2,31 @@
 
 session_start();
 
-require '/private/db_util.php';
+// User util requires db_util so no need to require it here.
+require '/private/user_util.php';
+
+check_token();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Checkbox: true if checked, false otherwise
+    $rememberMe = !empty($_POST['remember_me']);
+
+    if (validate_login($username, $password)) {
+        // Set remember token only if checkbox was checked
+        if ($rememberMe) {
+            //set_token('remember_token', $username, $remember_token_expiry, true);
+        }
+
+        login_user($username);
+        
+    } else {
+        $login_error = "Invalid credentials";
+    }
+}
+
 
 ?>
 <html>
