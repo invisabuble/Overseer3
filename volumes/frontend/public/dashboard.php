@@ -1,3 +1,15 @@
+<?php
+
+session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION['username'])) {
+    // User is not logged in, redirect to login page
+    header("Location: index.php");
+    exit;
+}
+
+?>
 <html>
     
     <head>
@@ -27,6 +39,7 @@
                         <?php
                             echo htmlspecialchars($_SESSION['username']) . "&#160;&#160;|&#160;";
                         ?>
+                        <vertical_divider></vertical_divider>
                         <a href="logout.php" class="OSS_link">Logout</a>
                     </username>
                     <status id="server_status" class="connected"></status>
