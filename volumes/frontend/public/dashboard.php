@@ -23,7 +23,12 @@
                     </logo_text>
                 </logo_container>
                 <user_container class="display-flex">
-                    <username>Admin</username>
+                    <username>
+                        <?php
+                            echo htmlspecialchars($_SESSION['username']) . "&#160;&#160;|&#160;";
+                        ?>
+                        <a href="logout.php" class="OSS_link">Logout</a>
+                    </username>
                     <status id="server_status" class="connected"></status>
                 </user_container>
             </header_container>

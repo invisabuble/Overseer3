@@ -60,21 +60,31 @@ function check_token () {
 }
 
 
-function set_token ($username, $prevent_javascript_access = true) {
-    // Generates a remember token valid for 30 days so that the user can be automatically re-logged in.
-    // Expiry should be passed in seconds.
+function set_token($username, $prevent_javascript_access = true) {
+    // Set a token in the browser and database when accessed over https.
     global $db;
+    global $remember_token_expiry;
 
-    // Generate the token and the expiration date.
     $token = bin2hex(random_bytes(32));
     $expiration = date('Y-m-d H:i:s', time() + $remember_token_expiry);
 
-    // Set token and expiry in database.
-    db_execute("UPDATE " . $db . "_users SET remember_token = ?, remember_token_expiration = ? WHERE username = ?", [$token, $expiration, $username]);
+    // Update database
+    db_execute(
+        "UPDATE " . $db . "_users SET remember_token = ?, remember_token_expiration = ? WHERE username = ?",
+        [$token, $expiration, $username]
+    );
 
-    // Set the cookie with the remember token, and set an expiration date (30 days time)
-    setcookie('remember_token', $token, time() + $expiry, "/", "", $prevent_javascript_access, $prevent_javascript_access);
+    // Set cookie correctly
+    $secure = isset($_SERVER['HTTPS']); // only send over HTTPS
+    setcookie('remember_token', $token, [
+        'expires' => time() + $remember_token_expiry,
+        'path' => '/',
+        'secure' => $secure,
+        'httponly' => $prevent_javascript_access,
+        'samesite' => 'Strict'
+    ]);
 }
+
 
 
 ?>
