@@ -186,6 +186,12 @@ control_panel_container {
     padding: var(--gap);
 }
 
+.OS_link {
+    color: var(--default_colour);
+    transition: all 0.3s ease;
+    text-decoration: none
+}
+
 /* - Container - */
 
 container {

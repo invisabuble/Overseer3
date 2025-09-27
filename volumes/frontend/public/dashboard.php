@@ -40,7 +40,7 @@ if (!isset($_SESSION['username'])) {
                             echo htmlspecialchars($_SESSION['username']);
                         ?>
                         <vertical_divide></vertical_divide>
-                        <a href="logout.php" class="OSS_link">Logout</a>
+                        <a href="logout.php" class="OS_link">Logout</a>
                     </header_username>
                     <status id="server_status" class="connected"></status>
                 </user_container>
