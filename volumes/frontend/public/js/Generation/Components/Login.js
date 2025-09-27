@@ -74,49 +74,57 @@ export default class Login extends Generic_Generation {
                         },
 
                         "CHILDREN" : {
-                            "username" : {
-                                "CHILDREN" : {
-                                    "input" : {
-                                        "ATTR" : {
-                                            "type" : "text",
-                                            "name" : "username",
-                                            "placeholder" : "Username"
-                                        }
-                                    }
-                                }
-                            },
-                             "password" : {
-                                "CHILDREN" : {
-                                    "input" : {
-                                        "ATTR" : {
-                                            "type" : "password",
-                                            "name" : "password",
-                                            "placeholder" : "Password"
-                                        }
-                                    }
-                                }
-                            },
-                            "btn_container" : {
+                            "form" : {
                                 "ATTR" : {
-                                    "class" : "display-flex"
+                                    "method" : "POST",
+                                    "action" : "index.php"
                                 },
                                 "CHILDREN" : {
-                                    "input" : {
-                                        "ATTR" : {
-                                            "type" : "checkbox",
-                                            "name" : "remember_me",
-                                            "value" : "yes"
+                                    "username" : {
+                                        "CHILDREN" : {
+                                            "input" : {
+                                                "ATTR" : {
+                                                    "type" : "text",
+                                                    "name" : "username",
+                                                    "placeholder" : "Username"
+                                                }
+                                            }
                                         }
                                     },
-                                    "button" : {
+                                    "password" : {
+                                        "CHILDREN" : {
+                                            "input" : {
+                                                "ATTR" : {
+                                                    "type" : "password",
+                                                    "name" : "password",
+                                                    "placeholder" : "Password"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "btn_container" : {
                                         "ATTR" : {
-                                            "type" : "submit"
+                                            "class" : "display-flex"
                                         },
-                                        "TEXT" : "Login"
+                                        "CHILDREN" : {
+                                            "input" : {
+                                                "ATTR" : {
+                                                    "type" : "checkbox",
+                                                    "name" : "remember_me",
+                                                    "value" : "yes"
+                                                }
+                                            },
+                                            "button" : {
+                                                "ATTR" : {
+                                                    "type" : "submit"
+                                                },
+                                                "TEXT" : "Login"
+                                            }
+                                        }
                                     }
                                 }
+
                             }
-                            
                         }
                     }
 
