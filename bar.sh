@@ -22,14 +22,6 @@ function port_check () {
     fi
 }
 
-function copy_certs () {
-	# Copy each set of certificates to each service.
-	mkdir ./docker/$1/certs
-	cp ./docker/docker-apache/web/private/certs/$2.crt ./docker/$1/certs
-	cp ./docker/docker-apache/web/private/certs/$2.key ./docker/$1/certs
-	cp ./docker/docker-apache/web/private/certs/SSL-root.crt ./docker/$1/certs
-}
-
 # Source and automatically export all values in the .env files.
 set -a
 source ./docker/docker-apache/apache.env
@@ -42,10 +34,6 @@ if [[ $1 = "build" ]]; then
 
 	# Check that the apache certificates have been built.
 	./docker/docker-apache/apache_init.sh
-
-	# Copy certs from the apache directory 
-	copy_certs "docker-mysql" "mysql"
-	copy_certs "docker-overseer" "overseer"
 
 	# Build the containers.
 	echo -e "\033[01;36mBuilding containers for Overseer...\033[0;0m\n"
