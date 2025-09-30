@@ -10,7 +10,7 @@ def async_db_operation (method) :
     """
         Custom decorator used to execute async operations on the database.
     """
-    async def wrapper (self, *args, **kwargs) :
+    async def db_op (self, *args, **kwargs) :
 
         try:
             async with self.pool.acquire() as conn:
@@ -23,7 +23,7 @@ def async_db_operation (method) :
             print(f"ASYNC DB OP EXCEPTION : {e}")
             return None
 
-    return wrapper
+    return db_op
 
 
 class OS_db:
@@ -81,7 +81,7 @@ class OS_db:
         # Close the connection to the database.
         if (self.pool) :
             self.pool.close()
-            await self.pool.close()
+            await self.pool.wait_close()
             print("Closed connection to the database.")
 
 

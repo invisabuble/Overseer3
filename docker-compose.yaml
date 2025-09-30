@@ -13,6 +13,7 @@ services:
       - ./Overseer.env
     volumes:
       - ./volumes/overseer:/Overseer
+      - ./docker/docker-apache/web/private/certs:/certs
     expose:
       - '3306'
     tty: true
