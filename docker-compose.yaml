@@ -1,13 +1,12 @@
 services:
 
-
   Overseer:
     hostname: Overseer
     container_name: Overseer
     image: overseer:latest
     build:
-      context: ./docker/docker-overseer
-      dockerfile: overseer.dockerfile
+      context: ./docker
+      dockerfile: docker-overseer/overseer.dockerfile
     env_file:
       - ./Overseer.env
     volumes:
@@ -20,14 +19,13 @@ services:
     networks:
       - OSN
 
-
   Overseer_FE:
     hostname: Overseer_FE
     container_name: Overseer_FE
     image: overseer_fe:latest
     build:
-      context: ./docker/docker-apache
-      dockerfile: apache.dockerfile
+      context: ./docker
+      dockerfile: docker-apache/apache.dockerfile
     env_file:
       - ./docker/docker-apache/apache.env 
       - ./docker/docker-mysql/mysql.env
@@ -48,14 +46,13 @@ services:
       - "Overseer_FE:127.0.1.1"
       - "overseer.home:${HOST_IP:-127.0.0.1}"
 
-
   Overseer_DB:
     hostname: Overseer_DB
     container_name: Overseer_DB
     image: overseer_db:latest
     build:
-      context: ./docker/docker-mysql
-      dockerfile: mysql.dockerfile
+      context: ./docker
+      dockerfile: docker-mysql/mysql.dockerfile
     env_file:
       - ./Overseer.env
       - ./docker/docker-mysql/mysql.env
@@ -63,14 +60,12 @@ services:
       - ./volumes/database/db:/var/lib/mysql
       - ./volumes/database/config/Overseer.cnf:/etc/mysql/conf.d/mariadb.cnf:ro
       - ./volumes/database/sql/:/docker-entrypoint-initdb.d/:ro
-      - ./docker/docker-apache/web/private/certs:/etc/mysql/certs:ro
     ports:
       - "${DB_PORT}:3306"
     tty: true
     stdin_open: true
     networks:
       - OSN
-
 
 networks:
   OSN:
