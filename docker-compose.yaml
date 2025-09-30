@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
 
+
   Overseer:
     hostname: Overseer
     container_name: Overseer
@@ -12,13 +13,15 @@ services:
     env_file:
       - ./Overseer.env
     volumes:
-      - ./volumes/overseer:/Overseer
-      - ./docker/docker-apache/web/private/certs:/certs
+      - ./volumes/overseer:/Overseer:ro
+      - ./docker/docker-apache/web/private/certs:/certs:ro
     expose:
-      - '3306'
+      - "${OSN_PORT}"
     tty: true
     stdin_open: true
-    network_mode: "host"
+    networks:
+      - OSN
+
 
   Overseer_FE:
     hostname: Overseer_FE
@@ -32,18 +35,21 @@ services:
       - ./docker/docker-mysql/mysql.env
       - ./Overseer.env
     volumes:
-      - ./volumes/frontend/public:/var/www/html
-      - ./volumes/frontend/private:/private
+      - ./volumes/frontend/public:/var/www/html:ro
+      - ./volumes/frontend/private:/private:ro
+      - ./docker/docker-apache/web/private/certs:/certs:ro
     expose:
       - '80'
       - '8080'
       - '443'
     tty: true
     stdin_open: true
-    network_mode: "host"
+    networks:
+      - OSN
     extra_hosts:
       - "Overseer_FE:127.0.1.1"
       - "overseer.home:${HOST_IP:-127.0.0.1}"
+
 
   Overseer_DB:
     hostname: Overseer_DB
@@ -57,10 +63,17 @@ services:
       - ./docker/docker-mysql/mysql.env
     volumes:
       - ./volumes/database/db:/var/lib/mysql
-      - ./volumes/database/config/Overseer.cnf:/etc/mysql/conf.d/mariadb.cnf
-      - ./volumes/database/sql/:/docker-entrypoint-initdb.d/
-    expose:
-      - '3306'
+      - ./volumes/database/config/Overseer.cnf:/etc/mysql/conf.d/mariadb.cnf:ro
+      - ./volumes/database/sql/:/docker-entrypoint-initdb.d/:ro
+      - ./docker/docker-apache/web/private/certs:/etc/mysql/certs:ro
+    ports:
+      - "${DB_PORT}:3306"
     tty: true
     stdin_open: true
-    network_mode: "host"
+    networks:
+      - OSN
+
+
+networks:
+  OSN:
+    driver: bridge

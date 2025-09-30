@@ -1,3 +1,10 @@
+/* Alter the root and Overseer users to require SSL to connect to the DB */
+ALTER USER 'root'@'%' REQUIRE X509;
+ALTER USER 'root'@'localhost' REQUIRE X509;
+
+ALTER USER 'Overseer'@'%' REQUIRE X509;
+ALTER USER 'Overseer'@'localhost' REQUIRE X509;
+
 /* Create the users table */
 
 CREATE TABLE Overseer_users (
