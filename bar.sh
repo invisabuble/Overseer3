@@ -3,8 +3,6 @@
 # Initialise/update the submodules.
 git submodule update --force --init --recursive 2>&1;
 
-source Overseer.env
-
 function port_check () {
 	# Check a list of ports and print out any process using them.
     ALL_PORTS_FREE=1
@@ -24,10 +22,17 @@ function port_check () {
     fi
 }
 
+# Source and automatically export all values in the .env files.
+set -a
+source ./docker/docker-apache/apache.env
+source ./docker/docker-mysql/mysql.env
+source ./Overseer.env
+set +a 
+
 # Build the docker containers.
 if [[ $1 = "build" ]]; then
 
-	# Check that the apache certificates have been built
+	# Check that the apache certificates have been built.
 	./docker/docker-apache/apache_init.sh
 
 	# Build the containers.
