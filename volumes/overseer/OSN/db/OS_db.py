@@ -34,7 +34,7 @@ class OS_db:
 
     # Create the SSL context.
     ssl_ctx = ssl.create_default_context(cafile="/certs/SSL-root.crt")
-    ssl_ctx.load_cert_chain(certfile="/certs/overseer.crt", keyfile="/certs/overseer.key")
+    ssl_ctx.load_cert_chain(certfile="/certs/overseer-client.crt", keyfile="/certs/overseer-client.key")
 
 
     def __init__ (self) :

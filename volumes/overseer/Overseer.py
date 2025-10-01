@@ -1,5 +1,5 @@
 import asyncio
-from db.OS_db import *
+from OSN.db.OS_db import *
 
 db = OS_db()
 
