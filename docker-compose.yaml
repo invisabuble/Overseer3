@@ -69,4 +69,5 @@ services:
 
 networks:
   OSN:
+    name: OSN
     driver: bridge

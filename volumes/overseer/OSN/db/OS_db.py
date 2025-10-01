@@ -40,7 +40,7 @@ class OS_db:
     def __init__ (self) :
         # Initialise the database connection.
 
-        self.host     = os.getenv('DB_HOST')
+        self.host     = f"{os.getenv('DB_NAME')}_DB"
         self.user     = os.getenv('DB_NAME')
         self.password = os.getenv('MASTER_PASSWORD')
         self.db       = os.getenv('DB_NAME')
