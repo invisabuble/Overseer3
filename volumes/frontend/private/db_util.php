@@ -1,14 +1,14 @@
 <?php
 
-$host = $_ENV["DB_HOST"];
+$host = $_ENV["DB_HOST"] . "_DB";
 $db   = $_ENV["DB_NAME"];
 $user = $_ENV["DB_NAME"];
 $pass = $_ENV["MASTER_PASSWORD"];
 
 // Paths inside the container where the certificates are mounted
 $ssl_ca   = "/certs/SSL-root.crt";       // Root CA
-$ssl_cert = "/certs/overseer.crt";       // Overseer client certificate
-$ssl_key  = "/certs/overseer.key";       // Overseer client private key
+$ssl_cert = "/certs/overseer-client.crt";       // Overseer client certificate
+$ssl_key  = "/certs/overseer-client.key";       // Overseer client private key
 
 $options = [
     PDO::MYSQL_ATTR_SSL_CA   => $ssl_ca,
