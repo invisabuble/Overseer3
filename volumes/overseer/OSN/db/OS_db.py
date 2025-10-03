@@ -32,7 +32,7 @@ class OS_db:
     pool = None # Pools Closed...
     _pool_lock = asyncio.Lock() 
 
-    # Create the SSL context.
+    # Create the SSL context. 
     ssl_ctx = ssl.create_default_context(cafile="/certs/root/SSL-root.crt")
     ssl_ctx.load_cert_chain(certfile="/certs/overseer/overseer-client.crt", keyfile="/certs/overseer/overseer-client.key")
 
