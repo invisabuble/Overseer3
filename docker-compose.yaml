@@ -28,9 +28,9 @@ services:
       context: ./docker
       dockerfile: docker-apache/apache.dockerfile
     env_file:
+      - ./Overseer.env
       - ./docker/docker-apache/apache.env 
       - ./docker/docker-mysql/mysql.env
-      - ./Overseer.env
     volumes:
       - ./volumes/frontend/public:/var/www/html:ro
       - ./volumes/frontend/private:/private:ro
