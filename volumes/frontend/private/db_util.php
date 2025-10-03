@@ -6,9 +6,9 @@ $user = $_ENV["DB_NAME"];
 $pass = $_ENV["MASTER_PASSWORD"];
 
 // Paths inside the container where the certificates are mounted
-$ssl_ca   = "/certs/SSL-root.crt";       // Root CA
-$ssl_cert = "/certs/overseer-client.crt";       // Overseer client certificate
-$ssl_key  = "/certs/overseer-client.key";       // Overseer client private key
+$ssl_ca   = "/certs/root/SSL-root.crt";       // Root CA
+$ssl_cert = "/certs/apache/apache-client.crt";       // Overseer client certificate
+$ssl_key  = "/certs/apache/apache-client.key";       // Overseer client private key
 
 $options = [
     PDO::MYSQL_ATTR_SSL_CA   => $ssl_ca,

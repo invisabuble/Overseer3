@@ -61,6 +61,8 @@ services:
       - ./volumes/database/db:/var/lib/mysql
       - ./volumes/database/config/Overseer.cnf:/etc/mysql/conf.d/mariadb.cnf:ro
       - ./volumes/database/sql/:/docker-entrypoint-initdb.d/:ro
+      - ./docker/docker-apache/web/private/certs/root:/certs/root:ro
+      - ./docker/docker-apache/web/private/certs/mysql:/certs/mysql:ro
     tty: true
     stdin_open: true
     networks:
