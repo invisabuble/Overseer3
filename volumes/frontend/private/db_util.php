@@ -1,6 +1,6 @@
 <?php
 
-$host = $_ENV["DB_HOST"] . "_DB";
+$host = $_ENV["DB_NAME"] . "_DB";
 $db   = $_ENV["DB_NAME"];
 $user = $_ENV["DB_NAME"];
 $pass = $_ENV["MASTER_PASSWORD"];
