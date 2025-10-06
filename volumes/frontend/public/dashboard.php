@@ -2,12 +2,19 @@
 
 session_start();
 
+require '/private/user_util.php';
+
 // Check if the user is logged in
 if (!isset($_SESSION['username'])) {
     // User is not logged in, redirect to login page
     header("Location: index.php");
     exit;
 }
+
+# Find the users permissions
+$stmt = db_execute("CALL get_user_permissions(?)", [$_SESSION['username']]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$perm = $row['permissions'];
 
 ?>
 <html>
@@ -26,7 +33,7 @@ if (!isset($_SESSION['username'])) {
         <page_header id="cnf0C" class="display-flex-col _font collapsed">
             
             <header_container class="display-flex">
-                <logo_container class="display-flex noselect" onclick="window.minimax('cnf0', 'var(--logo_header_height)')">
+                <logo_container class="display-flex noselect" <?php if ($perm == "*") {echo 'onclick="window.minimax(\'cnf0\', \'var(--logo_header_height)\')"';} ?> >
                     <logo>
                         <img src="svg/eye.svg">
                     </logo>
@@ -47,9 +54,8 @@ if (!isset($_SESSION['username'])) {
             </header_container>
 
             <?php
-            // If the username is an admin then add the control panel.
-            
-            if (isset($_SESSION['username']) && $_SESSION['username'] === "Overseer_admin") {
+            // Only render the control panel for admin users.
+            if ($perm == "*") { 
                 echo '<control_panel_container id="control_panel_container"></control_panel_container>';
             }
             ?>
