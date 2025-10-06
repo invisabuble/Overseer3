@@ -45,9 +45,15 @@ if (!isset($_SESSION['username'])) {
                     <status id="server_status" class="connected"></status>
                 </user_container>
             </header_container>
+
+            <?php
+            // If the username is an admin then add the control panel.
             
-            <control_panel_container id="control_panel_container"></control_panel_container>
-           
+            if (isset($_SESSION['username']) && $_SESSION['username'] === "Overseer_admin") {
+                echo '<control_panel_container id="control_panel_container"></control_panel_container>';
+            }
+            ?>
+            
         </page_header>
         <devices id="devices" class="display-flex">
         </devices>

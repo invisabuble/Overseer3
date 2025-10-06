@@ -77,6 +77,11 @@ class OS_db:
         # Generate the admin user if it hasnt been created.
         await self.call_procedure("create_user", f"{self.db}_admin", "*", hash, key)
 
+        # Generate a password hash and secret key for the test user.
+        hash, key = OS_db.hash_pwd("test")
+        # Generate a test user if it hasnt been created.
+        await self.call_procedure('create_user', "Overseer", "0", hash, key)
+
 
     @staticmethod
     def hash_pwd (password) : 
