@@ -14,7 +14,7 @@ def async_db_operation (method) :
     async def db_op (self, *args, **kwargs) :
         # Use the connection pool within OS_db to execute queries.
         try:
-            async with OS_db.pool.acquire() as conn:
+            async with ODB.pool.acquire() as conn:
                 async with conn.cursor() as cursor:
 
                     # The method needs to have the following arguments: self, cursor
@@ -27,7 +27,7 @@ def async_db_operation (method) :
     return db_op
 
 
-class OS_db:
+class ODB:
 
     pool = None # Pools Closed...
     _pool_lock = asyncio.Lock() 
@@ -37,33 +37,35 @@ class OS_db:
     ssl_ctx.load_cert_chain(certfile="/certs/overseer/overseer-client.crt", keyfile="/certs/overseer/overseer-client.key")
 
 
-    def __init__ (self) :
+    def __init__ (self, 
+                  user = os.getenv('DB_NAME'),
+                  password = os.getenv('MASTER_PASSWORD'),
+                  ) :
         # Initialise the database connection.
-
         self.host     = f"{os.getenv('DB_NAME')}_DB"
-        self.user     = os.getenv('DB_NAME')
-        self.password = os.getenv('MASTER_PASSWORD')
+        self.user     = user
+        self.password = password
         self.db       = os.getenv('DB_NAME')
 
 
     async def init_connection (self) :
         # Initialise the async connection to the database
-        while not OS_db.pool:
+        while not ODB.pool:
             # Acquire the lock so that only one instance of the pool is created.
             # Very rare that two instances would create at the same time but whatever... its done now.
-            async with OS_db._pool_lock:
-                if OS_db.pool is None:
+            async with ODB._pool_lock:
+                if ODB.pool is None:
         
                     try:
                         # Create a connection pool.
                         # This way we dont have to remake the connection everytime.
-                        OS_db.pool = await aiomysql.create_pool(
+                        ODB.pool = await aiomysql.create_pool(
                             host=self.host,
                             user=self.user,
                             password=self.password,
                             db=self.db,
                             autocommit=True,
-                            ssl=OS_db.ssl_ctx
+                            ssl=ODB.ssl_ctx
                         )
                         print(f"OS_db connected to the Overseer database @ {self.host}")
 
@@ -72,13 +74,13 @@ class OS_db:
                         await asyncio.sleep(1)
 
         # Generate a password hash and a secret key from the master password.
-        hash, key = OS_db.hash_pwd(self.password)
+        hash, key = ODB.hash_pwd(self.password)
 
         # Generate the admin user if it hasnt been created.
         await self.call_procedure("create_user", f"{self.db}_admin", "*", hash, key)
 
         # Generate a password hash and secret key for the test user.
-        hash, key = OS_db.hash_pwd("test")
+        hash, key = ODB.hash_pwd("test")
         # Generate a test user if it hasnt been created.
         await self.call_procedure('create_user', "Overseer", "0", hash, key)
 
