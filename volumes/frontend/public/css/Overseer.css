@@ -334,8 +334,8 @@ clock {
 
 .component_container {
     align-items: center;
-    padding-left: var(--gap_2);
-    padding-right: var(--gap_2);
+    padding-left: 0;
+    padding-right: var(--gap);
     gap: var(--gap);
     flex-wrap: wrap;
 }
