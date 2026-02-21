@@ -1,6 +1,5 @@
 <?php
     header("Refresh: 10; url=index.php");
-    exit;
 ?>
 
 <html>
@@ -32,6 +31,7 @@
 
         <logo_text style="font-size: 30px; text-align: center;">
             <?= htmlspecialchars($_GET['issue']) ?>
+            You will be redirected in 10 seconds.
         </logo_text>
 
     </body>
