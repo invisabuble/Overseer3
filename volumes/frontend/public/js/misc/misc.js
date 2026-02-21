@@ -47,16 +47,21 @@ export function CreateInfoWindow () {
                 "__CONFIG__":{"SSID":"ssid","PSWD":"pswd","PORT":"port","HOST":"host","USER":"Admin","KEY":"sdjfsnjdfljsndf"},
                 "STYLE" : {},
 
-                "Option 1" : {
-                    "TYPE" : "Switch"
-                },
+                "Buttons" : {
+                    "TYPE" : "Container",
 
-                "Reboot" : {
-                    "TYPE" : "Button"
-                },
+                    "Option 1" : {
+                        "TYPE" : "Switch"
+                    },
 
-                "Shutdown" : {
-                    "TYPE" : "Button"
+                    "Reboot" : {
+                        "TYPE" : "Button"
+                    },
+
+                    "Shutdown" : {
+                        "TYPE" : "Button"
+                    },
+
                 },
 
                 "Server Status": {

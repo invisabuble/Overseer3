@@ -1,3 +1,8 @@
+<?php
+    header("Refresh: 10; url=index.php");
+    exit;
+?>
+
 <html>
 
     <head>
