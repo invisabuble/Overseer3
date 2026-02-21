@@ -32,6 +32,7 @@
         <logo_text style="font-size: 30px; text-align: center;">
             <?= htmlspecialchars($_GET['issue']) ?>
             </br>
+            </br>
             You will be redirected in 10 seconds.
         </logo_text>
 
