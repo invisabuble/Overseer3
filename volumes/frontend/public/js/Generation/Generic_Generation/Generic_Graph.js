@@ -44,6 +44,10 @@ export class Generic_Graph extends Generic_Generation{
         this.IO_LIST    = this.get_CI_value("IO", json[this.NAME], []);
         this.LABELS     = this.get_CI_value("LABELS", json[this.NAME]);
 
+        // Get the axis labels if they exist.
+        this.X_AXIS     = this.display_axis(this.get_CI_value("X_AXIS", json[this.NAME], ""));
+        this.Y_AXIS     = this.display_axis(this.get_CI_value("Y_AXIS", json[this.NAME], ""));
+
         switch (this.CHART_TYPE) {
 
             case "Pie_Chart":
@@ -87,17 +91,19 @@ export class Generic_Graph extends Generic_Generation{
             scales: {
                 x: {
                     title: {
-                        display: true,
-                        text: "X",
+                        display: this.X_AXIS.display,
+                        text: this.X_AXIS.label
                     },
+                    display: this.X_AXIS.display,
                     min: 0,
                     max: this.DEFAULT_LENGTH
                 },
                 y: {
                     title: {
-                        display: true,
-                        text: "Y"
-                    }
+                        display: this.Y_AXIS.display,
+                        text: this.Y_AXIS.label
+                    },
+                    display: this.Y_AXIS.display
                 }
             },
             plugins: {
@@ -161,6 +167,16 @@ export class Generic_Graph extends Generic_Generation{
             }
         );
 
+    }
+
+    display_axis (axis_label) {
+        /*
+        Determine if the axis should be displayed based on the axis label.
+        */
+        if (axis_label == "") {
+            return {"display" : false, "label" : ""};
+        }
+        return {"display" : true, "label" : axis_label};
     }
 
     update (data) {

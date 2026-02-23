@@ -74,9 +74,10 @@ export function CreateInfoWindow () {
                 },
 
                 "Connections" : {
-                    "TYPE" : "Line_chart",
-                    "IO":["Number_of_devices"],
-                    "LABELS":["Number of Devices"]
+                    "TYPE"   : "Line_chart",
+                    "IO"     : ["Number_of_devices"],
+                    "LABELS" : ["Number of Devices"],
+                    "Y_AXIS" : "Number of Devices"
                 }
 
             }
