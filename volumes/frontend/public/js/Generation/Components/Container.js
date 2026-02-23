@@ -13,6 +13,7 @@ export default class Container extends Generic_Commander {
 
         this.parent_cont     = config[this.NAME]
         this._CONFIG_PRESENT = true;
+        this._CONFIG_VALID   = true;
 
         this.PANELS = {};
         this.all = {};
@@ -145,9 +146,13 @@ export default class Container extends Generic_Commander {
             }
         });
 
-        // If the config is present then add an event listener to the send button.
+        // If the config is present then add an event listeners.
         if (this._CONFIG_PRESENT) {
+            // Add an event listener to the send button.
             this.COM.button.addEventListener('click', this.send_new_config.bind(this));
+
+            // Add an event listener to the pre tag.
+            this.COM.pre.addEventListener('input', this.validate_config.bind(this))
         }
         
         // Start the up timer.
@@ -183,7 +188,6 @@ export default class Container extends Generic_Commander {
             }
         }
     }
-
 
     is_connected (connected = null) {
         /*
@@ -224,16 +228,92 @@ export default class Container extends Generic_Commander {
         }
     }
 
-    validate_new_config () {
-        console.log(`Validating new config from ${this.UUID}`);
+    // JSON config related functions.
+
+    getErrPos(e, text) {
+        /*
+        Return the position of the first error in the JSON.
+        */
+        let m = e.message.match(/at position (\d+)/);
+        if (m) return parseInt(m[1]);
+        m = e.message.match(/line (\d+) column (\d+)/);
+        if (m) {
+        const lines = text.split('\n');
+        return lines.slice(0, parseInt(m[1]) - 1).reduce((a, l) => a + l.length + 1, 0) + parseInt(m[2]) - 1;
+        }
+        return null;
+    }
+
+    escHtml(s) {
+        /*
+        Replace regular HTML with entity equivalents so we can see the error marker.
+        */
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    validate_config() {
+        /*
+        Parse the JSON text and add a red mark if an error is found.
+        */
+        const editor = this.COM.pre;
+        const text = editor.innerText;
+
+        const sel = window.getSelection();
+        const range = sel.getRangeAt(0);
+        const pre = range.cloneRange();
+        pre.selectNodeContents(editor);
+        pre.setEnd(range.endContainer, range.endOffset);
+        const offset = pre.toString().length;
+
+        try {
+            // Attempt to parse the JSON.
+            JSON.parse(text);
+            editor.innerHTML = this.escHtml(text);
+            // Change the validation flag.
+            this._CONFIG_VALID = true;
+        } catch (e) {
+            // If an error is found then add the error mark.
+            const p = this.getErrPos(e, text) ?? text.length - 1;
+            editor.innerHTML = this.escHtml(text.slice(0, p))
+                + '<mark style="background:#e05;color:#fff">' + (this.escHtml(text[p]) || ' ') + '</mark>'
+                + this.escHtml(text.slice(p + 1));
+
+            // Change the validation flag.
+            this._CONFIG_VALID = false;
+        }
+
+        // Reset the cursor to the position where the user is typing.
+        // Without this the cursor will snap to the top of the div whenever a character is entered.
+        let remaining = offset;
+        const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+            const len = walker.currentNode.length;
+            if (remaining <= len) {
+                const r = document.createRange();
+                r.setStart(walker.currentNode, remaining);
+                r.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(r);
+                break;
+            }
+            remaining -= len;
+        }
     }
 
     send_new_config () {
-        this.validate_new_config();
-        console.log(`Sending new config from ${this.UUID}`);
+        /*
+        Send the new config to the device.
+        */
+        if (this._CONFIG_VALID) {
+            console.log(`Sending new config from ${this.UUID}`);
 
-        // Send the config to the server.
-        this.send_command(`send new config for : ${this.NAME}`);
+            // Send the config to the server.
+            this.send_command(`send new config for : ${this.NAME}`);
+
+        } else {
+            console.log(`There is an error in the ${this.NAME} JSON`);
+        }
+        
     }
 
 }
