@@ -1,18 +1,17 @@
-import { Generic_Generation } from "../Generic_Generation/Generic_Generation.js";
+import { Generic_Commander } from "../Generic_Generation/Generic_Commander.js";
 
-export default class Container extends Generic_Generation {
+export default class Container extends Generic_Commander {
 
     constructor (parent, config, uuid, ip="") {
-        super(uuid);
+        super(uuid, config);
         
         // Extract information needed to build the container.
         var UUID             = uuid;
         var IP               = ip;
-        var CONT_NAME        = this.get_component_name(config);
-        var STYLE            = this.get_CI_value("STYLE", config[CONT_NAME]);
+        var STYLE            = this.get_CI_value("STYLE", config[this.NAME]);
         var creation_time    = new Date().toLocaleString();
 
-        this.parent_cont     = config[CONT_NAME]
+        this.parent_cont     = config[this.NAME]
         this._CONFIG_PRESENT = true;
 
         this.PANELS = {};
@@ -40,7 +39,7 @@ export default class Container extends Generic_Generation {
                                 "ATTR" : {
                                     "title" : IP
                                 },
-                                "TEXT" : CONT_NAME
+                                "TEXT" : this.NAME
                             },
 
                             "container-extras" : {
@@ -146,6 +145,10 @@ export default class Container extends Generic_Generation {
             }
         });
 
+        // If the config is present then add an event listener to the send button.
+        if (this._CONFIG_PRESENT) {
+            this.COM.button.addEventListener('click', this.send_new_config.bind(this));
+        }
         
         // Start the up timer.
         this.update_container_timer();
@@ -219,6 +222,18 @@ export default class Container extends Generic_Generation {
 
             setTimeout(() => this.update_container_timer(), delay_arr[time_index] * 1000);
         }
+    }
+
+    validate_new_config () {
+        console.log(`Validating new config from ${this.UUID}`);
+    }
+
+    send_new_config () {
+        this.validate_new_config();
+        console.log(`Sending new config from ${this.UUID}`);
+
+        // Send the config to the server.
+        this.send_command(`send new config for : ${this.NAME}`);
     }
 
 }
