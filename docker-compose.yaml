@@ -9,6 +9,11 @@ services:
       dockerfile: docker-overseer/overseer.dockerfile
     env_file:
       - ./Overseer.env
+    environment:
+      - OSN_HOST="${OSN_HOST}"
+      - OSN_PORT="${OSN_PORT}"
+      - PING_INT="${PING_INT}"
+      - PING_TMT="${PING_TMT}"
     volumes:
       - ./volumes/overseer:/Overseer:ro
       - ./docker/docker-apache/web/private/certs/root:/certs/root:ro

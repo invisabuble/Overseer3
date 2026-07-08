@@ -5,7 +5,7 @@ import websockets
 import os
 from urllib.parse import urlparse, parse_qs
 
-from ODB import *
+from OSN.ODB import *
 
 
 class OSS:
