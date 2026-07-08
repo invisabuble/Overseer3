@@ -12,8 +12,8 @@ class OSS:
 
     def __init__ (self) :
         # Initialise the Overseer Secure Websockets server.
-        self.host = os.getenv("OSS_HOST")
-        self.port = int(os.getenv("OSS_PORT"))
+        self.host = os.getenv("OSN_HOST")
+        self.port = int(os.getenv("OSN_PORT"))
         self.ping_int = int(os.getenv("PING_INT"))
         self.ping_tmt = int(os.getenv("PING_TMT"))
 
