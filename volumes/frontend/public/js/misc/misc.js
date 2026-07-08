@@ -74,10 +74,11 @@ export function CreateInfoWindow () {
                 },
 
                 "Connections" : {
-                    "TYPE"   : "Line_chart",
-                    "IO"     : ["Number_of_devices"],
-                    "LABELS" : ["Number of Devices"],
-                    "Y_AXIS" : "Number of Devices"
+                    "TYPE"       : "Line_chart",
+                    "IO"         : ["Number_of_devices", "Number_of_frontends"],
+                    "LABELS"     : ["Number of Devices", "Number of Frontends"],
+                    "Y_AXIS"     : "Connections",
+                    "Y_AXIS_MIN" : 0
                 }
 
             }
@@ -85,6 +86,7 @@ export function CreateInfoWindow () {
         "control_panel",
         window.os_host
     );
+    window.control_panel.all.Connections.update([0,1]);
 }
 
 

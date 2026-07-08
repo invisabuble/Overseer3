@@ -1,4 +1,4 @@
-/* Create a user in the Overseer_Users table */
+/* Create a device in the Overseer_devices table */
 
 DROP PROCEDURE IF EXISTS create_device;
 

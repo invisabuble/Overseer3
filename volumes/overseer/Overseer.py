@@ -1,11 +1,10 @@
-import asyncio
-from OSN.db.OS_db import *
+from OSN.OSS import *
 
-db = OS_db()
+OSN = OSS()
 
 async def main () :
     # Main loop for overseer.
-    await db.init_connection()
+    await OSN.run()
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)

@@ -48,6 +48,9 @@ export class Generic_Graph extends Generic_Generation{
         this.X_AXIS     = this.display_axis(this.get_CI_value("X_AXIS", json[this.NAME], ""));
         this.Y_AXIS     = this.display_axis(this.get_CI_value("Y_AXIS", json[this.NAME], ""));
 
+        // Extract the Y axis minimum from the config.
+        this.Y_AXIS_MIN = this.get_CI_value("Y_AXIS_MIN", "");
+
         switch (this.CHART_TYPE) {
 
             case "Pie_Chart":
@@ -117,6 +120,11 @@ export class Generic_Graph extends Generic_Generation{
                 }
             }
         };
+
+        // If there is a y axis minimum set in the config then update the default options.
+        if (this.Y_AXIS_MIN != "") {
+            DEFAULT_OPTIONS.scales.y.min = Number(this.Y_AXIS_MIN);
+        }
 
         // JSON for building all graph containers.
         var CHART_JSON = {
