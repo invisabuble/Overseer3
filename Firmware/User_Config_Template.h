@@ -1,0 +1,6 @@
+#define DEAFULT_NAME "Overseer Device"
+#define DEFAULT_SSID "WiFi SSID"
+#define DEFAULT_PSWD "WiFi PSWD"
+#define DEFAULT_HOST "Overseer WSS Host"
+#define DEFAULT_PORT "Overseer WSS Port"
+#define DEFAULT_USER "Overseer User"
