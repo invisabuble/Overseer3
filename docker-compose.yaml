@@ -20,6 +20,8 @@ services:
       - ./docker/docker-apache/web/private/certs/overseer:/certs/overseer:ro
     expose:
       - "${OSN_PORT}"
+    ports:
+      - "${OSN_PORT}:${OSN_PORT}"
     tty: true
     stdin_open: true
     networks:
