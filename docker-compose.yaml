@@ -8,7 +8,7 @@ services:
       context: ./docker
       dockerfile: docker-overseer/overseer.dockerfile
     env_file:
-      - ./Overseer.env
+      - ./.env
     environment:
       - OSN_HOST=${OSN_HOST}
       - OSN_PORT=${OSN_PORT}
@@ -35,7 +35,7 @@ services:
       context: ./docker
       dockerfile: docker-apache/apache.dockerfile
     env_file:
-      - ./Overseer.env
+      - ./.env
       - ./docker/docker-apache/apache.env 
       - ./docker/docker-mysql/mysql.env
     volumes:
@@ -62,7 +62,7 @@ services:
       context: ./docker
       dockerfile: docker-mysql/mysql.dockerfile
     env_file:
-      - ./Overseer.env
+      - ./.env
       - ./docker/docker-mysql/mysql.env
     volumes:
       - ./volumes/database/db:/var/lib/mysql
