@@ -9,19 +9,24 @@
 #define OS_PREF_KEY  "OSCNF"
 
 class Config {
+  // Singleton to hold overseer config data and connection certs.
   private:
     Preferences prefs;
     JsonDocument config;
 
+    // Strings to hold any data pulled out of preferences.
+    String raw_config;
+    String raw_cert = ROOT_CA_CRT;
     String retrieved_value;
 
-    // rw = true (prefs = read only), rw = false (prefs = read, write)
-    bool prefs_read_write (bool rw, const String& new_config = "");
+    Config();
+    void generic_prefs_rw(bool rw, const char* key, String& data);
 
   public:
-    Config();
-    void write_config (const String& json_config);    // Write a new config to memory.
-    const String& get_value(const String& key);       // Get a value from the config.
+    static Config& inst ();
+    const String& operator[](const String& key);
+    bool write_new_config(String& cnf);
+    bool read_config ();
 };
 
 #endif

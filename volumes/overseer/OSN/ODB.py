@@ -41,7 +41,7 @@ class ODB:
                   user = os.getenv('DB_NAME'),
                   password = os.getenv('MASTER_PASSWORD'),
                   ) :
-        # Initialise the database connection.
+        # Initialise the database connection information.
         self.host     = f"{os.getenv('DB_NAME')}_DB"
         self.user     = user
         self.password = password

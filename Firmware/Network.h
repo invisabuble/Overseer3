@@ -1,10 +1,18 @@
 #ifndef OS_NETWORK_H
 #define OS_NETWORK_H
 
-class OS_Network {
+#include <WiFi.h>
+
+// Forward definition of Config.
+class Config;
+
+class Network {
+  // Encapsulate the network and websocket connections.
   private:
+    Network();
   public:
-    OS_Network();
+    static Network& inst();
+    void Init();
 };
 
 #endif
