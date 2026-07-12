@@ -1,19 +1,19 @@
-#include "Network.h"
-#include "Config.h"
+#include "OS_Network.h"
+#include "OS_Config.h"
 
-Network& Network::inst() {
-    static Network instance;
+OS_Network& OS_Network::inst() {
+    static OS_Network instance;
     return instance;
 }
 
-Network::Network() {}
+OS_Network::OS_Network() {}
 
-void Network::Init () {
+void OS_Network::Init () {
     // Drive the status LED low before configuring WiFi.
     digitalWrite(STATUS_LED, LOW);
 
     // Get a pointer to the config object.
-    Config& cnf = Config::inst();
+    OS_Config& cnf = OS_Config::inst();
 
     // Initiate the WiFi connection.
     WiFi.mode(WIFI_STA);

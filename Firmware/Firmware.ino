@@ -1,9 +1,9 @@
-#include "Config.h"
-#include "Network.h"
+#include "OS_Config.h"
+#include "OS_Network.h"
 
 void setup() {
   pinMode(STATUS_LED, OUTPUT);
-  Network::inst().Init();
+  OS_Network::inst().Init();
 }
 
 void loop() {

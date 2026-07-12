@@ -8,7 +8,7 @@
 #define OS_NAMESPACE "Overseer"
 #define OS_PREF_KEY  "OSCNF"
 
-class Config {
+class OS_Config {
   // Singleton to hold overseer config data and connection certs.
   private:
     Preferences prefs;
@@ -19,11 +19,11 @@ class Config {
     String raw_cert = ROOT_CA_CRT;
     String retrieved_value;
 
-    Config();
+    OS_Config();
     void generic_prefs_rw(bool rw, const char* key, String& data);
 
   public:
-    static Config& inst ();
+    static OS_Config& inst ();
     const String& operator[](const String& key);
     bool write_new_config(String& cnf);
     bool read_config ();

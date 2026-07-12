@@ -1,13 +1,13 @@
-#include "Config.h"
+#include "OS_Config.h"
 
-Config& Config::inst () {
+OS_Config& OS_Config::inst () {
   // Return the instance of the first created config object.
   // Function-local static variable to get the object back.
-  static Config instance; 
+  static OS_Config instance; 
   return instance;
 }
 
-const String& Config::operator[](const String& key) {
+const String& OS_Config::operator[](const String& key) {
   // Get a value from the config.
   if (key == "__CERT__") {
     return raw_cert;
@@ -16,7 +16,7 @@ const String& Config::operator[](const String& key) {
   return retrieved_value;
 }
 
-Config::Config () {
+OS_Config::OS_Config () {
   // If the config is empty then write the default config to memory.
   if (!read_config()) {
     // Create the default config from the User_Config template.
@@ -36,7 +36,7 @@ Config::Config () {
   }
 }
 
-void Config::generic_prefs_rw(bool rw, const char* key, String& data) {
+void OS_Config::generic_prefs_rw(bool rw, const char* key, String& data) {
   // Read or write to preferences.
   prefs.begin(OS_NAMESPACE, rw);
 
@@ -51,7 +51,7 @@ void Config::generic_prefs_rw(bool rw, const char* key, String& data) {
   prefs.end();
 }
 
-bool Config::write_new_config (String &cnf) {
+bool OS_Config::write_new_config (String &cnf) {
   // Check that the new config is valid and then write it to memory.
   JsonDocument validator;
   if (!deserializeJson(validator, cnf)){
@@ -64,7 +64,7 @@ bool Config::write_new_config (String &cnf) {
   return false;
 }
 
-bool Config::read_config () {
+bool OS_Config::read_config () {
   // Read the config from the memory.
   generic_prefs_rw(true, OS_PREF_KEY, raw_config);
   if (raw_config.length() > 0) {

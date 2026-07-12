@@ -3,15 +3,12 @@
 
 #include <WiFi.h>
 
-// Forward definition of Config.
-class Config;
-
-class Network {
+class OS_Network {
   // Encapsulate the network and websocket connections.
   private:
-    Network();
+    OS_Network();
   public:
-    static Network& inst();
+    static OS_Network& inst();
     void Init();
 };
 
