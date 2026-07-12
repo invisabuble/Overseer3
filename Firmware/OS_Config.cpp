@@ -12,7 +12,7 @@ const String& OS_Config::operator[](const String& key) {
   if (key == "__CERT__") {
     return raw_cert;
   }
-  retrieved_value = config[key] | "";
+  retrieved_value = config[DEFAULT_NAME]["__CONFIG__"][key] | "";
   return retrieved_value;
 }
 
