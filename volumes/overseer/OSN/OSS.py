@@ -3,10 +3,14 @@ import signal
 import ssl
 import websockets
 import os
+import secrets
+import string
 from urllib.parse import urlparse, parse_qs
 
 from OSN.ODB import *
 
+# Define the pool of characters (a-z, A-Z, 0-9)
+alphabet = string.ascii_letters + string.digits
 
 class OSS:
 
@@ -43,6 +47,10 @@ class OSS:
             # Store the key properties from the parsed url in the websocket object.
             websocket.params = {k: query_params.get(k, [None])[0] for k in self.urlkeys}
 
+            websocket.params["IP"] = websocket.remote_address[0]                            # Store the incoming connections IP.
+            websocket.params["USER"] = websocket.params["CNF"]["__CONFIG__"]["USER"]        # Extract the user and store it alongside the config for ease of use later.
+            websocket.params["UUID"] = ''.join(secrets.choice(alphabet) for _ in range(15)) # Create a random UUID for the connection.
+            
             print(websocket.params)
 
             # Try to add the websocket connection to the class' storage.
