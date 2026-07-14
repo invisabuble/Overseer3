@@ -31,3 +31,5 @@ const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal", "Bar
 
 })();
 
+// Delay the connection of the WSS client until after all the js has been imported.
+window.OSN_Client.connect();

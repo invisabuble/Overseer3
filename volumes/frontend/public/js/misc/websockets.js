@@ -1,6 +1,8 @@
 
 class OSN_client {
-    constructor () {
+    constructor () {}
+
+    connect () {
         this.connection_url = `wss://${window.OSN_host}:${window.OSN_port}/front?UUID=1&USER=${encodeURIComponent(this.user)}`;
         this.socket = new WebSocket(this.connection_url);
 
@@ -16,6 +18,7 @@ class OSN_client {
             console.log("Disconnected from OSN.");
         }
     }
+    
 }
 
 export const OSN_Client = new OSN_client
