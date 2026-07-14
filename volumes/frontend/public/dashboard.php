@@ -69,6 +69,9 @@ $perm = $row['permissions'];
     <script type="module" src="./js/Overseer.js"></script>
 
     <script>
+        // Get the WSS port number.
+        window.OSN_port = <?php echo json_encode(getenv('OSN_PORT')) ?>;
+
         const waitForImports = setInterval(() => {
             if (window.DYNAMIC_IMPORT_FINISHED) {
                 clearInterval(waitForImports);

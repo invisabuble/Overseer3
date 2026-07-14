@@ -10,7 +10,7 @@ export default class Login extends Generic_Generation {
 
         // Extract information needed to build the login container.
         var UUID             = "LOGIN";
-        var IP               = window.os_host;
+        var IP               = window.OSN_host;
         var CONT_NAME        = "Login";
         var creation_time    = new Date().toLocaleString();
 

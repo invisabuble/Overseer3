@@ -1,15 +1,17 @@
 import { minimax } from "./misc/misc.js";
 import { CreateInfoWindow } from "./misc/misc.js";
+import { OSN_Client } from "./misc/websockets.js";
 
+window.OSN_Client = OSN_Client;
 window.OS_Components = {};
 window.minimax=minimax;
 window.CreateInfoWindow=CreateInfoWindow;
 
 // Get the host location of the frontend.
 // This same location is also the host of the WSS.
-var os_host = window.location.origin;
+var OSN_host = window.location.origin;
 const ipAddressRegex = /(?<=https?:\/\/).*/g;
-window.os_host = os_host.match(ipAddressRegex);
+window.OSN_host = OSN_host.match(ipAddressRegex);
 
 // A list of components to be imported.
 const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal", "Bar", "Line_Chart", "Bar_Chart", "Pie_Chart", "Login"];
