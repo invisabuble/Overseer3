@@ -3,6 +3,7 @@
 
 #include <WiFi.h>
 #include <WebSocketsClient.h>
+#include <UrlEncode.h>
 
 class OS_Network {
   // Encapsulate the network and websocket connections.
@@ -10,7 +11,7 @@ class OS_Network {
     OS_Network();
     static void websocket_event (WStype_t type, uint8_t* payload, size_t length);
     // Values to store websocket connection information.
-    String host, port, cert;
+    String host, port, cert, durl;
     WebSocketsClient websocket;
 
   public:

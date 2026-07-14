@@ -37,12 +37,13 @@ void OS_Network::Init () {
     host = cnf["HOST"];
     port = cnf["PORT"];
     cert = cnf["__CERT__"];
+    durl = "/device?CONF=" + urlEncode(cnf["__CONFIG__"]);
 
     // Initialise the websocket connection.
     websocket.beginSslWithCA(
         host.c_str(),
         port.toInt(),
-        "/device?UUID=1&USER=" DEFAULT_USER ,
+        durl.c_str(),
         cert.c_str()
     );
     websocket.onEvent(websocket_event);

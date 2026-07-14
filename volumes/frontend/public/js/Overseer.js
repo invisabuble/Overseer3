@@ -12,6 +12,7 @@ window.CreateInfoWindow=CreateInfoWindow;
 var OSN_host = window.location.origin;
 const ipAddressRegex = /(?<=https?:\/\/).*/g;
 window.OSN_host = OSN_host.match(ipAddressRegex);
+window.Controllables = {};
 
 // A list of components to be imported.
 const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal", "Bar", "Line_Chart", "Bar_Chart", "Pie_Chart", "Login"];

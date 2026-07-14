@@ -39,7 +39,7 @@ export function minimax (element,  defaultHeight="0px") {
 
 export function CreateInfoWindow () {
     // Create the OS control panel.
-    window.control_panel = new window.OS_Components["container"](
+    window.Controllables["__CONTROL__"]= new window.OS_Components["container"](
         document.getElementById("control_panel_container"),
         {
             "Control Panel" : {

@@ -71,6 +71,7 @@ $perm = $row['permissions'];
     <script>
         // Get the WSS port number.
         window.OSN_port = <?php echo json_encode(getenv('OSN_PORT')) ?>;
+        window.OSN_user = <?php echo json_encode($_SESSION['username']) ?>;
 
         const waitForImports = setInterval(() => {
             if (window.DYNAMIC_IMPORT_FINISHED) {

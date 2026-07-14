@@ -5,6 +5,7 @@ import websockets
 import os
 import secrets
 import string
+import json
 from urllib.parse import urlparse, parse_qs
 
 from OSN.ODB import *
@@ -25,7 +26,7 @@ class OSS:
         self.ODB = ODB()
 
         # Properties for each websocket to use.
-        self.urlkeys = ["CNF"]
+        self.urlkeys = ["CONF"]
 
         # Storage for connection types.
         self.connection_types = {
@@ -47,10 +48,15 @@ class OSS:
             # Store the key properties from the parsed url in the websocket object.
             websocket.params = {k: query_params.get(k, [None])[0] for k in self.urlkeys}
 
-            websocket.params["IP"] = websocket.remote_address[0]                            # Store the incoming connections IP.
-            websocket.params["USER"] = websocket.params["CNF"]["__CONFIG__"]["USER"]        # Extract the user and store it alongside the config for ease of use later.
+            # Get the connections __CONFIG__ structure.
+            config_data = json.loads(websocket.params["CONF"])
+            config_data = next(iter(config_data.values()))
+
+            # Generate the structure 
+            websocket.params["USER"] = config_data["__CONFIG__"]["USER"]                    # Extract the user and store it alongside the config for ease of use later.
+            websocket.params["IP"]   = websocket.remote_address[0]                          # Store the incoming connections IP.
             websocket.params["UUID"] = ''.join(secrets.choice(alphabet) for _ in range(15)) # Create a random UUID for the connection.
-            
+
             print(websocket.params)
 
             # Try to add the websocket connection to the class' storage.
