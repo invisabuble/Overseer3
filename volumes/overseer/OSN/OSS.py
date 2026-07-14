@@ -21,7 +21,7 @@ class OSS:
         self.ODB = ODB()
 
         # Properties for each websocket to use.
-        self.urlkeys = ["UUID","USER"]
+        self.urlkeys = ["CNF"]
 
         # Storage for connection types.
         self.connection_types = {
@@ -43,6 +43,8 @@ class OSS:
             # Store the key properties from the parsed url in the websocket object.
             websocket.params = {k: query_params.get(k, [None])[0] for k in self.urlkeys}
 
+            print(websocket.params)
+
             # Try to add the websocket connection to the class' storage.
             try :
                 self.connection_types[connection_type].add(websocket)
@@ -52,13 +54,14 @@ class OSS:
             # Endlessly await messages from the websocket until an error occurs.
             async for message in websocket:
                 try:
-
-                
-                
-                    print(message)
-                
-                
-                
+                    match connection_type :
+                        case "front" :
+                            # If a message is received from a frontend, send the message to the target.
+                            pass
+                        case "device" :
+                            # If a message is received from a device, send to all frontends with the correct user type.
+                            pass
+                        
                 except Exception as e:
                     print(e)
 
