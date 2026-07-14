@@ -9,7 +9,8 @@ class OS_Network {
   private:
     OS_Network();
     static void websocket_event (WStype_t type, uint8_t* payload, size_t length);
-
+    // Values to store websocket connection information.
+    String host, port, cert;
     WebSocketsClient websocket;
 
   public:

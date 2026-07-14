@@ -22,6 +22,7 @@ void OS_Network::Init () {
     // Initiate the WiFi connection.
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid.c_str(), pswd.c_str());
+    WiFi.setAutoReconnect(true);
 
     // Pasue here until  WiFi connects. Blink the status light to show connection attempt in progress.
     while (WiFi.status() != WL_CONNECTED) {
@@ -33,15 +34,15 @@ void OS_Network::Init () {
     digitalWrite(STATUS_LED, LOW);
 
     // Setup strings to hold the websocket information.
-    String host = cnf["HOST"];
-    String port = cnf["PORT"];
-    String cert = cnf["__CERT__"];
+    host = cnf["HOST"];
+    port = cnf["PORT"];
+    cert = cnf["__CERT__"];
 
     // Initialise the websocket connection.
     websocket.beginSslWithCA(
         host.c_str(),
         port.toInt(),
-        "/",
+        "/device?UUID=1&USER=" DEFAULT_USER ,
         cert.c_str()
     );
     websocket.onEvent(websocket_event);
@@ -49,22 +50,25 @@ void OS_Network::Init () {
 }
 
 void OS_Network::websocket_event(WStype_t type, uint8_t* payload, size_t length) {
+    Serial.printf("WS event type: %d\n", type); // print the raw type every time, no exceptions
     switch (type) {
-        case WStype_CONNECTED:
-            Serial.println("WSS connected");
-            break;
         case WStype_DISCONNECTED:
             Serial.println("WSS disconnected");
             break;
-        case WStype_TEXT:
-            Serial.printf("WSS received: %s\n", payload);
-            // This is where an incoming config push would get routed to
-            // OS_Config::inst().write_new_config(...), once you build that handler.
+        case WStype_CONNECTED:
+            Serial.printf("WSS connected to: %s\n", payload);
             break;
         case WStype_ERROR:
-            Serial.println("WSS error");
+            Serial.printf("WSS error, payload len %d: %s\n", length, payload);
+            break;
+        case WStype_PING:
+            Serial.println("WS ping");
+            break;
+        case WStype_PONG:
+            Serial.println("WS pong");
             break;
         default:
+            Serial.printf("WS other event: %d\n", type);
             break;
     }
 }

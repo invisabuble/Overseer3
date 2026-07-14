@@ -36,7 +36,7 @@ class OSS:
         try:
             # Get the connection parameters. Clients connect like:
             # wss://192.168.0.1:8765/connection_type?parameter=parameter_value&parameter2=parameter2_value...
-            path = websocket.request.path
+
             connection_type = urlparse(path).path.lstrip("/")
             query_params = parse_qs(urlparse(path).query)
 
