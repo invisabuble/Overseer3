@@ -12,6 +12,7 @@ export class Generic_Commander extends Generic_Active_Component {
         */
         console.log(`SENDING COMMAND TO ${this.UUID}, FROM ${this.NAME}`);
         console.log(command);
+        window.OSN_Client.OSN_Send(command);
     }
 
     update () {

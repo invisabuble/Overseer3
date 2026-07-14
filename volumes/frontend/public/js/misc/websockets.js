@@ -18,7 +18,15 @@ class OSN_client {
             console.log("Disconnected from OSN.");
         }
     }
-    
+
+    OSN_Send (message) {
+        // If the passed message is a string send it to the server.
+        if (!this.socket) {return;}
+        if (typeof message === 'string') {
+            this.socket.send(message);
+        }
+    }
+
 }
 
 export const OSN_Client = new OSN_client
