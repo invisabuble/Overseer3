@@ -206,6 +206,7 @@ container {
     border: 1px solid #222629;
     opacity: 0;
     animation: fade_in 0.5s ease forwards;
+    transition: all 0.5s ease;
 }
 
 header {
@@ -323,8 +324,20 @@ content {
 }
 
 @keyframes fade_in {
+    0% {
+        opacity: 0;
+    }
     100% {
         opacity: 1;
+    }
+}
+
+@keyframes fade_out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
     }
 }
 

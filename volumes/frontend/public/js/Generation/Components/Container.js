@@ -319,7 +319,7 @@ export default class Container extends Generic_Commander {
     close () {
         console.log(`Closing ${this.UUID}`);
         const parent_container = this.COM.container;
-        parent_container.style.animation = "fade_in 0.5s ease backwards";
+        parent_container.style.animation = "fade_out 0.5s ease forwards";
         delete window.Controllables[this.UUID];
         setTimeout(() => {parent_container .remove()}, 500);
     }
