@@ -86,7 +86,7 @@ export function CreateInfoWindow () {
         "control_panel",
         window.OSN_host
     );
-    window.control_panel.all.Connections.update([0,1]);
+    window.Controllables.__CONTROL__.all.Connections.update([0,1]);
 }
 
 

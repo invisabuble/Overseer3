@@ -8,6 +8,7 @@ class OSN_client {
             }
         }
     }
+    static connection_status = document.getElementById('server_status');
 
     constructor () {}
 
@@ -17,16 +18,52 @@ class OSN_client {
 
         this.socket.onopen = () => {
             console.log("Connected to OSN.");
+            OSN_client.connection_status.className = 'connected';
         }
 
         this.socket.onmessage = (event) => {
-            console.log(event.data);
-            const MSG = JSON.parse(event.data);
-            window.Controllables[MSG["UUID"]].update(MSG["UPDATE"]);
+            const MSG = JSON.parse(event.data);            
+            const DATA = MSG?.DATA ?? "";
+            // If the DATA key is not present/empty then this is the first connection.
+            if (DATA == "") {
+                // Extract the connection info from the mesage.
+                
+                const USER = MSG?.USER ?? "";
+                const UUID = MSG?.UUID ?? "";
+                const IP   = MSG?.IP ?? "";
+                const CONF = MSG?.CONF ?? "";
+
+                // If the UUID isnt in the global controllables object then create that 
+                if (!(UUID in window.Controllables)) {
+                    window.Controllables[UUID]= new window.OS_Components["container"](
+                        document.getElementById("devices"),
+                        JSON.parse(CONF),
+                        UUID,
+                        IP
+                    );
+                }
+            }
+
+            if (DATA != "") {
+                // If there is data in the DATA key then process it.
+                const UUID   = DATA?.UUID   ?? "";
+                const UPDATE = DATA?.UPDATE ?? "";
+
+                if (UUID == "" || UPDATE == "") {return;}
+
+                if (UPDATE == "CLOSE") {
+                    window.Controllables[UUID].close();
+                    return;
+                }
+
+                window.Controllables[UUID].update(UPDATE);
+            }
+            
         }
 
         this.socket.onclose = (event) => {
             // If disconnected, attempt to reconnect every 5 seconds.
+            OSN_client.connection_status.className = 'disconnected';
             console.log("Disconnected from OSN.");
             setTimeout(() => this.connect(), 5000);
         }

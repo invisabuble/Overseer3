@@ -30,7 +30,7 @@ const COMPONENTS = ["Container", "Switch", "Button", "Reading", "Terminal", "Bar
     window.DYNAMIC_IMPORT_FINISHED = true;
     console.info("DYNAMIC IMPORT OF COMPONENTS COMPLETE.");
 
+    // Delay the connection of the WSS client until after all the js has been imported.
+    window.OSN_Client.connect();
 })();
 
-// Delay the connection of the WSS client until after all the js has been imported.
-window.OSN_Client.connect();

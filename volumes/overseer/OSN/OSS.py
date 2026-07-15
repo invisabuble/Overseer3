@@ -57,13 +57,19 @@ class OSS:
             websocket.params["IP"]   = websocket.remote_address[0]                          # Store the incoming connections IP.
             websocket.params["UUID"] = ''.join(secrets.choice(alphabet) for _ in range(15)) # Create a random UUID for the connection.
 
-            print(websocket.params)
-
             # Try to add the websocket connection to the class' storage.
             try :
                 self.connection_types[connection_type].add(websocket)
             except KeyError: 
                 raise TypeError(f"Unrecognised connection type : {connection_type}")
+            
+            # If the new connection is a frontend send all the connections in the device set to it.
+            if (connection_type == "front") :
+                for device in self.connection_types["device"] :
+                    # Get the params object from the device and stringify it.
+                    device_cnf = json.dumps(device.params)
+                    # Send that connection to the front.
+                    await websocket.send(device_cnf)
 
             # Endlessly await messages from the websocket until an error occurs.
             async for message in websocket:
@@ -86,7 +92,20 @@ class OSS:
             print(f"Error with connection '{websocket.params['UUID']}': {e}")
 
         finally:
-            print(f"Connection from {websocket.params['UUID']} closed")
+            # Remove closed connection from the appropriate set.
+            if connection_type in self.connection_types:
+                self.connection_types[connection_type].discard(websocket)
+            # Notify all fronts to close the appropriate UUID
+            for front in self.connection_types["front"] :
+                await front.send(json.dumps(
+                    {
+                        "DATA" : {
+                            "UUID" : websocket.params['UUID'],
+                            "UPDATE" : "CLOSE"
+                        }
+                    }
+                ))
+            print(f"Connection from {connection_type} : {websocket.params['UUID']} closed")
 
     async def _main (self) :
         # Start the server up.
