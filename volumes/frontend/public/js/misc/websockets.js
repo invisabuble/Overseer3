@@ -50,10 +50,14 @@ class OSN_client {
     }
 
     OSN_Send (message) {
-        // If the passed message is a string send it to the server.
+        // send the processed message to the server.
         if (!this.socket) {return;}
         if (typeof message === 'string') {
             this.socket.send(message);
+        } else {
+            this.socket.send(
+                JSON.stringify(message)
+            );
         }
     }
 
