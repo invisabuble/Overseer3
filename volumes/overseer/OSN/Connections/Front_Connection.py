@@ -18,4 +18,14 @@ class Front_Connection (OSS_Connection) :
 
     async def route (self, message) :
         # Route for the frontend connections
-        pass
+        
+        # Parse the incoming message.
+        message = json.loads(message)
+        print(f"[ROUTE] > [{self.uuid}] : {message}")
+
+        # Get the UUID of the target device and the data to send to it.
+        UUID = message['UUID']
+        DATA = message['DATA']
+
+        # Send that data to the device.
+        await self.OSS_All_Connections["device"][UUID].send(DATA)

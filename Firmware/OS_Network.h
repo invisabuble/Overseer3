@@ -3,6 +3,7 @@
 
 #include <WiFi.h>
 #include <WebSocketsClient.h>
+#include <ArduinoJson.h>
 #include <UrlEncode.h>
 
 class OS_Network {

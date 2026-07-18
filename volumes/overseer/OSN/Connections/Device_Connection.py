@@ -20,4 +20,10 @@ class Device_Connection (OSS_Connection) :
 
     async def route (self, message) :
         # Route for the frontend connections
-        pass
+
+        # Construct the message to send to the front.
+        message = self.OSS_Message(self,message)
+
+        # Send the message to the connected fronts.
+        for front in self.OSS_All_Connections["front"].values() :
+            await front.send(message)

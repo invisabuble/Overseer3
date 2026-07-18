@@ -59,6 +59,46 @@ void OS_Network::websocket_event(WStype_t type, uint8_t* payload, size_t length)
         case WStype_CONNECTED:
             Serial.printf("WSS connected to: %s\n", payload);
             break;
+        case WStype_TEXT:
+        {
+            Serial.printf("WS text received, len %d: %s\n", length, payload);
+
+            // Deserialise the JSON.
+            JsonDocument doc;
+            DeserializationError error = deserializeJson(doc, payload, length);
+
+            // Catch any errors when deserialising.
+            if (error) {
+                Serial.printf("JSON parse failed: %s\n", error.c_str());
+                break;
+            }
+
+            JsonObject obj = doc.as<JsonObject>();
+
+            // Iterate through the sent command.
+            for (JsonPair kv : obj) {
+                String key = kv.key().c_str();
+                JsonVariant value = kv.value();
+
+                if (key == "CONFIG") {
+                    // Turn the config into a string.
+                    String config = value.as<String>();
+                    // Get a pointer to the config object.
+                    OS_Config& cnf = OS_Config::inst();
+                    cnf.write_new_config(config);
+
+                } else if (key == "COMMAND") {
+                    Serial.println("Received COMMAND:");
+                    serializeJson(value, Serial);
+                    Serial.println();
+
+                } else {
+                    Serial.printf("Unrecognised key: %s\n", key.c_str());
+                }
+            }
+            break;
+        }
+            
         case WStype_ERROR:
             Serial.printf("WSS error, payload len %d: %s\n", length, payload);
             break;
