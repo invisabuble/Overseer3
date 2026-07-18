@@ -19,7 +19,7 @@ class OSS_Connection:
 
     async def send (self, message) :
         # Send a message to this connections websocket.
-        print(f">[{self.uuid}] : {message}")
+        print(f"\033[0;92m>[{self.uuid}] : {message}\033[0;0m")
         await self.websocket.send(
             json.dumps(message)
         )
@@ -27,7 +27,7 @@ class OSS_Connection:
     async def _receive (self) :
         # Receives messages from this connections websocket.
         async for message in self.websocket :
-            print(f"<[{self.uuid}] : {message}")
+            print(f"\033[0;94m<[{self.uuid}] : {message}\033[0;0m")
             await self.route(message)
 
     def OSS_Message (self, DATA) :
