@@ -15,7 +15,7 @@ class OSS_Connection:
         self.IP = websocket.remote_address[0] 
 
         # Process the path to determine the connection type and get the config.
-        self.config = parse_qs(urlparse(path).query).get("CONF")
+        self.config = parse_qs(urlparse(path).query).get("CONF", [None])[0]
 
     async def send (self, message) :
         # Send a message to this connections websocket.
