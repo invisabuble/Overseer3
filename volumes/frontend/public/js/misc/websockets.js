@@ -52,9 +52,11 @@ class OSN_client {
                 if (UUID == "" || UPDATE == "") {return;}
 
                 if (UPDATE == "CLOSE") {
-                    window.Controllables[UUID].close();
+                    window.Controllables[UUID].is_connected(false);
                     return;
                 }
+
+
 
                 window.Controllables[UUID].update(UPDATE);
             }

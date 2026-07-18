@@ -332,15 +332,6 @@ content {
     }
 }
 
-@keyframes fade_out {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-
 clock {
   font-family: "EmojiSymbols-Regular"; 
 }
