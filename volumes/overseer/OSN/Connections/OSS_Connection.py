@@ -36,4 +36,4 @@ class OSS_Connection:
             "DATA" : DATA
         }
 
-        return json.dumps(message)
+        return message
