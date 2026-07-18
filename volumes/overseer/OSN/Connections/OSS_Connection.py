@@ -32,6 +32,7 @@ class OSS_Connection:
         # Construct an OSS message
         message = {
             "UUID" : self.uuid,
+            "IP"   : self.IP,
             "DATA" : DATA
         }
 

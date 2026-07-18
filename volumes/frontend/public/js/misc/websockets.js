@@ -22,43 +22,21 @@ class OSN_client {
         }
 
         this.socket.onmessage = (event) => {
-            const MSG = JSON.parse(event.data);            
-            const DATA = MSG?.DATA ?? "";
-            // If the DATA key is not present/empty then this is the first connection.
-            if (DATA == "") {
-                // Extract the connection info from the mesage.
-                
-                const USER = MSG?.USER ?? "";
-                const UUID = MSG?.UUID ?? "";
-                const IP   = MSG?.IP ?? "";
-                const CONF = MSG?.CONF ?? "";
 
-                // If the UUID isnt in the global controllables object then create that 
-                if (!(UUID in window.Controllables)) {
-                    window.Controllables[UUID]= new window.OS_Components["container"](
-                        document.getElementById("devices"),
-                        JSON.parse(CONF),
-                        UUID,
-                        IP
-                    );
-                }
-            }
+            const MSG = JSON.parse(event.data);
 
-            if (DATA != "") {
-                // If there is data in the DATA key then process it.
-                const UUID   = DATA?.UUID   ?? "";
-                const UPDATE = DATA?.UPDATE ?? "";
+            const UUID = MSG.UUID;
+            const DATA = JSON.parse(MSG.DATA);
+            const IP   = MSG.IP;
 
-                if (UUID == "" || UPDATE == "") {return;}
-
-                if (UPDATE == "CLOSE") {
-                    window.Controllables[UUID].is_connected(false);
-                    return;
-                }
-
-
-
-                window.Controllables[UUID].update(UPDATE);
+            // If the UUID is not in the controllables object then the device must be created.
+            if (!(UUID in window.Controllables)) {
+                window.Controllables[UUID] = new window.OS_Components["container"](
+                    document.getElementById("devices"),
+                    JSON.parse(DATA.Device_Config),
+                    UUID,
+                    IP
+                );
             }
             
         }

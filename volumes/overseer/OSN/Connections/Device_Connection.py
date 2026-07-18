@@ -5,6 +5,9 @@ class Device_Connection (OSS_Connection) :
         super().__init__(websocket, path, OSS_All_Connections)
         print(f"New Device Connection : {self.uuid}")
 
+        # Store the state of the various GPIOs in the device to send to a front when it connects.
+        self.device_state = {}
+
     async def initialise (self) :
         # Initialise the Device connection.
         
