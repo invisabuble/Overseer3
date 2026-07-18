@@ -34,7 +34,7 @@ export default class Button extends Generic_Commander {
         this.recursive_generate(BUTTON_JSON, parent);
 
         // Bind the send command method to the toggler.
-        this.COM.os_button.addEventListener('click', this.send_command.bind(this, `activate : ${this.NAME}`));
+        this.COM.os_button.addEventListener('click', this.send_command.bind(this, `${this.IO}`));
 
     }
 
