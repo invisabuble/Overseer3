@@ -25,6 +25,7 @@ class OS_Config {
   public:
     static OS_Config& inst ();
     const String& operator[](const String& key);
+    JsonDocument get_json_config();
     bool write_new_config(String& cnf);
     bool read_config ();
 };

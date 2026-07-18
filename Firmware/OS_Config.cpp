@@ -76,4 +76,6 @@ bool OS_Config::read_config () {
   return false;
 }
 
-
+JsonDocument OS_Config::get_json_config() {
+  return config;
+}
