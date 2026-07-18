@@ -27,7 +27,7 @@ class OSS_Connection:
     async def _receive (self) :
         # Receives messages from this connections websocket.
         async for message in self.websocket :
-            print(f"<[self.uuid] : {message}")
+            print(f"<[{self.uuid}] : {message}")
             await self.route(message)
 
     def OSS_Message (self, DATA) :

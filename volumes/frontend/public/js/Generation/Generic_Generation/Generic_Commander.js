@@ -10,9 +10,18 @@ export class Generic_Commander extends Generic_Active_Component {
         /*
         Send a command to the server.
         */
-        console.log(`SENDING COMMAND TO ${this.UUID}, FROM ${this.NAME}`);
-        console.log(command);
-        window.OSN_Client.OSN_Send(command);
+        window.OSN_Client.OSN_Send(
+            this.OSS_Message(command)
+        );
+    }
+
+    OSS_Message (DATA) {
+        const message = {
+            "UUID" : this.UUID,
+            "IP"   : this.IP,
+            "DATA" : DATA
+        }
+        return message;
     }
 
     update () {

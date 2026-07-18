@@ -13,7 +13,6 @@ class Device_Connection (OSS_Connection) :
         
         # Send this connections config to all connected fronts.
         for front in self.OSS_All_Connections["front"].values() :
-            print(f"{self.uuid} sending : {self.config}")
             data = {
                 "Device_Config" : self.config
             }

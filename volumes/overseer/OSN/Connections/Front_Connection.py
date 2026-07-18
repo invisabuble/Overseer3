@@ -11,7 +11,6 @@ class Front_Connection (OSS_Connection) :
         # Get every device object and send it to this front.
         for device in self.OSS_All_Connections["device"].values():
             # Get the config from the device and send it to the front.
-            print(f"{self.uuid} sending : {device.config}")
             data = {
                 "Device_Config" : device.config
             }

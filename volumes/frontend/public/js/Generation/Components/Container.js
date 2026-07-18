@@ -305,10 +305,18 @@ export default class Container extends Generic_Commander {
         Send the new config to the device.
         */
         if (this._CONFIG_VALID) {
-            console.log(`Sending new config from ${this.UUID}`);
+            console.log(`Sending new config to : ${this.UUID}`);
 
-            // Send the config to the server.
-            this.send_command(`send new config for : ${this.NAME}`);
+            // Get the valid config.
+            const CONFIG = JSON.stringify(
+                JSON.parse(this.COM.pre.innerText)
+            );
+
+            const DATA = {
+                "CONFIG" : CONFIG
+            }
+
+            this.send_command(DATA);
 
         } else {
             console.log(`There is an error in the ${this.NAME} JSON`);
