@@ -16,7 +16,7 @@ class Device_Connection (OSS_Connection) :
             data = {
                 "Device_Config" : self.config
             }
-            await front.send(self.OSS_Message(data))
+            await front.send(self.OSS_Message(self, data))
 
     async def route (self, message) :
         # Route for the frontend connections

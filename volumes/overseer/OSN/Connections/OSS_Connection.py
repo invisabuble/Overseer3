@@ -30,11 +30,11 @@ class OSS_Connection:
             print(f"\033[0;94m<[{self.uuid}] : {message}\033[0;0m")
             await self.route(message)
 
-    def OSS_Message (self, DATA) :
+    def OSS_Message (self, connection, DATA) :
         # Construct an OSS message
         message = {
-            "UUID" : self.uuid,
-            "IP"   : self.IP,
+            "UUID" : connection.uuid,
+            "IP"   : connection.IP,
             "DATA" : DATA
         }
 
