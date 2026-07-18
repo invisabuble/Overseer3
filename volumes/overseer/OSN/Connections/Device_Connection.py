@@ -11,7 +11,10 @@ class Device_Connection (OSS_Connection) :
         # Send this connections config to all connected fronts.
         for front in self.OSS_All_Connections["front"].values() :
             print(f"{self.uuid} sending : {self.config}")
-            await front.send(self.config)
+            data = {
+                "Device_Config" : self.config
+            }
+            await front.send(self.OSS_Message(data))
 
     async def route (self, message) :
         # Route for the frontend connections

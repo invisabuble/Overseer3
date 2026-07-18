@@ -12,7 +12,10 @@ class Front_Connection (OSS_Connection) :
         for device in self.OSS_All_Connections["device"].values():
             # Get the config from the device and send it to the front.
             print(f"{self.uuid} sending : {device.config}")
-            await self.send(device.config)
+            data = {
+                "Device_Config" : device.config
+            }
+            await self.send(self.OSS_Message(data))
 
     async def route (self, message) :
         # Route for the frontend connections

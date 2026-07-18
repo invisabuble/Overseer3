@@ -28,6 +28,11 @@ class OSS_Connection:
         async for message in self.websocket :
             await self.route(message)
 
+    def OSS_Message (self, DATA) :
+        # Construct an OSS message
+        message = {
+            "UUID" : self.uuid,
+            "DATA" : DATA
+        }
 
-
-
+        return json.dumps(message)
