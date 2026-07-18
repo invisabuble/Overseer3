@@ -26,7 +26,7 @@ class OSN_client {
             const MSG = JSON.parse(event.data);
 
             const UUID = MSG.UUID;
-            const DATA = JSON.parse(MSG.DATA);
+            const DATA = MSG.DATA;
             const IP   = MSG.IP;
 
             // If the UUID is not in the controllables object then the device must be created.
