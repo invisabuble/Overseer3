@@ -1,4 +1,4 @@
-from Connections.OSS_Connection import *
+from OSN.Connections.OSS_Connection import *
 
 class Device_Connection (OSS_Connection) :
     def __init__ (self, websocket, path, OSS_All_Connections) :
