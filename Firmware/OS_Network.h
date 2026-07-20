@@ -19,6 +19,7 @@ class OS_Network {
     static OS_Network& inst();
     void Init();
     void update();
+    void send(String& message);
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "OS_Network.h"
 #include "OS_Config.h"
+#include "Overseer.h"
 
 OS_Network& OS_Network::inst() {
     static OS_Network instance;
@@ -58,6 +59,8 @@ void OS_Network::websocket_event(WStype_t type, uint8_t* payload, size_t length)
             break;
         case WStype_CONNECTED:
             Serial.printf("WSS connected to: %s\n", payload);
+            // Once connected force a read of all gpios in the config to keep the server up to date.
+            Overseer::inst().force_read = true;
             break;
         case WStype_TEXT:
         {
@@ -78,23 +81,17 @@ void OS_Network::websocket_event(WStype_t type, uint8_t* payload, size_t length)
             // Iterate through the sent command.
             for (JsonPair kv : obj) {
                 String key = kv.key().c_str();
-                JsonVariant value = kv.value();
+                String value = kv.value().as<String>();
 
                 if (key == "CONFIG") {
-                    // Turn the config into a string.
-                    String config = value.as<String>();
                     // Get a pointer to the config object.
                     OS_Config& cnf = OS_Config::inst();
-                    cnf.write_new_config(config);
-
-                } else if (key == "COMMAND") {
-                    Serial.println("Received COMMAND:");
-                    serializeJson(value, Serial);
-                    Serial.println();
-
-                } else {
-                    Serial.printf("Unrecognised key: %s\n", key.c_str());
+                    cnf.write_new_config(value);
                 }
+
+                // Any other commands get sent to the Overseer instruction handler.
+                Overseer::inst().handle_instruction(key, value);
+
             }
             break;
         }
@@ -112,6 +109,10 @@ void OS_Network::websocket_event(WStype_t type, uint8_t* payload, size_t length)
             Serial.printf("WS other event: %d\n", type);
             break;
     }
+}
+
+void OS_Network::send(String& message) {
+    websocket.sendTXT(message);
 }
 
 void OS_Network::update () {

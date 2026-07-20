@@ -6,10 +6,12 @@ class Device_Connection (OSS_Connection) :
         print(f"\033[01;95mNew Device Connection : {self.uuid}\033[0;0m")
 
         # Store the state of the various GPIOs in the device to send to a front when it connects.
-        self.device_state = {}
+        self.device_state = self.extract_keys(self.config)
 
     async def initialise (self) :
         # Initialise the Device connection.
+
+        # Extract all gpio keys from the config and store them in the device state.
         
         # Send this connections config to all connected fronts.
         for front in self.OSS_All_Connections["front"].values() :
@@ -17,6 +19,29 @@ class Device_Connection (OSS_Connection) :
                 "Device_Config" : self.config
             }
             await front.send(self.OSS_Message(self, data))
+            await front.send(self.OSS_Message(self, self.device_state))
+
+    def extract_keys(self, data, results=None, skip_keys=None):
+        # Walk though the config and extract all the keys that have a type property.
+        if results is None:
+            results = {}
+        if skip_keys is None:
+            skip_keys = {"__CONFIG__"}
+
+        if isinstance(data, dict):
+            for key, value in data.items():
+                if key in skip_keys:
+                    continue
+
+                if isinstance(value, dict):
+                    if "TYPE" in value:
+                        results[key] = "0"
+
+                    # Recurse regardless of whether this dict had TYPE,
+                    # to catch nested TYPEd children.
+                    self.extract_keys(value, results, skip_keys)
+
+        return results
 
     async def route (self, message) :
         # Route for the frontend connections

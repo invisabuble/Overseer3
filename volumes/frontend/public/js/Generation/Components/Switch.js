@@ -40,7 +40,7 @@ export default class Switch extends Generic_Commander {
         this.recursive_generate(SWITCH_JSON, parent);
 
         // Bind the send command method to the toggler.
-        this.COM.switch.addEventListener('click', this.send_command.bind(this, `${this.IO}`));
+        this.COM.switch.addEventListener('click', this.send_command.bind(this, {[this.NAME] : ""}));
     }
 
     update (state) {
