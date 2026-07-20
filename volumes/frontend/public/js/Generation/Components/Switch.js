@@ -47,6 +47,9 @@ export default class Switch extends Generic_Commander {
         /*
         Update the state of the switch.
         */
+
+        state = Boolean(Number(state));
+
         if (state) {
             this.COM.switch.style.background = "var(--green)";
             this.COM.switch_toggler.style.marginLeft = "calc(var(--switch_length) / 2)";

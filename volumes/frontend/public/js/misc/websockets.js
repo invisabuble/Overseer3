@@ -39,6 +39,8 @@ class OSN_client {
                     UUID,
                     IP
                 );
+            } else {
+                window.Controllables[UUID].update(DATA);
             }
             
         }

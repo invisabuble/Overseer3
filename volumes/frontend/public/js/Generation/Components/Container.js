@@ -324,6 +324,18 @@ export default class Container extends Generic_Commander {
         
     }
 
+    update (message) {
+        // Extract the element that needs updating and the state.
+        console.log(message);
+        const json_message = JSON.parse(message);
+        const gpio_states = Object.entries(json_message);
+
+        for (const [gpio, state] of gpio_states) {
+            this.all[gpio].update(state);
+        }
+
+    }
+
 }
 
 console.info("Loaded : Container.js");

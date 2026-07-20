@@ -125,7 +125,7 @@ String OS_IO::read_state(bool force) {
   State = state;
 
   // Assemble the return string.
-  return Name + ":\"" + state + "\","; 
+  return "\"" + Name + "\":\"" + state + "\","; 
 }
 
 /*
