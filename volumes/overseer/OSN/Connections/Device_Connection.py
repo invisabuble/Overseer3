@@ -22,7 +22,10 @@ class Device_Connection (OSS_Connection) :
                 "Device_Config" : self.config
             }
             await front.send(self.OSS_Message(self, data))
-            await front.send(self.OSS_Message(self, self.device_state))
+            await front.send(self.OSS_Message(
+                self, 
+                json.dumps(self.device_state) # Double stringify device state so it matches esp data.
+                ))
 
     def extract_keys(self, data, results=None, skip_keys=None):
         # Walk though the config and extract all the keys that have a type property.
@@ -47,7 +50,12 @@ class Device_Connection (OSS_Connection) :
         return results
 
     async def route (self, message) :
-        # Route for the frontend connections
+        # Route for the device connections
+
+        # Process the message from the device to update the device state.
+        print(f"message from device : {message}")
+        for gpio, state in json.loads(message).items():
+            self.device_state[gpio] = state
 
         # Construct the message to send to the front.
         message = self.OSS_Message(self,message)

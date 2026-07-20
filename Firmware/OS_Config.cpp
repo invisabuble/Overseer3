@@ -12,10 +12,24 @@ const String& OS_Config::operator[](const String& key) {
   if (key == "__CERT__") {
     return raw_cert;
   }
+
   if (key == "__CONFIG__") {
     return raw_config;
   }
-  retrieved_value = config[DEFAULT_NAME]["__CONFIG__"][key] | "";
+
+  // Find the top-level object containing "__CONFIG__"
+  for (JsonPair kv : config.as<JsonObject>()) {
+    JsonObject named_config = kv.value().as<JsonObject>();
+
+    // If the config is found, extract the desired variable and return it.
+    if (named_config["__CONFIG__"].is<JsonObject>()) {
+      retrieved_value = named_config["__CONFIG__"][key] | "";
+      return retrieved_value;
+    }
+  }
+
+  // If no valid configuration object was found
+  retrieved_value = "";
   return retrieved_value;
 }
 

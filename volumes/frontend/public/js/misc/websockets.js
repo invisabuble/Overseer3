@@ -40,6 +40,7 @@ class OSN_client {
                     IP
                 );
             } else {
+                // If the UUID is in the Controllables object then send the update to that object.
                 window.Controllables[UUID].update(DATA);
             }
             

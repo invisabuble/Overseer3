@@ -15,6 +15,10 @@ class Front_Connection (OSS_Connection) :
                 "Device_Config" : device.config
             }
             await self.send(self.OSS_Message(device, data))
+            await self.send(self.OSS_Message(
+                device, 
+                json.dumps(device.device_state) # Double stringify device state so it matches esp data.
+                ))
 
     async def route (self, message) :
         # Route for the frontend connections
