@@ -47,7 +47,13 @@ class OSS_Connection:
 
         del self.OSS_All_Connections[self.type][self.uuid]
 
+        # Update the control panel after the connection has been deleted.
         await self.update_control()
+        await self.derived_close()
+
+    async def derived_close(self):
+        # Overwritten derived close for connection specific close proceedures.
+        pass
 
 
     # OSS Messages

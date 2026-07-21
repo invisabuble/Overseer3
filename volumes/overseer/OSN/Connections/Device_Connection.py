@@ -64,3 +64,18 @@ class Device_Connection (OSS_Connection) :
         # Send the message to the connected fronts.
         for front in self.OSS_All_Connections["front"].values() :
             await front.send(message)
+
+    async def derived_close(self):
+        # Close a device connection.
+
+        data = {
+            "CLOSED" : self.uuid
+        }
+
+        for front in self.OSS_All_Connections["front"].values() :
+            await front.send(
+                self.OSS_Message(
+                    self,
+                    json.dumps(data)
+                )
+            )
