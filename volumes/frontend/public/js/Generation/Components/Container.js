@@ -330,6 +330,16 @@ export default class Container extends Generic_Commander {
         const json_message = JSON.parse(message);
         const gpio_states = Object.entries(json_message);
 
+        if (gpio_states[0][0] == "CLOSED") {
+            // Delete the device from the frontend.
+            this.COM.container.style.animation = "fade_out 0.5s ease"
+            setTimeout(() => {
+                delete window.Controllables[this.UUID];
+                this.COM.container.remove()
+            }, 501);
+            return;
+        }
+
         for (const [gpio, state] of gpio_states) {
             this.all[gpio].update(state);
         }
