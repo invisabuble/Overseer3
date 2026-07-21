@@ -1,13 +1,13 @@
 from OSN.Connections.OSS_Connection import *
 
 class Front_Connection (OSS_Connection) :
-    def __init__ (self, websocket, path, OSS_All_Connections) :
-        super().__init__(websocket, path, OSS_All_Connections)
+    def __init__ (self, websocket, path, type, OSS_All_Connections) :
+        super().__init__(websocket, path, type, OSS_All_Connections)
         print(f"\033[01;95mNew Front Connection : {self.uuid}\033[0;0m")
 
     async def initialise (self) :
         # Initialise the Front connection.
-        await super().update_front()
+        await self.update_control()
         
         # Get every device object and send it to this front.
         for device in self.OSS_All_Connections["device"].values():

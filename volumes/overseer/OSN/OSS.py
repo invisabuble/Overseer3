@@ -35,9 +35,9 @@ class OSS:
         NC = None
 
         if (CON_type == "front") :
-            NC = Front_Connection(websocket, path, self.Connections)
+            NC = Front_Connection(websocket, path, CON_type, self.Connections)
         elif (CON_type == "device") : 
-            NC = Device_Connection(websocket, path, self.Connections)
+            NC = Device_Connection(websocket, path, CON_type, self.Connections)
         else :
             await websocket.close(code=4000, reason=f"Unknown connection type : {CON_type}")
             return
@@ -56,9 +56,7 @@ class OSS:
 
         finally:
             print(f"Connection closed from {NC.uuid}")
-            # Delete the connection object once its closed.
             await NC.close()
-            del self.Connections[CON_type][NC.uuid]
 
     async def _main (self) :
         # Start the server up.

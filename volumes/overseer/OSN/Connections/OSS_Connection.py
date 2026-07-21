@@ -7,24 +7,25 @@ import json
 alphabet = string.ascii_letters + string.digits
 
 class OSS_Connection:
-    def __init__ (self, websocket, path, OSS_All_Connections) :
+    def __init__ (self, websocket, path, type, OSS_All_Connections) :
         # Connection object to facilitate storage of websocket connections and comminucation between them and the OSS.
         self.OSS_All_Connections = OSS_All_Connections
         self.websocket = websocket
+        self.type = type
         self.uuid = ''.join(secrets.choice(alphabet) for _ in range(15))
         self.IP = websocket.remote_address[0] 
 
         # Process the path to determine the connection type and get the config.
         self.config = parse_qs(urlparse(path).query).get("CONF", [None])[0]
 
-    async def update_front (self) :
+    async def update_control (self) :
         # Update the frontend line graph with the number of connections.
         data = {
-            "Connections" : [len(self.OSS_All_Connections["front"]),len(self.OSS_All_Connections["device"])]
+            "Connections" : [len(self.OSS_All_Connections["device"]),len(self.OSS_All_Connections["front"])]
             }
         for front in self.OSS_All_Connections["front"].values() :
-            await self.send(self.OSS_Control_Message(
-                data
+            await front.send(self.OSS_Control_Message(
+                json.dumps(data)
             ))
 
     async def send (self, message) :
@@ -43,6 +44,13 @@ class OSS_Connection:
     async def close (self) :
         # Close a websocket connection.
         await self.websocket.close()
+
+        del self.OSS_All_Connections[self.type][self.uuid]
+
+        await self.update_control()
+
+
+    # OSS Messages
 
     def OSS_Control_Message (self, DATA) :
         message = {
