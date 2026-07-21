@@ -13,6 +13,7 @@ class Device_Connection (OSS_Connection) :
 
     async def initialise (self) :
         # Initialise the Device connection.
+        await super().update_front()
 
         # Extract all gpio keys from the config and store them in the device state.
         

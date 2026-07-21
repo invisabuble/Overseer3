@@ -57,6 +57,7 @@ class OSS:
         finally:
             print(f"Connection closed from {NC.uuid}")
             # Delete the connection object once its closed.
+            await NC.close()
             del self.Connections[CON_type][NC.uuid]
 
     async def _main (self) :

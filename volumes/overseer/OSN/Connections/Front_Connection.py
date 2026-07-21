@@ -7,6 +7,7 @@ class Front_Connection (OSS_Connection) :
 
     async def initialise (self) :
         # Initialise the Front connection.
+        await super().update_front()
         
         # Get every device object and send it to this front.
         for device in self.OSS_All_Connections["device"].values():

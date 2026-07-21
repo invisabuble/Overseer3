@@ -17,6 +17,16 @@ class OSS_Connection:
         # Process the path to determine the connection type and get the config.
         self.config = parse_qs(urlparse(path).query).get("CONF", [None])[0]
 
+    async def update_front (self) :
+        # Update the frontend line graph with the number of connections.
+        data = {
+            "Connections" : [len(self.OSS_All_Connections["front"]),len(self.OSS_All_Connections["device"])]
+            }
+        for front in self.OSS_All_Connections["front"].values() :
+            await self.send(self.OSS_Control_Message(
+                data
+            ))
+
     async def send (self, message) :
         # Send a message to this connections websocket.
         print(f"\033[0;92m>[{self.uuid}] : {message}\033[0;0m")
@@ -30,6 +40,19 @@ class OSS_Connection:
             print(f"\033[0;94m<[{self.uuid}] : {message}\033[0;0m")
             await self.route(message)
 
+    async def close (self) :
+        # Close a websocket connection.
+        await self.websocket.close()
+
+    def OSS_Control_Message (self, DATA) :
+        message = {
+            "UUID" : "__CONTROL__",
+            "IP" : "",
+            "DATA" : DATA
+        }
+
+        return message
+
     def OSS_Message (self, connection, DATA) :
         # Construct an OSS message
         message = {
@@ -39,3 +62,5 @@ class OSS_Connection:
         }
 
         return message
+    
+    
