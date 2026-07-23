@@ -23,22 +23,31 @@ void Overseer::initialise() {
 }
 
 void Overseer::search_config(JsonObject obj, const String& path) {
-    if (obj["TYPE"].is<const char*>() && obj["IO"].is<int>()) {
+    if (obj["TYPE"].is<const char*>() && (obj["IO"].is<int>() || obj["IO"].is<JsonArray>())) {
         String type = obj["TYPE"].as<String>();
         type.toLowerCase();
-        int io = obj["IO"].as<int>();
 
-        // Extract this object's own key from the end of the accumulated path.
         int lastSlash = path.lastIndexOf('/');
         String key = (lastSlash == -1) ? path : path.substring(lastSlash + 1);
 
-        Serial.printf("KEY: %s, TYPE: %s, IO: %d\n", key.c_str(), type.c_str(), io);
-
-        if (type == "switch") {
-          Serial.printf("Creating new switch : %s", key);
-          GPIO_Array.push_back(new OS_IO_Digital(key, io));
+        std::vector<int> io_list;
+        if (obj["IO"].is<JsonArray>()) {
+            for (JsonVariant v : obj["IO"].as<JsonArray>()) io_list.push_back(v.as<int>());
+        } else {
+            io_list.push_back(obj["IO"].as<int>());
         }
 
+        Serial.printf("KEY: %s, TYPE: %s, IO count: %d\n", key.c_str(), type.c_str(), io_list.size());
+
+        // Process analog first as we can then overwrite the pin mode as input for logging digital on the charts.
+        if (type == "line_chart") {
+            GPIO_Array.push_back(new OS_IO_Analog(key, io_list));
+        }
+
+        if (type == "switch" || type == "button") {
+            GPIO_Array.push_back(new OS_IO_Digital(key, io_list));
+        }
+        
     }
 
     for (JsonPair kv : obj) {
@@ -63,8 +72,9 @@ void Overseer::handle_instruction (const String& target, const String& state) {
     if (gpio->get_name() == target) {
       if (state.isEmpty()) {
         // If the state is empty then just toggle the targeted GPIO.
-        int io = gpio->get_io();
-        digitalWrite(io, !digitalRead(io));
+        for (int io : gpio->get_io()) {
+          digitalWrite(io, !digitalRead(io));
+        }
       }
     }
   }
@@ -102,46 +112,78 @@ void Overseer::loop () {
 IO Class Implementation.
 */
 
-OS_IO::OS_IO (String NAME, int IO) : Name(NAME), IO(IO) {}
+OS_IO::OS_IO (String NAME, std::vector<int> IO) : Name(NAME), IO(IO) {}
 
 String OS_IO::get_name() {
   return Name;
 }
 
-int OS_IO::get_io() {
+std::vector<int> OS_IO::get_io() {
   return IO;
 }
 
 String OS_IO::read_state(bool force) {
-  // Read the state of the monitored input/output from the overriden read method.
-  String state = read();
+  std::vector<String> readings;
+  for (int io : IO) {
+    String io_state = read(io);
+    if (io_state != "") {
+      readings.push_back(io_state);
+    }
+  }
 
-  // If the new state is the same as the stored state and the read isnt being forced, then do nothing.
-  if (state == State && !force) {
+  String state = "[";
+  for (size_t i = 0; i < readings.size(); i++) {
+    state += readings[i];
+    if (i < readings.size() - 1) state += ",";
+  }
+  state += "]";
+
+  if ((state == State || state == "[]") && !force) {
     return "";
   }
 
-  // If the new state is different, then store it and return the new state.
   State = state;
-
-  // Assemble the return string.
-  return "\"" + Name + "\":\"" + state + "\","; 
+  return "\"" + Name + "\":\"" + state + "\",";
 }
 
 /*
 Digital IO Class Implementation.
 */
 
-OS_IO_Digital::OS_IO_Digital (String NAME, int IO) : OS_IO(NAME, IO) {
-  pinMode(IO, OUTPUT);
-  digitalWrite(IO, LOW);
+OS_IO_Digital::OS_IO_Digital (String NAME, std::vector<int> IO) : OS_IO(NAME, IO) {
+  for (int io : IO) {
+    pinMode(io, OUTPUT);
+    digitalWrite(io, LOW);
+  }
 }
 
-String OS_IO_Digital::read () {
-  return String(digitalRead(IO));
+String OS_IO_Digital::read (int IO_Num) {
+  return String(digitalRead(IO_Num));
 }
 
 void OS_IO_Digital::set_state(int state) {
-  digitalWrite(IO, state);
+  for (int io : IO) {
+    digitalWrite(io, state);
+  }
+}
+
+/*
+Analog IO Class Implementation.
+*/
+
+OS_IO_Analog::OS_IO_Analog (String NAME, std::vector<int> IO) : OS_IO(NAME, IO) {
+  for (int io : IO) {
+    pinMode(io, INPUT);
+  }
+}
+
+String OS_IO_Analog::read (int IO_Num) {
+  // Rate limit analog read messages to 5 per second.
+  String result = "";
+  if (millis() - last_read > 500) {
+    result = String(analogRead(IO_Num));
+    last_read = millis();
+  } 
+  return result;
 }
 

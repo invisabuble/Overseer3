@@ -192,6 +192,9 @@ export class Generic_Graph extends Generic_Generation{
         Generic update function for updating charts with one or more measurements.
         */
 
+        // parse the array into an actual array.
+        data = JSON.parse(data);
+
         // Initialise counter if it doesn't exist.
         if (!this.pointCounter) this.pointCounter = 0;
 

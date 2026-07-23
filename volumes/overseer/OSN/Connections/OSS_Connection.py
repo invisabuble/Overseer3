@@ -21,7 +21,7 @@ class OSS_Connection:
     async def update_control (self) :
         # Update the frontend line graph with the number of connections.
         data = {
-            "Connections" : [len(self.OSS_All_Connections["device"]),len(self.OSS_All_Connections["front"])]
+            "Connections" : f"[{len(self.OSS_All_Connections['device'])},{len(self.OSS_All_Connections['front'])}]"
             }
         for front in self.OSS_All_Connections["front"].values() :
             await front.send(self.OSS_Control_Message(

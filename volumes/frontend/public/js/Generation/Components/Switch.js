@@ -48,7 +48,8 @@ export default class Switch extends Generic_Commander {
         Update the state of the switch.
         */
 
-        state = Boolean(Number(state));
+        const Json_State = JSON.parse(state);
+        state = Boolean(Number(Json_State[0]));
 
         if (state) {
             this.COM.switch.style.background = "var(--green)";

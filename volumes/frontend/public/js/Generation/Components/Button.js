@@ -34,7 +34,8 @@ export default class Button extends Generic_Commander {
         this.recursive_generate(BUTTON_JSON, parent);
 
         // Bind the send command method to the toggler.
-        this.COM.os_button.addEventListener('click', this.send_command.bind(this, `${this.IO}`));
+        this.COM.os_button.addEventListener('pointerdown', this.send_command.bind(this, {[this.NAME] : ""}));
+        this.COM.os_button.addEventListener('pointerup', this.send_command.bind(this, {[this.NAME] : ""}));
 
     }
 
@@ -42,6 +43,10 @@ export default class Button extends Generic_Commander {
         /*
         Update the state of the button.
         */
+
+        const Json_State = JSON.parse(state);
+        state = Boolean(Number(Json_State[0]));
+
         if (state) {
             this.COM.os_button.style.background = "var(--green)";
             this.COM.button_toggler.style.marginTop = "calc(var(--switch_length) / 4)";

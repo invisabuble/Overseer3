@@ -32,7 +32,7 @@ class OSN_client {
             const IP   = MSG.IP;
 
             // If the UUID is not in the controllables object then the device must be created.
-            if (!(UUID in window.Controllables)) {
+            if (!(UUID in window.Controllables) && (UUID != "__CONTROL__")) {
                 window.Controllables[UUID] = new window.OS_Components["container"](
                     document.getElementById("devices"),
                     JSON.parse(DATA.Device_Config),

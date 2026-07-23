@@ -32,5 +32,9 @@ class Front_Connection (OSS_Connection) :
         UUID = message['UUID']
         DATA = message['DATA']
 
+        if (UUID == "__CONTROL__") :
+            # If the control uuid is passed then intercept the message and return
+            return
+
         # Send that data to the device.
         await self.OSS_All_Connections["device"][UUID].send(DATA)

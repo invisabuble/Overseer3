@@ -6,15 +6,15 @@
 
 class OS_IO {
   protected:
-    int IO;
+    std::vector<int> IO;
     String State = "-1";
     String Name;
   public:
-    OS_IO(String NAME, int IO);
+    OS_IO(String NAME, std::vector<int> IO);
     String get_name();
-    int get_io();
-    virtual void set_state(int state) = 0;
-    virtual String read() = 0;
+    std::vector<int> get_io();
+    virtual void set_state(int state) {};
+    virtual String read(int IO_Num) = 0;
     String read_state(bool force = false);
     virtual ~OS_IO() = default;
 };
@@ -22,9 +22,18 @@ class OS_IO {
 
 class OS_IO_Digital : public OS_IO {
   public:
-    OS_IO_Digital(String NAME, int IO);
+    OS_IO_Digital(String NAME, std::vector<int> IO);
     void set_state(int state) override;
-    String read() override;
+    String read(int IO_Num) override;
+};
+
+
+class OS_IO_Analog : public OS_IO {
+  private:
+    int last_read = 0;
+  public:
+    OS_IO_Analog(String NAME, std::vector<int> IO);
+    String read(int IO_Num) override;
 };
 
 
