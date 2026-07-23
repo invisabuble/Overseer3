@@ -26,7 +26,7 @@ function port_check () {
 set -a
 source ./docker/docker-apache/apache.env
 source ./docker/docker-mysql/mysql.env
-source ./Overseer.env
+source ./.env
 set +a 
 
 # Build the docker containers.
