@@ -48,7 +48,8 @@ export default class Reading extends Generic_Active_Component {
     }
 
     update (state) {
-        this.COM.content.innerText = state;
+        // Slice the square brackets off the string and then write it.
+        this.COM.content.innerText = state.slice(1, -1);
     }
 
 }

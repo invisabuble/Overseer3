@@ -12,6 +12,7 @@ class Overseer_IO_Manager {
     unsigned long last_measure_time;
     int time_threshold;
     std::vector<Overseer_IO*> IO_Array;
+
   public:
     Overseer_IO_Manager(
       int Type,
@@ -19,7 +20,7 @@ class Overseer_IO_Manager {
       std::vector<int> IO_List
       );
     String measure(bool force = false);
-    void toggle();
+    void write(const String& str = "");
     String get_name();
     int get_type();
 };
@@ -35,7 +36,7 @@ class Overseer {
     bool force_read = false;
     static Overseer& inst();
     void initialise();
-    void handle_instruction(const String& target, const String& state = "");
+    void handle_instruction(const String& target, const String& str = "");
     void loop();
 };
 

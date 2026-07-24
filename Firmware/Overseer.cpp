@@ -19,12 +19,17 @@ Overseer_IO_Manager::Overseer_IO_Manager (
       switch (Type) {
         case DIGITAL : {
           IO_Array.push_back(new OS_IO_Digital(IO));
-          time_threshold = 0;
+          time_threshold = DIGITAL_THRESH;
           break;
         }
         case ANALOG : {
           IO_Array.push_back(new OS_IO_Analog(IO));
           time_threshold = ANALOG_THRESH;
+          break;
+        }
+        case TEXT : {
+          IO_Array.push_back(new OS_IO_Text());
+          time_threshold = TEXT_THRESH;
           break;
         }
       }
@@ -60,12 +65,17 @@ String Overseer_IO_Manager::measure(bool force) {
   return "\"" + Name + "\":\"[" + update + "]\",";
 }
 
-void Overseer_IO_Manager::toggle() {
+void Overseer_IO_Manager::write(const String& str) {
   // Pipe any toggle instructions through to the digital IO's
   for (Overseer_IO* GPIO : IO_Array) {
-    if (Type == DIGITAL) {
-      GPIO->toggle();
+    // Handle special cases here, if none of them apply then write the GPIO of the digital IO.
+    if (Type == ANALOG) return;
+    if (Type == TEXT) {
+      GPIO->write(str);
+      continue;
     }
+
+    GPIO->write();
   }
 }
 
@@ -87,7 +97,7 @@ Overseer& Overseer::inst() {
 }
 
 void Overseer::search_config(JsonObject obj, const String& path) {
-    if (obj["TYPE"].is<const char*>() && (obj["IO"].is<int>() || obj["IO"].is<JsonArray>())) {
+    if (obj["TYPE"].is<const char*>()) {
         String type = obj["TYPE"].as<String>();
         type.toLowerCase();
 
@@ -97,8 +107,10 @@ void Overseer::search_config(JsonObject obj, const String& path) {
         std::vector<int> io_list;
         if (obj["IO"].is<JsonArray>()) {
             for (JsonVariant v : obj["IO"].as<JsonArray>()) io_list.push_back(v.as<int>());
-        } else {
+        } else if (obj["IO"].is<int>()) {
             io_list.push_back(obj["IO"].as<int>());
+        } else {
+            io_list.push_back(-1);
         }
 
         int IO_Type = -1;
@@ -106,11 +118,12 @@ void Overseer::search_config(JsonObject obj, const String& path) {
         if (type == "switch" || 
             type == "button")     IO_Type = DIGITAL;
         if (type == "line_chart") IO_Type = ANALOG;
+        if (type == "reading" ||
+            type == "terminal")   IO_Type = TEXT;
 
         if (IO_Type != -1) {
-          IO_Managers.push_back(new Overseer_IO_Manager(IO_Type, key, io_list));
-        } 
-
+            IO_Managers.push_back(new Overseer_IO_Manager(IO_Type, key, io_list));
+        }
     }
 
     for (JsonPair kv : obj) {
@@ -125,15 +138,13 @@ void Overseer::search_config(JsonObject obj, const String& path) {
     }
 }
 
-void Overseer::handle_instruction(const String& target, const String& state) {
+void Overseer::handle_instruction(const String& target, const String& str) {
   // Handle an incoming instruction from the OSS server.
   for (Overseer_IO_Manager* IO_Manager : IO_Managers) {
     // If a target matches the name saved within the IO Manager then send the update to that target.
     if (IO_Manager->get_name() == target) {
-      if (IO_Manager->get_type() == DIGITAL) {
-        IO_Manager->toggle();
-        return;
-      }
+      IO_Manager->write(str);
+      return;
     }
   }
 }

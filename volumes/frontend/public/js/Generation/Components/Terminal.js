@@ -180,13 +180,18 @@ export default class Terminal extends Generic_Commander {
             }
         }
 
-        this.recursive_generate(TEXT_JSON, this.COM["stdout"]);
+        const stdout = this.COM["stdout"];
+
+        this.recursive_generate(TEXT_JSON, stdout);
         this.command_count ++;
         this.command_selector = this.command_count;
+
+        stdout.scrollTop = stdout.scrollHeight;
     }
 
     update (state, colour = "") {
-        this.add_text_to_stdout(state, "└▻", "return_line", colour);
+        // Slice the brackets off the state and write it to the terminal.
+        this.add_text_to_stdout(state.slice(1, -1), "└▻", "return_line", colour);
     }
 }
 

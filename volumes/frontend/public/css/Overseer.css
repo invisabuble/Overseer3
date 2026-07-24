@@ -423,6 +423,7 @@ button_toggler {
 stdout {
     flex: 1 1 auto;
     overflow-y: auto;
+    max-height: 130px;
     width: calc(100% - 2 * var(--gap));
     gap: var(--gap_2);
     display: flex;
