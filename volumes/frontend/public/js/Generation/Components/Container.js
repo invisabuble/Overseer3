@@ -82,7 +82,10 @@ export default class Container extends Generic_Commander {
 
                             "pre" : {
                                 "ATTR" : {
-                                    "contenteditable" : "true"
+                                    "contenteditable" : "true",
+                                    "data-gramm" : "false",
+                                    "data-gramm_editor" : "false",
+                                    "data-enable-grammarly" : "false"
                                 },
                                 "TEXT" : JSON.stringify(config, null, 2)
                             },
