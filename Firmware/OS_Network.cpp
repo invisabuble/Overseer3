@@ -1,13 +1,14 @@
 #include "OS_Network.h"
-#include "OS_Config.h"
 #include "Overseer.h"
+#include "OS_Config.h"
+#include "User_Config.h"
 
 OS_Network& OS_Network::inst() {
     static OS_Network instance;
     return instance;
 }
 
-OS_Network::OS_Network() {}
+OS_Network::OS_Network() {pinMode(STATUS_LED, OUTPUT);}
 
 void OS_Network::Init () {
     // Drive the status LED low before configuring WiFi.

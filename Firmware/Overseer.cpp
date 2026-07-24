@@ -40,7 +40,10 @@ String Overseer_IO_Manager::measure(bool force) {
   }
 
   last_measure_time = current_time;
-  String update = "";
+
+  // setup string with reserve to help with heap fragmentation.
+  String update;
+  update.reserve(IO_READ_SIZE * IO_Array.size());
 
   for (Overseer_IO* IO_Obj : IO_Array) {
     String gpio_update = IO_Obj->measure(force);

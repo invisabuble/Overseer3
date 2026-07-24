@@ -3,3 +3,5 @@
 
 // Time to wait until subsequent analog measurement.
 #define ANALOG_THRESH 1000
+
+#define IO_READ_SIZE 20

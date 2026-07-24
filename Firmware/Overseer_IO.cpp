@@ -3,6 +3,7 @@
 
 String Overseer_IO::measure(bool force) {
 
+  // Setup state string with a reserve to prevent heap fragmentation.
   String state = read();
 
   if (state == last_state && !force) {
