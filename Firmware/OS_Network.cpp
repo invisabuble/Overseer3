@@ -87,6 +87,12 @@ void OS_Network::websocket_event(WStype_t type, uint8_t* payload, size_t length)
                     // Get a pointer to the config object.
                     OS_Config& cnf = OS_Config::inst();
                     cnf.write_new_config(value);
+                    continue;
+                }
+
+                if (key == "TERM") {
+                    OS_Network::inst().OS_Terminal(value);
+                    continue;
                 }
 
                 // Any other commands get sent to the Overseer instruction handler.
@@ -109,6 +115,11 @@ void OS_Network::websocket_event(WStype_t type, uint8_t* payload, size_t length)
             Serial.printf("WS other event: %d\n", type);
             break;
     }
+}
+
+void OS_Network::OS_Terminal(String &command) {
+    // Handle terminal commands.
+    Serial.printf("Handling terminal command : %s\n", command);
 }
 
 void OS_Network::send(String& message) {

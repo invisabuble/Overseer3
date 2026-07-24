@@ -90,7 +90,7 @@ export default class Terminal extends Generic_Commander {
                     this.COM.stdout.scrollTop = this.COM.stdout.scrollHeight;
                 }
 
-                this.send_command(command);
+                this.send_command({"TERM" : command});
             }
             // Go back through previously issued commands.
             if (event.key === "ArrowUp") {

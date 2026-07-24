@@ -1,25 +1,82 @@
 #include "Overseer.h"
 #include "OS_Config.h"
 #include "OS_Network.h"
+#include "Overseer_IO.h"
+#include "OS_IO_Conf.h"
+
+/*
+Overseer IO Manager Implementation.
+*/
+
+Overseer_IO_Manager::Overseer_IO_Manager (
+  int Type,
+  String Name,
+  std::vector<int> IO_List
+  ) : Type(Type), Name(Name) {
+    // Setup the IO's and store them within the IO Manager.
+    Serial.printf("Creating new IO Manager : %s, TYPE: %i\n", Name, Type);
+    for (int IO : IO_List) {
+      switch (Type) {
+        case DIGITAL : {
+          IO_Array.push_back(new OS_IO_Digital(IO));
+          break;
+        }
+        case ANALOG : {
+          IO_Array.push_back(new OS_IO_Analog(IO));
+          break;
+        }
+      }
+    }
+
+  }
+
+String Overseer_IO_Manager::measure(bool force) {
+  // Measure the state of the IO's attached to this IO Manager.
+  unsigned long current_time = millis();
+  if (current_time - last_measure_time < 500) {
+    return "";
+  }
+
+  last_measure_time = current_time;
+  String update = "";
+
+  for (Overseer_IO* IO_Obj : IO_Array) {
+    update += IO_Obj->measure(force);
+  }
+
+  // If the update string is empty then return the empty string.
+  if (update == "") return "";
+
+  // Remove the trailing comma
+  update.remove(update.length() - 1);
+
+  return "\"" + Name + "\":\"[" + update + "]\",";
+}
+
+void Overseer_IO_Manager::toggle() {
+  // Pipe any toggle instructions through to the digital IO's
+  if (Type == DIGITAL) {
+    for (Overseer_IO* GPIO : IO_Array) {
+      GPIO->toggle();
+    }
+  }
+}
+
+String Overseer_IO_Manager::get_name() {return Name;}
+
+int Overseer_IO_Manager::get_type() {return Type;}
+
+/*
+Overseer Implementation.
+*/
+
+Overseer::Overseer() {}
 
 Overseer& Overseer::inst() {
   // Return the instance of the first created overseer object.
   // Function-local static variable to get the object back.
   static Overseer instance;
   return instance;
-}
-
-Overseer::Overseer () {}
-
-void Overseer::initialise() {
-  // Iterate through every item in the serialised config and parse the GPIO's accordingly.
-
-  Serial.println("Searching config...");
-
-  // Get a pointer to the config class
-  OS_Config& cnf = OS_Config::inst();
-  search_config(cnf.get_json_config().as<JsonObject>());
-
 }
 
 void Overseer::search_config(JsonObject obj, const String& path) {
@@ -37,16 +94,12 @@ void Overseer::search_config(JsonObject obj, const String& path) {
             io_list.push_back(obj["IO"].as<int>());
         }
 
-        Serial.printf("KEY: %s, TYPE: %s, IO count: %d\n", key.c_str(), type.c_str(), io_list.size());
+        int IO_Type = -1;
 
-        // Process analog first as we can then overwrite the pin mode as input for logging digital on the charts.
-        if (type == "line_chart") {
-            GPIO_Array.push_back(new OS_IO_Analog(key, io_list));
-        }
+        if (type == "switch")     IO_Type = DIGITAL;
+        if (type == "line_chart") IO_Type = ANALOG;
 
-        if (type == "switch" || type == "button") {
-            GPIO_Array.push_back(new OS_IO_Digital(key, io_list));
-        }
+        IO_Managers.push_back(new Overseer_IO_Manager(IO_Type, key, io_list));
         
     }
 
@@ -62,128 +115,44 @@ void Overseer::search_config(JsonObject obj, const String& path) {
     }
 }
 
-void Overseer::handle_instruction (const String& target, const String& state) {
-  // Handle an instruction for the GPIO.
-
-  Serial.printf("Handling instruction for : %s, %s\n", target, state);
-
-  // Iterate through the gpio array until we find the correct target.
-  for (OS_IO* gpio : GPIO_Array) {
-    if (gpio->get_name() == target) {
-      if (state.isEmpty()) {
-        // If the state is empty then just toggle the targeted GPIO.
-        for (int io : gpio->get_io()) {
-          digitalWrite(io, !digitalRead(io));
-        }
+void Overseer::handle_instruction(const String& target, const String& state) {
+  for (Overseer_IO_Manager* IO_Manager : IO_Managers) {
+    if (IO_Manager->get_name() == target) {
+      if (IO_Manager->get_type() == DIGITAL) {
+        IO_Manager->toggle();
+        return;
       }
     }
   }
+}
+
+void Overseer::initialise() {
+  // Iterate through every item in the serialised config and parse the GPIO's accordingly.
+
+  Serial.println("Searching config...");
+
+  // Get a pointer to the config class
+  OS_Config& cnf = OS_Config::inst();
+  search_config(cnf.get_json_config().as<JsonObject>());
 
 }
 
-void Overseer::loop () {
-  // Loop through the measurement vector and get all of the measurements.
+void Overseer::loop() {
+  // Loop through every IO Manager within the object and collect the update information.
   String update_string = "";
 
-  // Copy the value of force read to a temporary variable to avoid changing the state half way through the loop.
-  bool force_read_gpio = force_read;
+  bool force = force_read;
 
-  for (OS_IO* gpio : GPIO_Array) {
-    update_string += gpio->read_state(force_read_gpio);
+  for (Overseer_IO_Manager* IO_Manager : IO_Managers) {
+    update_string += IO_Manager->measure(force);
   }
 
-  if (!update_string.isEmpty()) {
-    update_string.remove(update_string.length() - 1);
-    OS_Network::inst().send("{" + update_string + "}");
-  }
+  if (update_string == "") return;
 
-  // Reset the force read to false after the loop has completed only if the force_read_gpio has been set.
-  if (force_read_gpio) {
-    force_read = false;
-  }
+  // Remove the trailing comma and send the message to the server.
+  update_string.remove(update_string.length() - 1);
+  OS_Network::inst().send("{" + update_string + "}");
+
+  if (force) force_read = false;
 
 }
-
-
-
-
-
-/*
-IO Class Implementation.
-*/
-
-OS_IO::OS_IO (String NAME, std::vector<int> IO) : Name(NAME), IO(IO) {}
-
-String OS_IO::get_name() {
-  return Name;
-}
-
-std::vector<int> OS_IO::get_io() {
-  return IO;
-}
-
-String OS_IO::read_state(bool force) {
-  std::vector<String> readings;
-  for (int io : IO) {
-    String io_state = read(io);
-    if (io_state != "") {
-      readings.push_back(io_state);
-    }
-  }
-
-  String state = "[";
-  for (size_t i = 0; i < readings.size(); i++) {
-    state += readings[i];
-    if (i < readings.size() - 1) state += ",";
-  }
-  state += "]";
-
-  if ((state == State || state == "[]") && !force) {
-    return "";
-  }
-
-  State = state;
-  return "\"" + Name + "\":\"" + state + "\",";
-}
-
-/*
-Digital IO Class Implementation.
-*/
-
-OS_IO_Digital::OS_IO_Digital (String NAME, std::vector<int> IO) : OS_IO(NAME, IO) {
-  for (int io : IO) {
-    pinMode(io, OUTPUT);
-    digitalWrite(io, LOW);
-  }
-}
-
-String OS_IO_Digital::read (int IO_Num) {
-  return String(digitalRead(IO_Num));
-}
-
-void OS_IO_Digital::set_state(int state) {
-  for (int io : IO) {
-    digitalWrite(io, state);
-  }
-}
-
-/*
-Analog IO Class Implementation.
-*/
-
-OS_IO_Analog::OS_IO_Analog (String NAME, std::vector<int> IO) : OS_IO(NAME, IO) {
-  for (int io : IO) {
-    pinMode(io, INPUT);
-  }
-}
-
-String OS_IO_Analog::read (int IO_Num) {
-  // Rate limit analog read messages to 5 per second.
-  String result = "";
-  if (millis() - last_read > 500) {
-    result = String(analogRead(IO_Num));
-    last_read = millis();
-  } 
-  return result;
-}
-
