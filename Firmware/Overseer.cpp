@@ -115,11 +115,12 @@ void Overseer::search_config(JsonObject obj, const String& path) {
 
         int IO_Type = -1;
 
-        if (type == "switch" || 
-            type == "button")     IO_Type = DIGITAL;
-        if (type == "line_chart") IO_Type = ANALOG;
-        if (type == "reading" ||
-            type == "terminal")   IO_Type = TEXT;
+        if (type == "switch"     || 
+            type == "button")       IO_Type = DIGITAL;
+        if (type == "line_chart" ||
+            type == "bar")          IO_Type = ANALOG;
+        if (type == "reading"    ||
+            type == "terminal")     IO_Type = TEXT;
 
         if (IO_Type != -1) {
             IO_Managers.push_back(new Overseer_IO_Manager(IO_Type, key, io_list));

@@ -55,6 +55,9 @@ export default class Bar extends Generic_Active_Component {
         Update the bars width.
         */
 
+        state = Number(state.slice(1, -1));
+        state = Math.floor(state * 100/4095);
+
         if (state < 0) {state = 0}
         if (state > 100) {state = 100}
         
