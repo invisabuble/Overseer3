@@ -19,10 +19,12 @@ Overseer_IO_Manager::Overseer_IO_Manager (
       switch (Type) {
         case DIGITAL : {
           IO_Array.push_back(new OS_IO_Digital(IO));
+          time_threshold = 0;
           break;
         }
         case ANALOG : {
           IO_Array.push_back(new OS_IO_Analog(IO));
+          time_threshold = ANALOG_THRESH;
           break;
         }
       }
@@ -33,7 +35,7 @@ Overseer_IO_Manager::Overseer_IO_Manager (
 String Overseer_IO_Manager::measure(bool force) {
   // Measure the state of the IO's attached to this IO Manager.
   unsigned long current_time = millis();
-  if (current_time - last_measure_time < 500) {
+  if (current_time - last_measure_time < time_threshold) {
     return "";
   }
 
@@ -41,7 +43,9 @@ String Overseer_IO_Manager::measure(bool force) {
   String update = "";
 
   for (Overseer_IO* IO_Obj : IO_Array) {
-    update += IO_Obj->measure(force);
+    String gpio_update = IO_Obj->measure(force);
+    if (gpio_update == "") return "";
+    update += gpio_update;
   }
 
   // If the update string is empty then return the empty string.
@@ -55,8 +59,8 @@ String Overseer_IO_Manager::measure(bool force) {
 
 void Overseer_IO_Manager::toggle() {
   // Pipe any toggle instructions through to the digital IO's
-  if (Type == DIGITAL) {
-    for (Overseer_IO* GPIO : IO_Array) {
+  for (Overseer_IO* GPIO : IO_Array) {
+    if (Type == DIGITAL) {
       GPIO->toggle();
     }
   }
@@ -96,11 +100,14 @@ void Overseer::search_config(JsonObject obj, const String& path) {
 
         int IO_Type = -1;
 
-        if (type == "switch")     IO_Type = DIGITAL;
+        if (type == "switch" || 
+            type == "button")     IO_Type = DIGITAL;
         if (type == "line_chart") IO_Type = ANALOG;
 
-        IO_Managers.push_back(new Overseer_IO_Manager(IO_Type, key, io_list));
-        
+        if (IO_Type != -1) {
+          IO_Managers.push_back(new Overseer_IO_Manager(IO_Type, key, io_list));
+        } 
+
     }
 
     for (JsonPair kv : obj) {
@@ -116,7 +123,9 @@ void Overseer::search_config(JsonObject obj, const String& path) {
 }
 
 void Overseer::handle_instruction(const String& target, const String& state) {
+  // Handle an incoming instruction from the OSS server.
   for (Overseer_IO_Manager* IO_Manager : IO_Managers) {
+    // If a target matches the name saved within the IO Manager then send the update to that target.
     if (IO_Manager->get_name() == target) {
       if (IO_Manager->get_type() == DIGITAL) {
         IO_Manager->toggle();

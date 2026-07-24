@@ -1,4 +1,5 @@
 #include "OS_Config.h"
+#include "OS_Network.h"
 
 OS_Config& OS_Config::inst () {
   // Return the instance of the first created config object.
@@ -74,6 +75,7 @@ bool OS_Config::write_new_config (String &cnf) {
   if (!deserializeJson(validator, cnf)){
     // If the config is valid, write it to memory.
     generic_prefs_rw(false, OS_PREF_KEY, cnf);
+    OS_Network::inst().close_wss();
     ESP.restart();
     return true;
   }

@@ -129,3 +129,8 @@ void OS_Network::send(String& message) {
 void OS_Network::update () {
     websocket.loop();
 }
+
+void OS_Network::close_wss() {
+    // Close the WSS connection.
+    websocket.disconnect();
+}

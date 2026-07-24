@@ -21,6 +21,7 @@ class OS_Network {
     void update();
     void OS_Terminal(String& command);
     void send(String& message);
+    void close_wss();
 };
 
 #endif

@@ -10,6 +10,7 @@ class Overseer_IO_Manager {
     String Name;
     int Type;
     unsigned long last_measure_time;
+    int time_threshold;
     std::vector<Overseer_IO*> IO_Array;
   public:
     Overseer_IO_Manager(
