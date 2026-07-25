@@ -1,22 +1,46 @@
+import asyncio
 import secrets
 import string
+import logging
 from urllib.parse import urlparse, parse_qs
 import json
 
-# Define the pool of characters (a-z, A-Z, 0-9)
+logger = logging.getLogger("OSS")
+
 alphabet = string.ascii_letters + string.digits
 
 class OSS_Connection:
-    def __init__ (self, websocket, path, type, OSS_All_Connections) :
+    def __init__ (self, websocket, path, type, OSS_All_Connections, queue_maxsize=200) :
         # Connection object to facilitate storage of websocket connections and comminucation between them and the OSS.
         self.OSS_All_Connections = OSS_All_Connections
         self.websocket = websocket
         self.type = type
         self.uuid = ''.join(secrets.choice(alphabet) for _ in range(15))
-        self.IP = websocket.remote_address[0] 
+        self.IP = websocket.remote_address[0]
 
         # Process the path to determine the connection type and get the config.
         self.config = parse_qs(urlparse(path).query).get("CONF", [None])[0]
+
+        # Setup the message queue and writer task.
+        self._send_queue = asyncio.Queue(maxsize=queue_maxsize)
+        self._writer_task = asyncio.create_task(self._writer())
+
+
+    async def _writer (self) :
+        # Drains the send queue and performs the actual websocket writes.
+        try:
+            while True:
+                payload = await self._send_queue.get()
+                try:
+                    await self.websocket.send(payload)
+                    logger.debug(f">[{self.uuid}] : {payload}")
+                except Exception as e:
+                    logger.warning(f"Send failed for {self.uuid} : {e}")
+                finally:
+                    self._send_queue.task_done()
+        except asyncio.CancelledError:
+            pass
+
 
     async def update_control (self) :
         # Update the frontend line graph with the number of connections.
@@ -26,28 +50,48 @@ class OSS_Connection:
         data = {
             "Connections" : f"[{device_count},{front_count}]"
             }
-        for front in self.OSS_All_Connections["front"].values() :
-            await front.send(self.OSS_Control_Message(
-                json.dumps(data)
-            ))
 
+        await self.broadcast("front", self.OSS_Control_Message(json.dumps(data)))
+
+
+    async def broadcast (self, connection_type, message) :
+        # Send a message to every connection of a given type concurrently.
+        targets = list(self.OSS_All_Connections[connection_type].values())
+        if not targets:
+            return
+        await asyncio.gather(*(c.send(message) for c in targets))
 
 
     async def send (self, message) :
-        # Send a message to this connections websocket.
-        print(f"\033[0;92m>[{self.uuid}] : {message}\033[0;0m")
-        await self.websocket.send(
-            json.dumps(message)
-        )
+        # Write a message to the queue and return immediately.
+        payload = json.dumps(message)
+        try:
+            self._send_queue.put_nowait(payload)
+        except asyncio.QueueFull:
+            # If this client cant keep up, drop the oldest message rather than blocking the caller.
+            try:
+                self._send_queue.get_nowait()
+                self._send_queue.task_done()
+            except asyncio.QueueEmpty:
+                pass
+            self._send_queue.put_nowait(payload)
+
 
     async def _receive (self) :
         # Receives messages from this connections websocket.
         async for message in self.websocket :
-            print(f"\033[0;94m<[{self.uuid}] : {message}\033[0;0m")
+            logger.debug(f"<[{self.uuid}] : {message}")
             await self.route(message)
 
+
     async def close (self) :
-        # Close a websocket connection.
+        # Stop the writer task first so it doesn't try to use a closing socket.
+        self._writer_task.cancel()
+        try:
+            await self._writer_task
+        except asyncio.CancelledError:
+            pass
+
         await self.websocket.close()
 
         del self.OSS_All_Connections[self.type][self.uuid]
@@ -64,22 +108,15 @@ class OSS_Connection:
     # OSS Messages
 
     def OSS_Control_Message (self, DATA) :
-        message = {
+        return {
             "UUID" : "__CONTROL__",
             "IP" : "",
             "DATA" : DATA
         }
 
-        return message
-
     def OSS_Message (self, connection, DATA) :
-        # Construct an OSS message
-        message = {
+        return {
             "UUID" : connection.uuid,
             "IP"   : connection.IP,
             "DATA" : DATA
         }
-
-        return message
-    
-    

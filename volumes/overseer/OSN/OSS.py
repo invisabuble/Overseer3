@@ -34,29 +34,29 @@ class OSS:
         CON_type = urlparse(path).path.lstrip("/")
         NC = None
 
-        if (CON_type == "front") :
-            NC = Front_Connection(websocket, path, CON_type, self.Connections)
-        elif (CON_type == "device") : 
-            NC = Device_Connection(websocket, path, CON_type, self.Connections)
-        else :
-            await websocket.close(code=4000, reason=f"Unknown connection type : {CON_type}")
-            return
-
         try:
-            # Add the connection to the right place and endlessly await messages from the connection.
+            if (CON_type == "front") :
+                NC = Front_Connection(websocket, path, CON_type, self.Connections)
+            elif (CON_type == "device") :
+                NC = Device_Connection(websocket, path, CON_type, self.Connections)
+            else :
+                await websocket.close(code=4000, reason=f"Unknown connection type : {CON_type}")
+                return
+
             self.Connections[CON_type][NC.uuid] = NC
             await NC.initialise()
             await NC._receive()
 
         except websockets.exceptions.ConnectionClosed as e:
-            print(f"Connection closed by {NC.uuid} : {e}")
+            logger.info(f"Connection closed by {NC.uuid if NC else '?'} : {e}")
 
         except Exception as e:
-            print(f"Error with connection {NC.uuid} : {e}")
+            logger.warning(f"Error with connection {NC.uuid if NC else '?'} : {e}")
 
         finally:
-            print(f"Connection closed from {NC.uuid}")
-            await NC.close()
+            if NC is not None:
+                logger.info(f"Connection closed from {NC.uuid}")
+                await NC.close()
 
     async def _main (self) :
         # Start the server up.

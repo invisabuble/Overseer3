@@ -91,7 +91,7 @@ void OS_Network::websocket_event(WStype_t type, uint8_t* payload, size_t length)
                     continue;
                 }
 
-                if (key == "TERM") {
+                if (key == "CONTROL") {
                     OS_Network::inst().OS_Terminal(value);
                     continue;
                 }

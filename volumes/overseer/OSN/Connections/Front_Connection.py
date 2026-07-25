@@ -1,32 +1,41 @@
 from OSN.Connections.OSS_Connection import *
+import logging
+
+logger = logging.getLogger("OSS")
 
 class Front_Connection (OSS_Connection) :
     def __init__ (self, websocket, path, type, OSS_All_Connections) :
         super().__init__(websocket, path, type, OSS_All_Connections)
-        print(f"\033[01;95mNew Front Connection : {self.uuid}\033[0;0m")
+        logger.info(f"\033[01;95mNew Front Connection : {self.uuid}\033[0;0m")
+
 
     async def initialise (self) :
         # Initialise the Front connection.
         await self.update_control()
-        
-        # Get every device object and send it to this front.
-        for device in self.OSS_All_Connections["device"].values():
-            # Get the config from the device and send it to the front.
+
+        # Send every connected device's config/state to this front concurrently.
+        devices = list(self.OSS_All_Connections["device"].values())
+
+        async def send_device(device):
             data = {
                 "Device_Config" : device.config
             }
             await self.send(self.OSS_Message(device, data))
             await self.send(self.OSS_Message(
-                device, 
-                json.dumps(device.device_state) # Double stringify device state so it matches esp data.
-                ))
+                device,
+                json.dumps(device.device_state)  # Double stringify device state so it matches esp data.
+            ))
+
+        if devices:
+            await asyncio.gather(*(send_device(d) for d in devices))
+
 
     async def route (self, message) :
         # Route for the frontend connections
-        
+
         # Parse the incoming message.
         message = json.loads(message)
-        print(f"[ROUTE] > [{self.uuid}] : {message}")
+        logger.debug(f"[ROUTE] > [{self.uuid}] : {message}")
 
         # Get the UUID of the target device and the data to send to it.
         UUID = message['UUID']
@@ -36,5 +45,10 @@ class Front_Connection (OSS_Connection) :
             # If the control uuid is passed then intercept the message and return
             return
 
-        # Send that data to the device.
-        await self.OSS_All_Connections["device"][UUID].send(DATA)
+        # Send that data to the device, if it's still connected.
+        device = self.OSS_All_Connections["device"].get(UUID)
+        if device is None:
+            logger.warning(f"Front {self.uuid} targeted unknown/disconnected device {UUID}")
+            return
+
+        await device.send(DATA)
