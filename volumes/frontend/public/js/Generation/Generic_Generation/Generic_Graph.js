@@ -42,18 +42,18 @@ export class Generic_Graph extends Generic_Generation{
 
         // Get the list of IO's to be measured, and their associated labels if they exist.
         this.IO_LIST    = this.get_CI_value("IO", json[this.NAME], []);
-        this.LABELS     = this.get_CI_value("LABELS", json[this.NAME]);
+        this.LABELS     = this.get_CI_value("LABELS", json[this.NAME], this.IO_LIST);
 
         // Get the axis labels if they exist.
         this.X_AXIS     = this.display_axis(this.get_CI_value("X_AXIS", json[this.NAME], ""));
         this.Y_AXIS     = this.display_axis(this.get_CI_value("Y_AXIS", json[this.NAME], ""));
 
         // Extract the Y axis minimum from the config.
-        this.Y_AXIS_MIN = this.get_CI_value("Y_AXIS_MIN", "");
+        this.Y_AXIS_MIN = this.get_CI_value("Y_AXIS_MIN", json[this.NAME], "");
 
-        switch (this.CHART_TYPE) {
+        switch (this.CHART_TYPE.toLowerCase()) {
 
-            case "Pie_Chart":
+            case "pie_chart":
                 // Setup the datastructure for a pie chart.
                 var io_dataset = {
                     data: [],
@@ -200,7 +200,11 @@ export class Generic_Graph extends Generic_Generation{
 
         // Increment point counter for the new label.
         this.pointCounter++;
-        this.DATA.labels.push(this.pointCounter);
+
+        // Use the current time as the displayed label instead of the raw counter.
+        const now = new Date();
+        const timeLabel = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        this.DATA.labels.push(timeLabel);
 
         // Push new data points for each dataset.
         data.forEach((value, index) => {

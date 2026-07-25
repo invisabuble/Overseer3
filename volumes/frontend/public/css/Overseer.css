@@ -21,6 +21,7 @@
 
     /* CHART CONSTANTS */
     --chart_height: 300px;
+    --chart_max_width: 700px;
 
     /* BAR CONSTANTS */
     --bar_height: 50px;
@@ -346,6 +347,8 @@ clock {
 }
 
 .component_container {
+    position: relative;
+    min-width: 0;
     align-items: center;
     padding-left: 0;
     padding-right: var(--gap);
@@ -454,6 +457,7 @@ stdin:focus{
 
 output_line {
     width: calc(100% - 2 * var(--gap));
+    max-width: 350px;
     line-height: 1;
     word-break: break-all;
 }
@@ -470,9 +474,9 @@ _prefix {
 /* - Charts - */
 
 .generic_chart {
-    display: flex;
     min-height: var(--chart_height);
     max-height: var(--chart_height);
+    max-width: var(--chart_max_width);
 }
 
 .Line_Chart {

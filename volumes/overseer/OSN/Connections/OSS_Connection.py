@@ -20,13 +20,18 @@ class OSS_Connection:
 
     async def update_control (self) :
         # Update the frontend line graph with the number of connections.
+        device_count = len(self.OSS_All_Connections['device'])
+        front_count = len(self.OSS_All_Connections['front'])
+
         data = {
-            "Connections" : f"[{len(self.OSS_All_Connections['device'])},{len(self.OSS_All_Connections['front'])}]"
+            "Connections" : f"[{device_count},{front_count}]"
             }
         for front in self.OSS_All_Connections["front"].values() :
             await front.send(self.OSS_Control_Message(
                 json.dumps(data)
             ))
+
+
 
     async def send (self, message) :
         # Send a message to this connections websocket.

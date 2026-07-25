@@ -121,9 +121,42 @@ void OS_Network::websocket_event(WStype_t type, uint8_t* payload, size_t length)
 void OS_Network::OS_Terminal(String &command) {
     // Handle terminal commands.
     Serial.printf("Handling terminal command : %s\n", command);
+
+    String cmd = command;
+    cmd.toLowerCase();
+
+    Overseer& OS_Inst = Overseer::inst();
+
+    if (cmd == "help" || cmd == "?") {
+        OS_Inst.handle_instruction("terminal", "Here to help!", TYPE);
+        return;
+    }
+
+    if (cmd == "reboot") {
+        OS_Network::inst().close_wss();
+        ESP.restart();
+    }
+
+    if (cmd == "net_sleep") {
+        network_sleep = true;
+        return;
+    }
+
+    if (cmd == "net_wake") {
+        OS_Inst.handle_instruction("terminal", "Network awake.", TYPE);
+        network_sleep = false;
+        return;
+    }
+
+    // Handle unrecognised commands.
+    Serial.println("Handling unrecognised command");
+    OS_Inst.handle_instruction("terminal", "Unrecognised command.", TYPE);
+
 }
 
 void OS_Network::send(String& message) {
+    // If the network isnt sleeping then send a message.
+    if (network_sleep) return;
     websocket.sendTXT(message);
 }
 
@@ -134,4 +167,8 @@ void OS_Network::update () {
 void OS_Network::close_wss() {
     // Close the WSS connection.
     websocket.disconnect();
+}
+
+bool OS_Network::is_asleep() {
+    return network_sleep;
 }

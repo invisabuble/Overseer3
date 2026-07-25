@@ -15,6 +15,8 @@ export default class Pie_Chart extends Generic_Graph {
         /*
         Change the data within a pie chart.
         */
+        // parse the array into an actual array.
+        pie_data = JSON.parse(pie_data);
         this.DATA.datasets[0].data = pie_data;
         this.CHART.update();
     }

@@ -14,6 +14,7 @@ class OS_Network {
     // Values to store websocket connection information.
     String host, port, cert, durl;
     WebSocketsClient websocket;
+    bool network_sleep = false;
 
   public:
     static OS_Network& inst();
@@ -22,6 +23,7 @@ class OS_Network {
     void OS_Terminal(String& command);
     void send(String& message);
     void close_wss();
+    bool is_asleep();
 };
 
 #endif

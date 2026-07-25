@@ -10,9 +10,10 @@ Overseer IO Manager Implementation.
 
 Overseer_IO_Manager::Overseer_IO_Manager (
   int Type,
+  String FE_Type,
   String Name,
   std::vector<int> IO_List
-  ) : Type(Type), Name(Name) {
+  ) : Type(Type), FE_Type(FE_Type), Name(Name) {
     // Setup the IO's and store them within the IO Manager.
     Serial.printf("Creating new IO Manager : %s, TYPE: %i\n", Name, Type);
     for (int IO : IO_List) {
@@ -51,10 +52,13 @@ String Overseer_IO_Manager::measure(bool force) {
   update.reserve(IO_READ_SIZE * IO_Array.size());
 
   for (Overseer_IO* IO_Obj : IO_Array) {
-    String gpio_update = IO_Obj->measure(force);
+    String gpio_update = IO_Obj->measure(force || force_IO_read);
     if (gpio_update == "") return "";
     update += gpio_update;
   }
+
+  // If the measure was forced. by the force_IO_read flag reset it here.
+  force_IO_read = false;
 
   // If the update string is empty then return the empty string.
   if (update == "") return "";
@@ -71,6 +75,7 @@ void Overseer_IO_Manager::write(const String& str) {
     // Handle special cases here, if none of them apply then write the GPIO of the digital IO.
     if (Type == ANALOG) return;
     if (Type == TEXT) {
+      force_IO_read = true;
       GPIO->write(str);
       continue;
     }
@@ -82,6 +87,8 @@ void Overseer_IO_Manager::write(const String& str) {
 String Overseer_IO_Manager::get_name() {return Name;}
 
 int Overseer_IO_Manager::get_type() {return Type;}
+
+String Overseer_IO_Manager::get_fe_type() {return FE_Type;}
 
 /*
 Overseer Implementation.
@@ -118,12 +125,14 @@ void Overseer::search_config(JsonObject obj, const String& path) {
         if (type == "switch"     || 
             type == "button")       IO_Type = DIGITAL;
         if (type == "line_chart" ||
-            type == "bar")          IO_Type = ANALOG;
+            type == "bar"        ||
+            type == "pie_chart"  ||
+            type == "bar_chart")    IO_Type = ANALOG;
         if (type == "reading"    ||
             type == "terminal")     IO_Type = TEXT;
 
         if (IO_Type != -1) {
-            IO_Managers.push_back(new Overseer_IO_Manager(IO_Type, key, io_list));
+            IO_Managers.push_back(new Overseer_IO_Manager(IO_Type, type, key, io_list));
         }
     }
 
@@ -139,13 +148,17 @@ void Overseer::search_config(JsonObject obj, const String& path) {
     }
 }
 
-void Overseer::handle_instruction(const String& target, const String& str) {
+void Overseer::handle_instruction(const String& target, const String& str, int target_type) {
   // Handle an incoming instruction from the OSS server.
   for (Overseer_IO_Manager* IO_Manager : IO_Managers) {
     // If a target matches the name saved within the IO Manager then send the update to that target.
-    if (IO_Manager->get_name() == target) {
+    if (target_type == NAME && IO_Manager->get_name() == target) {
       IO_Manager->write(str);
       return;
+    }
+    // If the target type is TYPE then use the frontends type to match the target.
+    if (target_type == TYPE && IO_Manager->get_fe_type() == target) {
+      IO_Manager->write(str);
     }
   }
 }
@@ -163,6 +176,12 @@ void Overseer::initialise() {
 
 void Overseer::loop() {
   // Loop through every IO Manager within the object and collect the update information.
+
+  // If the network sleep flag has been set then dont measure anything and return.
+  if (OS_Network::inst().is_asleep()) {
+    return;
+  }
+
   String update_string = "";
 
   bool force = force_read;
