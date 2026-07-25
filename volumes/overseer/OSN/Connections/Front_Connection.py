@@ -14,7 +14,7 @@ class Front_Connection (OSS_Connection) :
         await self.update_control()
 
         # Send every connected device's config/state to this front concurrently.
-        devices = list(self.OSS_All_Connections["device"].values())
+        devices = [d for d in self.OSS_All_Connections["device"].values() if d.user == self.user]
 
         async def send_device(device):
             data = {
@@ -48,7 +48,12 @@ class Front_Connection (OSS_Connection) :
         # Send that data to the device, if it's still connected.
         device = self.OSS_All_Connections["device"].get(UUID)
         if device is None:
+            # If no device is returned, send a notification to the fronts to close it.
             logger.warning(f"Front {self.uuid} targeted unknown/disconnected device {UUID}")
+            data = {
+                "CLOSED" : device
+            }
+            await self.broadcast("front", self.OSS_Message(self, json.dumps(data)))
             return
 
         await device.send(DATA)

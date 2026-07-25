@@ -21,9 +21,23 @@ class OSS_Connection:
         # Process the path to determine the connection type and get the config.
         self.config = parse_qs(urlparse(path).query).get("CONF", [None])[0]
 
+        self.user = self.extract_user()
+
         # Setup the message queue and writer task.
         self._send_queue = asyncio.Queue(maxsize=queue_maxsize)
         self._writer_task = asyncio.create_task(self._writer())
+
+
+    def extract_user(self):
+        # Extract the username from the config.
+        for value in json.loads(self.config).values():
+            if isinstance(value, dict) and "__CONFIG__" in value:
+                user = value["__CONFIG__"].get("USER")
+                if not user:
+                    raise ValueError("Config found but no USER field present.")
+                print(f"Connection {self.uuid} as {user}")
+                return user
+        raise ValueError("No __CONFIG__ block found in config.")
 
 
     async def _writer (self) :
@@ -56,7 +70,7 @@ class OSS_Connection:
 
     async def broadcast (self, connection_type, message) :
         # Send a message to every connection of a given type concurrently.
-        targets = list(self.OSS_All_Connections[connection_type].values())
+        targets = [c for c in self.OSS_All_Connections[connection_type].values() if c.user == self.user]
         if not targets:
             return
         await asyncio.gather(*(c.send(message) for c in targets))
