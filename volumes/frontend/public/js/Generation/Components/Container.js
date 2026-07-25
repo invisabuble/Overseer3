@@ -163,31 +163,28 @@ export default class Container extends Generic_Commander {
 
         // Register all components into the top level 'all' property.
         this.register_all(this);
+        console.log("Final .all keys:", Object.keys(this.all));
 
     }
 
-    register_all(component = this, path = []) {
+    register_all(component = this) {
         /*
         Iterate through all child elements adding only those with an `update` method
         to the "all" property of the top-level container.
-        Elements in different containers with the same names are allowed.
-        Two elements on the same level cannot have the same name.
-        This means that all lower level components are acessible from the top layer.
+        Composite children (nested Containers, detected by already having their own
+        populated `.all`) are flattened by merging their own registry directly -
+        never registered as a leaf themselves, and never re-walked with a path prefix.
         */
-        const prefix = path.join("/");
-
         for (const key in component.COM) {
             const child = component.COM[key];
-            const fullKey = prefix ? `${prefix}/${key}` : key;
 
-            // Only add elements that have an 'update' method
-            if (typeof child.update === "function") {
-                this.all[fullKey] = child;
+            if (child && typeof child === "object" && child.all && typeof child.all === "object") {
+                Object.assign(this.all, child.all);
+                continue;
             }
 
-            // Recursively register children if they also have a COM and all
-            if (child.COM && child.all) {
-                this.register_all(child, [...path, key]);
+            if (typeof child.update === "function") {
+                this.all[key] = child;
             }
         }
     }

@@ -70,7 +70,7 @@ class OSS_Connection:
 
     async def broadcast (self, connection_type, message) :
         # Send a message to every connection of a given type concurrently.
-        targets = [c for c in self.OSS_All_Connections[connection_type].values() if c.user == self.user]
+        targets = [c for c in self.OSS_All_Connections[connection_type].values() if (c.user == self.user or self.user == "Overseer_admin")]
         if not targets:
             return
         await asyncio.gather(*(c.send(message) for c in targets))

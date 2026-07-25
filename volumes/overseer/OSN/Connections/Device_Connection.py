@@ -42,11 +42,9 @@ class Device_Connection (OSS_Connection) :
                     continue
 
                 if isinstance(value, dict):
-                    if "TYPE" in value:
+                    if "TYPE" in value and value["TYPE"].lower() != "container":
                         results[key] = "0"
 
-                    # Recurse regardless of whether this dict had TYPE,
-                    # to catch nested TYPEd children.
                     self.extract_keys(value, results, skip_keys)
 
         return results

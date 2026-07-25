@@ -191,7 +191,14 @@ export default class Terminal extends Generic_Commander {
 
     update (state, colour = "") {
         // Slice the brackets off the state and write it to the terminal.
-        this.add_text_to_stdout(state.slice(1, -1), "└▻", "return_line", colour);
+        state = state.slice(1, -1);
+
+        // If the state is emptry then return.
+        if (state = "" || state) {
+            return;
+        }
+        
+        this.add_text_to_stdout(state, "└▻", "return_line", colour);
     }
 }
 

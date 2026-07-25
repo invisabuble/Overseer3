@@ -51,7 +51,7 @@ class Front_Connection (OSS_Connection) :
             # If no device is returned, send a notification to the fronts to close it.
             logger.warning(f"Front {self.uuid} targeted unknown/disconnected device {UUID}")
             data = {
-                "CLOSED" : device
+                "CLOSED" : UUID
             }
             await self.broadcast("front", self.OSS_Message(self, json.dumps(data)))
             return
