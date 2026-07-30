@@ -10,6 +10,9 @@ logger = logging.getLogger("OSS")
 alphabet = string.ascii_letters + string.digits
 
 class OSS_Connection:
+
+    network_asleep = False
+
     def __init__ (self, websocket, path, type, OSS_All_Connections, queue_maxsize=200) :
         # Connection object to facilitate storage of websocket connections and comminucation between them and the OSS.
         self.OSS_All_Connections = OSS_All_Connections
@@ -17,7 +20,7 @@ class OSS_Connection:
         self.type = type
         self.uuid = ''.join(secrets.choice(alphabet) for _ in range(15))
         self.IP = websocket.remote_address[0]
-
+        
         # Process the path to determine the connection type and get the config.
         self.config = parse_qs(urlparse(path).query).get("CONF", [None])[0]
 
@@ -60,6 +63,19 @@ class OSS_Connection:
         # Update the frontend line graph with the number of connections.
         device_count = len(self.OSS_All_Connections['device'])
         front_count = len(self.OSS_All_Connections['front'])
+
+        # If the front count is equal to zero then broadcast the shutdown command
+        # to all connected devices to alleviate network traffic.
+        if (front_count == 0 and not OSS_Connection.network_asleep) :
+            logger.warning(f"Putting network to sleep.")
+            OSS_Connection.network_asleep = True
+            await self.broadcast("device", {"CONTROL" : "net_sleep"})
+
+        # If the front count is greater than 0 and the network is asleep, wake up the devices.
+        if (front_count > 0 and OSS_Connection.network_asleep) :
+            logger.warning(f"Waking up network.")
+            OSS_Connection.network_asleep = False
+            await self.broadcast("device", {"CONTROL" : "net_wake"})
 
         data = {
             "Connections" : f"[{device_count},{front_count}]"
