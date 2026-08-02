@@ -38,7 +38,6 @@ class OSS_Connection:
                 user = value["__CONFIG__"].get("USER")
                 if not user:
                     raise ValueError("Config found but no USER field present.")
-                print(f"Connection {self.uuid} as {user}")
                 return user
         raise ValueError("No __CONFIG__ block found in config.")
 
@@ -59,6 +58,23 @@ class OSS_Connection:
             pass
 
 
+    async def network_sleep (self, state) :
+        # Sleep or wake the entire network.
+
+        if (bool(state) == OSS_Connection.network_asleep) :
+            # If the passed state is the same as the current state do nothing and return.
+            return
+
+        OSS_Connection.network_asleep = bool(state)
+        logger.warning(f"Network asleep : {OSS_Connection.network_asleep}")
+
+        net_message = "net_wake"
+        if (state) :
+            net_message = "net_sleep"
+
+        await self.broadcast("device", {"CONTROL" : net_message})
+
+
     async def update_control (self) :
         # Update the frontend line graph with the number of connections.
         device_count = len(self.OSS_All_Connections['device'])
@@ -66,16 +82,7 @@ class OSS_Connection:
 
         # If the front count is equal to zero then broadcast the shutdown command
         # to all connected devices to alleviate network traffic.
-        if (front_count == 0 and not OSS_Connection.network_asleep) :
-            logger.warning(f"Putting network to sleep.")
-            OSS_Connection.network_asleep = True
-            await self.broadcast("device", {"CONTROL" : "net_sleep"})
-
-        # If the front count is greater than 0 and the network is asleep, wake up the devices.
-        if (front_count > 0 and OSS_Connection.network_asleep) :
-            logger.warning(f"Waking up network.")
-            OSS_Connection.network_asleep = False
-            await self.broadcast("device", {"CONTROL" : "net_wake"})
+        await self.network_sleep(front_count == 0)
 
         data = {
             "Connections" : f"[{device_count},{front_count}]"

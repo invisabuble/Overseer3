@@ -7,11 +7,10 @@ logger = logging.getLogger("OSS")
 class Device_Connection (OSS_Connection) :
     def __init__ (self, websocket, path, type, OSS_All_Connections) :
         super().__init__(websocket, path, type, OSS_All_Connections)
-        logger.info(f"\033[01;95mNew Device Connection : {self.uuid}\033[0;0m")
+        logger.warning(f"\033[01;95mNew Device Connection : {self.uuid}\033[0;0m")
 
         # Store the state of the various GPIOs in the device to send to a front when it connects.
         self.device_state = self.extract_keys(json.loads(self.config))
-        logger.debug(self.device_state)
 
 
     async def initialise (self) :
@@ -65,6 +64,7 @@ class Device_Connection (OSS_Connection) :
 
     async def derived_close(self):
         # Close a device connection.
+        logger.warning(f"\033[01;95mClosed Device Connection : {self.uuid}\033[0;0m")
         data = {
             "CLOSED" : self.uuid
         }

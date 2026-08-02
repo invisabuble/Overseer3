@@ -6,7 +6,7 @@ logger = logging.getLogger("OSS")
 class Front_Connection (OSS_Connection) :
     def __init__ (self, websocket, path, type, OSS_All_Connections) :
         super().__init__(websocket, path, type, OSS_All_Connections)
-        logger.info(f"\033[01;95mNew Front Connection : {self.uuid}\033[0;0m")
+        logger.warning(f"\033[01;95mNew Front Connection : {self.uuid}\033[0;0m")
 
 
     async def initialise (self) :
@@ -57,3 +57,7 @@ class Front_Connection (OSS_Connection) :
             return
 
         await device.send(DATA)
+
+    
+    async def derived_close(self):
+        logger.warning(f"\033[01;95mClosed Front Connection : {self.uuid}\033[0;0m")
