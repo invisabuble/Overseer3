@@ -173,7 +173,7 @@ logo_text {
     line-height: 1;
     max-height: var(--logo_height);
     font-family: poppins;
-    color: white;
+    color: var(--font_colour);
 }
 
 user_container {
