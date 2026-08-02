@@ -241,7 +241,7 @@ container-extras {
 }
 
 container_user {
-    color: var(--font_colour);
+    color: rgb(255, 161, 86);
 }
 
 status {
