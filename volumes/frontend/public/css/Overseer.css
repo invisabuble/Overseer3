@@ -30,6 +30,11 @@
     --d_bar_number: calc(var(--bar_height) - 10px);
 }
 
+/* Global box-sizing so width:100% + padding never overflows */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* Removing background of scroller for Chrome, Edge, Safari */
 ::-webkit-scrollbar {
     width: 8px;
@@ -50,9 +55,15 @@
     scrollbar-color: #888 transparent;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     background: var(--bg);
     margin: auto;
+    min-height: 100%;
+    overflow-x: hidden;
 }
 
 .display-flex {
@@ -80,7 +91,7 @@ devices {
 
 .login-body {
     width: 100%;
-    height: 80%;
+    min-height: 80vh;
     justify-content: center;
     align-items: center;
     gap: calc(3 * var(--gap));
@@ -102,14 +113,13 @@ input:focus {
 }
 
 .login_content {
-    padding-top: var(--gap);
-    padding-right: var(--gap);
-    padding-bottom: var(--gap);
-    width: calc(100% - var(--gap));
+    padding: var(--gap);
+    width: 100%;
 }
 
 form {
     margin: auto;
+    width: 100%;
 }
 
 remember_container {
@@ -198,6 +208,7 @@ control_panel_container {
 container {
     background:#191B20;
     width: fit-content;
+    max-width: calc(100% - 2 * var(--gap));
     height: fit-content;
     min-width: fit-content;
     min-height: fit-content;
@@ -211,10 +222,10 @@ container {
 }
 
 header {
-    width: calc(100% - 2 * var(--gap));
-    gap: var(--gap);
+    width: 100%;
     padding-left: var(--gap);
     padding-right: var(--gap);
+    gap: var(--gap);
     align-items: center;
     justify-content: space-between;
 }
@@ -227,6 +238,10 @@ container-extras {
     align-items: center;
     gap: var(--gap);
     color: #718BCC;
+}
+
+container_user {
+    color: var(--font_colour);
 }
 
 status {
@@ -292,6 +307,7 @@ button:active {
 
 content {
     width: 100%;
+    padding-left: var(--gap);
     padding-right: var(--gap);
     padding-bottom: var(--gap_2);
     gap: var(--gap_2);
@@ -350,7 +366,7 @@ clock {
     position: relative;
     min-width: 0;
     align-items: center;
-    padding-left: 0;
+    padding-left: var(--gap);
     padding-right: var(--gap);
     gap: var(--gap);
     flex-wrap: wrap;
@@ -368,8 +384,8 @@ switch {
 }
 
 switch_toggler {
-    width: calc(var(--switch_length) / 2);
-    height: calc(var(--switch_length) / 2);
+    width: calc(var(--switch_length) / 2 - 2 * var(--switch_padding));
+    height: calc(var(--switch_length) / 2 - 2 * var(--switch_padding));
     border-radius: calc(var(--switch_length) / 2);
     margin-left: 0px;
     transition: 0.3s ease-in-out;
@@ -411,7 +427,9 @@ button_toggler {
 }
 
 .terminal_window {
-    min-width: 400px;
+    width: 100%;
+    min-width: 0;
+    max-width: 400px;
     min-height: 200px;
     display: flex;
     flex-direction: column;
@@ -446,7 +464,7 @@ cmdline {
 stdin {
     flex-grow: 1;
     max-height: fit-content;
-    max-width: 400px;
+    max-width: 100%;
     padding-left: var(--gap_2);
     overflow: hidden;
 }
@@ -457,7 +475,7 @@ stdin:focus{
 
 output_line {
     width: calc(100% - 2 * var(--gap));
-    max-width: 350px;
+    max-width: 100%;
     line-height: 1;
     word-break: break-all;
 }
@@ -474,16 +492,19 @@ _prefix {
 /* - Charts - */
 
 .generic_chart {
+    width: 100%;
     min-height: var(--chart_height);
     max-height: var(--chart_height);
     max-width: var(--chart_max_width);
 }
 
 .Line_Chart {
+    width: 100%;
     max-width: 800px;
 }
 
 .Pie_Chart {
+    width: 100%;
     max-width: var(--chart_height);
 }
 
@@ -523,4 +544,76 @@ bar_number {
     justify-content: center;
     align-items: center;
     transition: 0.3s ease all;
+}
+
+/* ==========================================================
+   - Mobile breakpoint -
+   Everything above this point assumes a desktop-ish viewport.
+   These overrides let containers, charts, terminal, and header
+   shrink to fit phone widths instead of forcing horizontal
+   overflow that the browser then zooms out to compensate for.
+   ========================================================== */
+
+@media (max-width: 600px) {
+
+    /* Scale the logo variable itself so the SVG and its text stay proportional to each other */
+    :root {
+        --logo_height: 44px;
+    }
+
+    /* Header: stack logo above the user/logout row instead of forcing them into one overflowing horizontal line */
+    header_container {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap_2);
+    }
+
+    logo_container {
+        width: 100%;
+        justify-content: center;
+    }
+
+    username,
+    header_username {
+        font-size: 18px;
+    }
+
+    user_container {
+        width: 100%;
+        justify-content: center;
+        gap: var(--gap);
+        padding-right: 0;
+        padding-bottom: var(--gap_2);
+    }
+
+    /* Containers: allow them to take the full row width instead
+       of sizing purely to content, so multi-container rows wrap
+       cleanly at .devices */
+    container {
+        width: 100%;
+    }
+
+    /* Terminal: drop the desktop max-width entirely on mobile so
+       it fills the available width */
+    .terminal_window {
+        max-width: 100%;
+    }
+
+    /* Charts: cap width at the viewport itself, ignoring the
+       desktop pixel caps defined above */
+    .generic_chart,
+    .Line_Chart,
+    .Pie_Chart {
+        max-width: 100%;
+    }
+
+    /* Bars: the fixed --bar_length (tied to --chart_height) is a
+       desktop assumption; let bars fill their row on mobile */
+    bar {
+        width: 100%;
+    }
+
+    .reading_text {
+        font-size: 28px;
+    }
 }

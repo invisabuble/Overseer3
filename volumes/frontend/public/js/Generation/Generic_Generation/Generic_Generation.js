@@ -92,12 +92,26 @@ export class Generic_Generation {
     get_CI_value (key_value, object=null, default_value = "") {
         /*
         Returns the value or default value associated with a key. This makes retrieval case insensitive.
+        Checks the object's own keys first, then falls back to looking inside a __CONFIG__ block if present.
         */
         if (!object) {
             return default_value;
         }
-        const key = Object.keys(object).find(key => key.toLowerCase() === key_value.toLowerCase());
-        return object?.[key] ?? default_value;
+
+        const key = Object.keys(object).find(k => k.toLowerCase() === key_value.toLowerCase());
+        if (key !== undefined) {
+            return object[key] ?? default_value;
+        }
+
+        const config_key = Object.keys(object).find(k => k.toLowerCase() === "__config__");
+        if (config_key) {
+            const nested_key = Object.keys(object[config_key]).find(k => k.toLowerCase() === key_value.toLowerCase());
+            if (nested_key !== undefined) {
+                return object[config_key][nested_key] ?? default_value;
+            }
+        }
+
+        return default_value;
     }
 
 

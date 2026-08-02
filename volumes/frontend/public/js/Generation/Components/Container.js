@@ -11,9 +11,16 @@ export default class Container extends Generic_Commander {
         var STYLE            = this.get_CI_value("STYLE", config[this.NAME]);
         var creation_time    = new Date().toLocaleString();
 
-        this.parent_cont     = config[this.NAME]
-        this._CONFIG_PRESENT = true;
-        this._CONFIG_VALID   = true;
+        // Get the user associated with this config.
+        var USER             = this.get_CI_value("USER", config[this.NAME]);
+
+        // If the user associated with this config is the same as the user that is logged in then blank out the username.
+        if (USER == window.OSN_user) {USER = "";}
+ 
+        this.parent_cont        = config[this.NAME]
+        this._CONFIG_PRESENT    = true;
+        this._CONFIG_VALID      = true;
+        this._FORCE_TIME_UPDATE = false;
 
         this.PANELS = {};
         this.all = {};
@@ -48,6 +55,9 @@ export default class Container extends Generic_Commander {
                                     "class" : "display-flex"
                                 },
                                 "CHILDREN" : {
+                                    "container_user" : {
+                                        "TEXT" : USER
+                                    },
                                     "timer" : {
                                         "ATTR" : {
                                             "title" : creation_time
@@ -114,6 +124,13 @@ export default class Container extends Generic_Commander {
             delete CONTAINER_JSON.container.CHILDREN.header.ATTR.onclick;
             delete CONTAINER_JSON.container.CHILDREN.config;
             this._CONFIG_PRESENT = false;
+        }
+
+        // If the user is "__all__" but the logged in user is not the admin then delete the config for the device.
+        if (window.OSN_user != "Overseer_admin" && USER == "__all__") {
+            delete CONTAINER_JSON.container.CHILDREN.config;
+            this._CONFIG_PRESENT = false;
+            this._FORCE_TIME_UPDATE = true;
         }
 
         // Generate the container.
@@ -205,7 +222,7 @@ export default class Container extends Generic_Commander {
         /*
         Update the timer within the device header.
         */
-        if (this._CONFIG_PRESENT) {
+        if (this._CONFIG_PRESENT || this._FORCE_TIME_UPDATE) {
             const current_time = Math.floor(Date.now() / 1000);
             
             const seconds = current_time - this.CREATION_TIME;

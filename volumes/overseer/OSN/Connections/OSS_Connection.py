@@ -91,9 +91,25 @@ class OSS_Connection:
         await self.broadcast("front", self.OSS_Control_Message(json.dumps(data)))
 
 
+    def visible_connections (self, connection_type) :
+        # Return every connection of a given type visible to this connection's user.
+        # Overseer_admin sees everyone, "__all__" devices are seen by everyone,
+        # otherwise a connection only sees its own user's connections.
+        return [
+            c for c in self.OSS_All_Connections[connection_type].values()
+            if self.user == "Overseer_admin"
+            or c.user == self.user
+            or c.user == "__all__"
+            or self.user == "__all__"
+            or (connection_type == "front" and c.user == "Overseer_admin")
+        ]
+
+
+
+
     async def broadcast (self, connection_type, message) :
-        # Send a message to every connection of a given type concurrently.
-        targets = [c for c in self.OSS_All_Connections[connection_type].values() if (c.user == self.user or self.user == "Overseer_admin")]
+        # Send a message to every visible connection of a given type concurrently.
+        targets = self.visible_connections(connection_type)
         if not targets:
             return
         await asyncio.gather(*(c.send(message) for c in targets))

@@ -14,8 +14,9 @@ class Front_Connection (OSS_Connection) :
         await self.update_control()
 
         # Send every connected device's config/state to this front concurrently.
-        devices = [d for d in self.OSS_All_Connections["device"].values() if d.user == self.user]
+        devices = self.visible_connections("device")
 
+        # Define helper function for asyncio gather.
         async def send_device(device):
             data = {
                 "Device_Config" : device.config
