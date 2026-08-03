@@ -13,6 +13,9 @@ class OSS_Connection:
 
     network_asleep = False
 
+    ALL_USER = "OS_all"
+    ADMIN_USER = "Overseer_admin"
+
     def __init__ (self, websocket, path, type, OSS_All_Connections, queue_maxsize=200) :
         # Connection object to facilitate storage of websocket connections and comminucation between them and the OSS.
         self.OSS_All_Connections = OSS_All_Connections
@@ -95,18 +98,14 @@ class OSS_Connection:
         # Return every connection of a given type visible to this connection's user.
         # Overseer_admin sees everyone, "__all__" devices are seen by everyone,
         # otherwise a connection only sees its own user's connections.
-        ALL_USER = "OS_all"
-        ADMIN_USER = "Overseer_admin"
         return [
             c for c in self.OSS_All_Connections[connection_type].values()
-            if self.user == ADMIN_USER
+            if self.user == OSS_Connection.ADMIN_USER
             or c.user == self.user
-            or c.user == ALL_USER
-            or self.user == ALL_USER
-            or (connection_type == "front" and c.user == ADMIN_USER)
+            or c.user == OSS_Connection.ALL_USER
+            or self.user == OSS_Connection.ALL_USER
+            or (connection_type == "front" and c.user == OSS_Connection.ADMIN_USER)
         ]
-
-
 
 
     async def broadcast (self, connection_type, message) :

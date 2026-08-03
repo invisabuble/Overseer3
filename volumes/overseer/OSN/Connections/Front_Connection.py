@@ -44,6 +44,7 @@ class Front_Connection (OSS_Connection) :
 
         if (UUID == "__CONTROL__") :
             # If the control uuid is passed then intercept the message and return
+            await self.command_parser(DATA["CONTROL"])
             return
 
         # Send that data to the device, if it's still connected.
@@ -58,6 +59,27 @@ class Front_Connection (OSS_Connection) :
             return
 
         await device.send(DATA)
+
+    
+    async def command_parser (self, command) :
+        # Parse a command from the fronts admin user.
+        if (self.user != OSS_Connection.ADMIN_USER) :
+            return
+        
+        ret = ""
+
+        match command:
+            case "hello" :
+                ret = "Hello there!"
+            case _ :
+                ret = "Unknown Command"
+
+        # Create the OSS Control message and send it to the front.
+        data = {
+            "Server Terminal" : f"[{ret}]"
+        }
+
+        await self.broadcast("front", self.OSS_Control_Message(json.dumps(data)))
 
     
     async def derived_close(self):

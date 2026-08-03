@@ -194,7 +194,7 @@ export default class Terminal extends Generic_Commander {
         state = state.slice(1, -1);
 
         // If the state is emptry then return.
-        if (state = "" || state) {
+        if (state == "") {
             return;
         }
         
