@@ -95,13 +95,15 @@ class OSS_Connection:
         # Return every connection of a given type visible to this connection's user.
         # Overseer_admin sees everyone, "__all__" devices are seen by everyone,
         # otherwise a connection only sees its own user's connections.
+        ALL_USER = "OS_all"
+        ADMIN_USER = "Overseer_admin"
         return [
             c for c in self.OSS_All_Connections[connection_type].values()
-            if self.user == "Overseer_admin"
+            if self.user == ADMIN_USER
             or c.user == self.user
-            or c.user == "__all__"
-            or self.user == "__all__"
-            or (connection_type == "front" and c.user == "Overseer_admin")
+            or c.user == ALL_USER
+            or self.user == ALL_USER
+            or (connection_type == "front" and c.user == ADMIN_USER)
         ]
 
 

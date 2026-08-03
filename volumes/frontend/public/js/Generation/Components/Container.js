@@ -127,7 +127,7 @@ export default class Container extends Generic_Commander {
         }
 
         // If the user is "__all__" but the logged in user is not the admin then delete the config for the device.
-        if (window.OSN_user != "Overseer_admin" && USER == "__all__") {
+        if (window.OSN_user != "Overseer_admin" && USER == "OS_all") {
             delete CONTAINER_JSON.container.CHILDREN.config;
             this._CONFIG_PRESENT = false;
             this._FORCE_TIME_UPDATE = true;
