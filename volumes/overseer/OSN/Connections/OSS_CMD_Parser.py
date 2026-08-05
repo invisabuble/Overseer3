@@ -110,7 +110,7 @@ class OSS_CMD_Parser:
 
         try:
             await ODB.call_procedure("change_password", USER, NEW_PASS, NEW_KEY)
-            ret = f"Changed {USER} password."
+            ret = f"Changed password for {USER}."
         except Exception as e:
             ret = f"Error changing password for {USER} : {e}"
 
