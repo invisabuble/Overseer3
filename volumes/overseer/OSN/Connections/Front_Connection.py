@@ -1,4 +1,5 @@
 from OSN.Connections.OSS_Connection import *
+from OSN.Connections.OSS_CMD_Parser import *
 import logging
 
 logger = logging.getLogger("OSS")
@@ -66,32 +67,8 @@ class Front_Connection (OSS_Connection) :
         if (self.user != OSS_Connection.ADMIN_USER) :
             return
         
-        command = command.split()
+        ret = await OSS_CMD_Parser.CMD_Parse(command)
         
-        ret = ""
-
-        match command[0]:
-            case "help" :
-                ret = """
-Welcome to Overseer!
-You can use the following commands:
-
-help
-create_user [username] [password]
-"""
-
-            case "create_user":
-                # Check the length of the command list
-                if (len(command) == 3) :
-                    NEW_USER = command[1]
-                    NEW_PASS = command[2]
-                    ret = f"Created new user {NEW_USER}"
-                else:
-                    ret = "Incorrect syntax for create_user."
-
-            case _ :
-                ret = "Unknown Command"
-
         # Create the OSS Control message and send it to the front.
         data = {
             "Server Terminal" : f"[{ret}]"
