@@ -22,7 +22,7 @@ def async_db_operation (method) :
 
         except Exception as e:
             print(f"ASYNC DB OP EXCEPTION : {e}")
-            return None
+            raise
 
     return db_op
 

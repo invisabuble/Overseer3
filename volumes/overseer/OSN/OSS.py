@@ -36,9 +36,9 @@ class OSS:
 
         try:
             if (CON_type == "front") :
-                NC = Front_Connection(websocket, path, CON_type, self.Connections)
+                NC = Front_Connection(websocket, path, CON_type, self.Connections, self.ODB)
             elif (CON_type == "device") :
-                NC = Device_Connection(websocket, path, CON_type, self.Connections)
+                NC = Device_Connection(websocket, path, CON_type, self.Connections, self.ODB)
             else :
                 await websocket.close(code=4000, reason=f"Unknown connection type : {CON_type}")
                 return
@@ -68,6 +68,9 @@ class OSS:
             keyfile="/certs/overseer/overseer-server.key"
         )
 
+        # Init the connection to the database.
+        db_task = asyncio.create_task(self.ODB.init_connection())
+
         # Start the websocket server.
         async with websockets.serve(
 
@@ -81,7 +84,10 @@ class OSS:
         ) as server:
             
             print(f"Server started at {self.host}:{self.port}, ping-int: {self.ping_int}, ping_tmt: {self.ping_tmt}")
+
+            # Await the stop event to receive messages.
             await self.stop_event.wait()
+
             print("Shutting down server...")
             server.close()
             await server.wait_closed()

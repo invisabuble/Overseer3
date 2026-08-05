@@ -16,13 +16,14 @@ class OSS_Connection:
     ALL_USER = "OS_all"
     ADMIN_USER = "Overseer_admin"
 
-    def __init__ (self, websocket, path, type, OSS_All_Connections, queue_maxsize=200) :
+    def __init__ (self, websocket, path, type, OSS_All_Connections, ODB, queue_maxsize=200) :
         # Connection object to facilitate storage of websocket connections and comminucation between them and the OSS.
         self.OSS_All_Connections = OSS_All_Connections
         self.websocket = websocket
         self.type = type
         self.uuid = ''.join(secrets.choice(alphabet) for _ in range(15))
         self.IP = websocket.remote_address[0]
+        self.ODB = ODB
         
         # Process the path to determine the connection type and get the config.
         self.config = parse_qs(urlparse(path).query).get("CONF", [None])[0]

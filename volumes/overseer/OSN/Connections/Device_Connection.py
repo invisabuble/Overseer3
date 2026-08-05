@@ -5,8 +5,8 @@ import logging
 logger = logging.getLogger("OSS")
 
 class Device_Connection (OSS_Connection) :
-    def __init__ (self, websocket, path, type, OSS_All_Connections) :
-        super().__init__(websocket, path, type, OSS_All_Connections)
+    def __init__ (self, websocket, path, type, OSS_All_Connections, ODB) :
+        super().__init__(websocket, path, type, OSS_All_Connections, ODB)
         logger.warning(f"\033[01;95mNew Device Connection : {self.uuid}\033[0;0m")
 
         # Store the state of the various GPIOs in the device to send to a front when it connects.

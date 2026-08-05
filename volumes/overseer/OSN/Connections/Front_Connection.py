@@ -5,8 +5,8 @@ import logging
 logger = logging.getLogger("OSS")
 
 class Front_Connection (OSS_Connection) :
-    def __init__ (self, websocket, path, type, OSS_All_Connections) :
-        super().__init__(websocket, path, type, OSS_All_Connections)
+    def __init__ (self, websocket, path, type, OSS_All_Connections, ODB) :
+        super().__init__(websocket, path, type, OSS_All_Connections, ODB)
         logger.warning(f"\033[01;95mNew Front Connection : {self.uuid}\033[0;0m")
 
 
@@ -67,7 +67,7 @@ class Front_Connection (OSS_Connection) :
         if (self.user != OSS_Connection.ADMIN_USER) :
             return
         
-        ret = await OSS_CMD_Parser.CMD_Parse(command)
+        ret = await OSS_CMD_Parser.CMD_Parse(self.ODB, command)
         
         # Create the OSS Control message and send it to the front.
         data = {
