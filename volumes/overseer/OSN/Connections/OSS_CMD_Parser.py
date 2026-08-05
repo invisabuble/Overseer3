@@ -103,5 +103,13 @@ class OSS_CMD_Parser:
         # Delete an OS user.
 
         USER = args[0]
+
+        ret = ""
+
+        try:
+            await ODB.call_procedure("delete_user", USER)
+            ret = f"Deleted user {USER}"
+        except Exception as e:
+            ret = f"Error deleting user : {USER} : {e}"
         
-        return f"Deleting user : {USER}"
+        return ret
