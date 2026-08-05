@@ -5,7 +5,9 @@ import bcrypt
 import secrets
 import string
 import ssl
+import logging
 
+logger = logging.getLogger("ODB")
 
 def async_db_operation (method) :
     """
@@ -67,10 +69,11 @@ class ODB:
                             autocommit=True,
                             ssl=ODB.ssl_ctx
                         )
-                        print(f"OS_db connected to the Overseer database @ {self.host}")
+                        
+                        logger.warning(f"OS_db connected to the Overseer database @ {self.host}")
 
                     except Exception as e:
-                        print(f"Failed to connect to Overseer database @ {self.host} : {e}")
+                        logger.warning(f"Failed to connect to Overseer database @ {self.host} : {e}")
                         await asyncio.sleep(1)
 
         # Generate a password hash and a secret key from the master password.
@@ -103,14 +106,14 @@ class ODB:
         if (cls.pool) :
             cls.pool.close()
             await cls.pool.wait_closed()
-            print("Closed connection to the database.")
+            logger.warning("Closed connection to the database.")
 
 
     @async_db_operation
     async def call_procedure (self, cursor, proc, *params) :
         # Call a procedure in the database and retrieve the result.
         await cursor.callproc(proc, params)
-        print(f"Executed {proc} [{params}]")
+        logger.warning(f"Executed {proc} [{params}]")
         ret = await cursor.fetchone()
-        print(f"{proc} returned : {ret}")
+        logger.warning(f"{proc} returned : {ret}")
         return ret

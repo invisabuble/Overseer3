@@ -92,6 +92,30 @@ class OSS_CMD_Parser:
 
         return ret
     
+
+    @staticmethod
+    async def change_password (ODB, *args, help=False) :
+        if (len(args) != 2) :
+            help = True
+        if (help or not args) :
+            return "Change a users password : change_password [username] [new_password]"
+        
+        USER     = args[0]
+        NEW_PASS = args[1]
+
+        # Hash the new password
+        NEW_PASS, NEW_KEY = ODB.hash_pwd(NEW_PASS)
+
+        ret = ""
+
+        try:
+            await ODB.call_procedure("change_password", USER, NEW_PASS, NEW_KEY)
+            ret = f"Changed {USER} password."
+        except Exception as e:
+            ret = f"Error changing password for {USER} : {e}"
+
+        return ret
+    
     
     @staticmethod
     async def delete_user (ODB, *args, help=False) :
