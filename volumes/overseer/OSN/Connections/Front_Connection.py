@@ -66,11 +66,29 @@ class Front_Connection (OSS_Connection) :
         if (self.user != OSS_Connection.ADMIN_USER) :
             return
         
+        command = command.split()
+        
         ret = ""
 
-        match command:
-            case "hello" :
-                ret = "Hello there!"
+        match command[0]:
+            case "help" :
+                ret = """
+Welcome to Overseer!
+You can use the following commands:
+
+help
+create_user [username] [password]
+"""
+
+            case "create_user":
+                # Check the length of the command list
+                if (len(command) == 3) :
+                    NEW_USER = command[1]
+                    NEW_PASS = command[2]
+                    ret = f"Created new user {NEW_USER}"
+                else:
+                    ret = "Incorrect syntax for create_user."
+
             case _ :
                 ret = "Unknown Command"
 

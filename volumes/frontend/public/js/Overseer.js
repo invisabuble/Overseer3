@@ -2,6 +2,7 @@ import { minimax } from "./misc/misc.js";
 import { CreateInfoWindow } from "./misc/misc.js";
 import { OSN_Client } from "./misc/websockets.js";
 
+window.OS_DEBUG = false;
 window.OSN_Client = OSN_Client;
 window.OS_Components = {};
 window.minimax=minimax;

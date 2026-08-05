@@ -25,8 +25,10 @@ class OSN_client {
 
             const MSG = JSON.parse(event.data);
 
-            console.log(MSG);
-
+            if (window.OS_DEBUG) {
+                console.log(MSG);
+            }
+            
             const UUID = MSG.UUID;
             const DATA = MSG.DATA;
             const IP   = MSG.IP;
