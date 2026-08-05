@@ -428,7 +428,7 @@ button_toggler {
 
 .terminal_window {
     width: 100%;
-    min-width: 0;
+    min-width: 400px;
     max-width: 400px;
     min-height: 200px;
     display: flex;
@@ -437,14 +437,15 @@ button_toggler {
 
 .terminal_content {
     flex: 1 1 auto;
+    flex-wrap: nowrap;
     overflow: hidden;
     gap: 0px;
 }
 
 stdout {
     flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
-    max-height: 130px;
     width: calc(100% - 2 * var(--gap));
     gap: var(--gap_2);
     display: flex;
@@ -452,8 +453,8 @@ stdout {
 }
 
 cmdline {
-    padding-top: 2px;
     flex: 0 0 auto;
+    padding-top: 2px;
     width: calc(100% - 2 * var(--gap));
     display: flex;
     align-items: flex-start;
@@ -477,7 +478,9 @@ output_line {
     width: calc(100% - 2 * var(--gap));
     max-width: 100%;
     line-height: 1;
-    word-break: break-all;
+    word-break: normal;
+    overflow-wrap: break-word;
+    white-space: pre-line;
 }
 
 _prefix {
@@ -596,6 +599,7 @@ bar_number {
     /* Terminal: drop the desktop max-width entirely on mobile so
        it fills the available width */
     .terminal_window {
+        min-width: 100%;
         max-width: 100%;
     }
 
