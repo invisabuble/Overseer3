@@ -363,9 +363,15 @@ export default class Container extends Generic_Commander {
         
     }
 
-    send_new_firmware() {
+    update_notification (message) {
+        this.COM.notification_container.innerText = message;
+    }
 
-        var device_id = this.UUID;
+    send_new_firmware() {
+        /*
+        Send new firmware to the device.
+        */
+
         const input = document.createElement("input");
         input.type = "file";
         input.accept = ".bin";
@@ -375,15 +381,16 @@ export default class Container extends Generic_Commander {
             const file = input.files[0];
             if (!file) return;
 
-            console.log(`Uploading firmware: ${file.name} (${file.size} bytes)`);
+            this.update_notification("Uploading Firmware...");
 
             const formData = new FormData();
             formData.append("firmware", file);
-            formData.append("device_id", device_id);
+            formData.append("device_id", this.UUID);
 
             try {
                 // credentials: "include" ensures the session cookie is sent —
                 // needed since this is a fetch call, not a normal page navigation.
+                
                 const response = await fetch("/upload_firmware.php", {
                     method: "POST",
                     body: formData,
@@ -396,12 +403,18 @@ export default class Container extends Generic_Commander {
                     throw new Error(result.error || `Upload failed: ${response.status}`);
                 }
 
+                this.update_notification("Firmware Uploaded");
                 console.log("Firmware uploaded:", result.url);
 
-                // Your existing send-command path — swap in the real call.
-                //this.send_command_to_device(device_id, { OTA: result.url });
+                // Send the update command to the device.
+                const DATA = {
+                    "OTA" : result.url
+                }
+
+                this.send_command(DATA);
 
             } catch (err) {
+                this.update_notification("Upload Failed");
                 console.error("Firmware upload failed:", err);
             }
 

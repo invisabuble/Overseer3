@@ -2,3 +2,4 @@ __pycache__/
 docker/apache/web/private/certs
 volumes/db/*
 Firmware/User_Config.h
+Firmware/build

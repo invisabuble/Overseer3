@@ -143,7 +143,7 @@ void OS_Network::OS_Terminal(String &command) {
     if (cmd == "help" || cmd == "?") {
         // Send the help message to the front.
         CMD_MATCH = true;
-        ret = "Here to help!";
+        ret = "Overseer Device Commands\\n - reboot : Reboot the device\\n - net_sleep : Stop sending messages\\n - net_wake : Start sending messages\\n - extended_commands : Are the extended commands active";
     }
 
     if (cmd == "reboot") {
