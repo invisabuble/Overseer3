@@ -9,15 +9,22 @@ def OSS_CMD(arg_len, help_msg):
     and help text so each command only needs to implement its actual logic.
     """
     def decorator(method):
+
         @functools.wraps(method)
         async def wrapper(ODB, *args, help=False):
+            # Process arg checking and help message here.
             if len(args) != arg_len:
                 help = True
             if help or (arg_len > 0 and not args):
                 return help_msg
+            
+            # Execute the passed method.
             return await method(ODB, *args, help=help)
+        
+        # Register the passed method in the registered commands dict.
         registered_commands[method.__name__] = wrapper
         return staticmethod(wrapper)
+    
     return decorator
 
 
