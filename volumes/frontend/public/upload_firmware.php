@@ -14,7 +14,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 // Find the user's permissions.
-$stmt = db_execute("CALL get_user_permissions(?)", [$_SESSION['username']]);
+$stmt = db_execute("CALL get_user_property(?, ?)", [$_SESSION['username'], 'permissions']);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 $perm = $row['permissions'];
 

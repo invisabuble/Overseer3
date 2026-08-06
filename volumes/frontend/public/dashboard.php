@@ -12,7 +12,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 # Find the users permissions
-$stmt = db_execute("CALL get_user_permissions(?)", [$_SESSION['username']]);
+$stmt = db_execute("CALL get_user_property(?, ?)", [$_SESSION['username'], 'permissions']);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 $perm = $row['permissions'];
 
@@ -75,6 +75,7 @@ $perm = $row['permissions'];
         // Get the WSS port number.
         window.OSN_port = <?php echo json_encode(getenv('OSN_PORT')) ?>;
         window.OSN_user = <?php echo json_encode($_SESSION['username']) ?>;
+        window.OSN_perm = <?php echo json_encode($perm) ?>;
 
         const waitForImports = setInterval(() => {
             if (window.DYNAMIC_IMPORT_FINISHED) {
