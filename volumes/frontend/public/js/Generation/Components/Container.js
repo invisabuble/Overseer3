@@ -13,9 +13,13 @@ export default class Container extends Generic_Commander {
 
         // Get the user associated with this config.
         var USER             = this.get_CI_value("USER", config[this.NAME]);
+        var PERM             = false;
 
         // If the user associated with this config is the same as the user that is logged in then blank out the username.
         if (USER == window.OSN_user) {USER = "";}
+
+        // If the logged in user has * permissions change PERM to true
+        if (window.OSN_perm == "*") {PERM = true;}
  
         this.parent_cont        = config[this.NAME]
         this._CONFIG_PRESENT    = true;
@@ -139,6 +143,11 @@ export default class Container extends Generic_Commander {
             }
         };
 
+        // If the users permissions arent high enough remove the update firmware button.
+        if (!PERM) {
+            delete CONTAINER_JSON.container.CHILDREN.config.CHILDREN.button_container.CHILDREN.button_firmware;
+        }
+
         // If the config json doesnt contain the __CONFIG__ key then delete the config element within the container.
         if (!this.parent_cont.__CONFIG__) {
             delete CONTAINER_JSON.container.CHILDREN.header.CHILDREN["container-extras"];
@@ -147,8 +156,8 @@ export default class Container extends Generic_Commander {
             this._CONFIG_PRESENT = false;
         }
 
-        // If the user is "__all__" but the logged in user is not the admin then delete the config for the device.
-        if (window.OSN_user != "Overseer_admin" && USER == "OS_all") {
+        // If the user is "__all__" but the logged in user hasnt got elevated permissions then delete the config for the device.
+        if (!PERM && USER == "OS_all") {
             delete CONTAINER_JSON.container.CHILDREN.config;
             this._CONFIG_PRESENT = false;
             this._FORCE_TIME_UPDATE = true;
@@ -187,7 +196,7 @@ export default class Container extends Generic_Commander {
             }
         });
 
-        // If the config is present then add an event listeners.
+        // If the config is present and the user has high enough permissions then add an event listeners.
         if (this._CONFIG_PRESENT) {
             // Add an event listener to the send button.
             this.COM.button_send.addEventListener('click', this.send_new_config.bind(this));
@@ -195,8 +204,10 @@ export default class Container extends Generic_Commander {
             // Add an event listener to the pre tag.
             this.COM.pre.addEventListener('input', this.validate_config.bind(this))
 
-            // Add an event listener to the update firmware button.
-            this.COM.button_firmware.addEventListener('click', this.send_new_firmware.bind(this));
+            // If the user has high enough permissions add an event listener to the update firmware button.
+            if (PERM) {
+                this.COM.button_firmware.addEventListener('click', this.send_new_firmware.bind(this));
+            }
         }
         
         // Start the up timer.

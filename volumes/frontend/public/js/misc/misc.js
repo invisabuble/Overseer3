@@ -5,6 +5,11 @@ export function minimax (element,  defaultHeight="0px") {
 
     var config = document.getElementById(element + "C");
 
+    if (!config) {
+        console.log("Invalid selection");
+        return;
+    }
+
     if (config.classList.contains('collapsed')) {
         // Expand
         config.classList.remove('collapsed');
