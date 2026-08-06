@@ -127,31 +127,47 @@ void OS_Network::OS_Terminal(String &command) {
 
     Overseer& OS_Inst = Overseer::inst();
 
+    String ret = "";
+
     if (cmd == "help" || cmd == "?") {
-        OS_Inst.handle_instruction("terminal", "Here to help!", TYPE);
-        return;
+        // Send the help message to the front.
+        ret = "Here to help!";
     }
 
     if (cmd == "reboot") {
+        // Reboot the device.
         OS_Network::inst().close_wss();
         ESP.restart();
     }
 
     if (cmd == "net_sleep") {
+        // Put the network to sleep and stop any messages leaving the device.
         network_sleep = true;
-        return;
     }
 
     if (cmd == "net_wake") {
-        OS_Inst.handle_instruction("terminal", "Network awake.", TYPE);
+        // Wake up the network and begin transmitting messages.
+        ret = "Network awake.";
         network_sleep = false;
+    }
+
+    // If none of the default commands register then send to the extended command method if it exists.
+    if (OS_Term_Ext != nullptr) {
+        ret = OS_Term_Ext(command);
+    }
+
+    // If the return message is not empty then send it to the terminal types.
+    if (ret != "") {
+        OS_Inst.handle_instruction("terminal", ret, TYPE);
         return;
     }
 
     // Handle unrecognised commands.
-    Serial.println("Handling unrecognised command");
     OS_Inst.handle_instruction("terminal", "Unrecognised command.", TYPE);
+}
 
+void OS_Network::Set_OS_Term_Callback(String (*OS_Term_Ext_Callback)(String &)) {
+    OS_Term_Ext = OS_Term_Ext_Callback;
 }
 
 void OS_Network::send(String& message) {
