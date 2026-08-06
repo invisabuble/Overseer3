@@ -131,7 +131,22 @@ class OSS_CMD_Parser:
     async def change_permission (ODB, *args, help=False) :
         # Change the permission level of a user
 
-        pass
+        USER = args[0]
+        PERM = args[1]
+
+        ret = ""
+        valid_perms = ["*", "0"]
+
+        if (PERM not in valid_perms) :
+            return f"Unrecognised permission : {PERM}, must be in {valid_perms}"
+        
+        try:
+            await ODB.call_procedure("change_permission", USER, PERM)
+            ret = f"Changed permission for {USER}"
+        except Exception as e:
+            ret = f"Error changing permission for {USER} : {e}"
+
+        return ret
 
 
     @OSS_CMD(1, "Delete an Overseer user : delete_user [username]")
