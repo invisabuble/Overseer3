@@ -41,6 +41,7 @@ services:
     volumes:
       - ./volumes/frontend/public:/var/www/html:ro
       - ./volumes/frontend/private:/private:ro
+      - ./volumes/frontend/firmware:/var/www/overseer/firmware
       - ./docker/docker-apache/web/private/certs/root:/certs/root:ro
       - ./docker/docker-apache/web/private/certs/apache:/certs/apache:ro
     ports:
@@ -53,6 +54,9 @@ services:
     extra_hosts:
       - "Overseer_FE:127.0.1.1"
       - "overseer.home:${HOST_IP:-127.0.0.1}"
+    command: >
+      sh -c "chown -R www-data:www-data /var/www/overseer/firmware && apache2-foreground"
+
 
   Overseer_DB:
     hostname: Overseer_DB

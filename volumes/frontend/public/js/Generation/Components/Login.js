@@ -131,7 +131,8 @@ export default class Login extends Generic_Generation {
                                             "vertical_divide" : {},
                                             "button" : {
                                                 "ATTR" : {
-                                                    "type" : "submit"
+                                                    "type" : "submit",
+                                                    "class" : "button"
                                                 },
                                                 "TEXT" : "Login"
                                             }

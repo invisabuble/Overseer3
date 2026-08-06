@@ -100,9 +100,30 @@ export default class Container extends Generic_Commander {
                                 "TEXT" : JSON.stringify(config, null, 2)
                             },
 
-                            "button" : {
-                                "TEXT" : "Send"
+                            "button_container" : {
+                                "ATTR" : {
+                                    "class" : "display-flex"
+                                },
+                                "CHILDREN" : {
+                                    "button_send" : {
+                                        "ATTR" : {
+                                            "id" : "send",
+                                            "class" : "button noselect"
+                                        },
+                                        "TEXT" : "Send"
+                                    },
+
+                                    "button_firmware" : {
+                                        "ATTR" : {
+                                            "id" : "UpdateFirmware",
+                                            "class" : "button noselect"
+                                        },
+                                        "TEXT" : "Update Firmware"
+                                    }
+                                }
                             }
+
+                            
 
                         }
                     },
@@ -169,10 +190,13 @@ export default class Container extends Generic_Commander {
         // If the config is present then add an event listeners.
         if (this._CONFIG_PRESENT) {
             // Add an event listener to the send button.
-            this.COM.button.addEventListener('click', this.send_new_config.bind(this));
+            this.COM.button_send.addEventListener('click', this.send_new_config.bind(this));
 
             // Add an event listener to the pre tag.
             this.COM.pre.addEventListener('input', this.validate_config.bind(this))
+
+            // Add an event listener to the update firmware button.
+            this.COM.button_firmware.addEventListener('click', this.send_new_firmware.bind(this));
         }
         
         // Start the up timer.
@@ -180,7 +204,6 @@ export default class Container extends Generic_Commander {
 
         // Register all components into the top level 'all' property.
         this.register_all(this);
-        console.log("Final .all keys:", Object.keys(this.all));
 
     }
 
@@ -189,8 +212,7 @@ export default class Container extends Generic_Commander {
         Iterate through all child elements adding only those with an `update` method
         to the "all" property of the top-level container.
         Composite children (nested Containers, detected by already having their own
-        populated `.all`) are flattened by merging their own registry directly -
-        never registered as a leaf themselves, and never re-walked with a path prefix.
+        populated `.all`) are flattened by merging their own registry directly.
         */
         for (const key in component.COM) {
             const child = component.COM[key];
@@ -339,6 +361,55 @@ export default class Container extends Generic_Commander {
             console.log(`There is an error in the ${this.NAME} JSON`);
         }
         
+    }
+
+    send_new_firmware() {
+
+        var device_id = this.UUID;
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".bin";
+        input.style.display = "none";
+
+        input.addEventListener("change", async () => {
+            const file = input.files[0];
+            if (!file) return;
+
+            console.log(`Uploading firmware: ${file.name} (${file.size} bytes)`);
+
+            const formData = new FormData();
+            formData.append("firmware", file);
+            formData.append("device_id", device_id);
+
+            try {
+                // credentials: "include" ensures the session cookie is sent —
+                // needed since this is a fetch call, not a normal page navigation.
+                const response = await fetch("/upload_firmware.php", {
+                    method: "POST",
+                    body: formData,
+                    credentials: "include"
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || `Upload failed: ${response.status}`);
+                }
+
+                console.log("Firmware uploaded:", result.url);
+
+                // Your existing send-command path — swap in the real call.
+                //this.send_command_to_device(device_id, { OTA: result.url });
+
+            } catch (err) {
+                console.error("Firmware upload failed:", err);
+            }
+
+            document.body.removeChild(input);
+        });
+
+        document.body.appendChild(input);
+        input.click();
     }
 
     update (message) {

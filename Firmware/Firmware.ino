@@ -4,8 +4,8 @@
 
 String OS_Terminal_Extended(String &command) {
   String ret = "";
-  if (command == "extended") {
-    ret = "Extended Commands Active!";
+  if (command == "extended_cmd") {
+    ret = "Extended command output!";
   }
   return ret;
 }

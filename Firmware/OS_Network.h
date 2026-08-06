@@ -2,6 +2,8 @@
 #define OS_NETWORK_H
 
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <HTTPUpdate.h>
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 #include <UrlEncode.h>
@@ -11,10 +13,11 @@ class OS_Network {
   private:
     OS_Network();
     static void websocket_event (WStype_t type, uint8_t* payload, size_t length);
-    // Values to store websocket connection information.
+    void connect_websocket();
     String host, port, cert, durl;
     WebSocketsClient websocket;
     bool network_sleep = false;
+    bool ota_in_progress = false;
 
     // nullptr as default, overwrite this using provided method to extend terminal behaviour.
     String (*OS_Term_Ext)(String& command) = nullptr;
@@ -28,6 +31,7 @@ class OS_Network {
     void send(String& message);
     void close_wss();
     bool is_asleep();
+    void perform_ota(String& url);
 
     /*
     // Extended commands can be created by the user by creating a function like the following:
