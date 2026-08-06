@@ -55,7 +55,7 @@ export default class Container extends Generic_Commander {
                                     "class" : "display-flex"
                                 },
                                 "CHILDREN" : {
-                                    "container_user" : {
+                                    "notification_container" : {
                                         "TEXT" : USER
                                     },
                                     "timer" : {

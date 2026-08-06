@@ -76,12 +76,8 @@ body {
 }
 
 devices {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, max-content));
-    grid-template-rows: masonry;
-    justify-content: start;
-    align-content: start;
     max-width: 100%;
+    flex-wrap: wrap;
     padding: var(--gap);
     gap: var(--gap);
 }
@@ -244,7 +240,7 @@ container-extras {
     color: #718BCC;
 }
 
-container_user {
+notification_container {
     color: rgb(255, 161, 86);
 }
 
