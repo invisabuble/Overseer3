@@ -43,7 +43,12 @@ class OSN_client {
                 );
             } else {
                 // If the UUID is in the Controllables object then send the update to that object.
-                window.Controllables[UUID].update(DATA);
+                try{
+                    window.Controllables[UUID].update(DATA);
+                }
+                catch {
+                    console.log(`Unable to update element ${UUID}, with : ${DATA}`);
+                }
             }
             
         }

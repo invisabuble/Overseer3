@@ -438,6 +438,7 @@ button_toggler {
     min-width: 400px;
     max-width: 400px;
     min-height: 200px;
+    max-height: 500px;
     display: flex;
     flex-direction: column;
 }

@@ -49,9 +49,6 @@ export function CreateInfoWindow () {
         {
             "Control Panel" : {
 
-                "__CONFIG__":{"SSID":"ssid","PSWD":"pswd","PORT":"port","HOST":"host","USER":"__OS_CONTROL__","KEY":"sdjfsnjdfljsndf"},
-                "STYLE" : {},
-
                 "Buttons" : {
                     "TYPE" : "Container",
 
