@@ -6,7 +6,13 @@ export default class Button extends Generic_Commander {
 
         This component can be invoked using the following type:
 
-        "TYPE" : "Button"
+        "Button Name" : {
+            "TYPE" : "Button"
+            "IO"   : 4        <-- IO on the device you wish to toggle.
+        }
+
+        This element can also take multiple IO inputs like : [4, 5, 6, ...]
+        When toggled all of the entered IO will also toggle
 
         */
         super(uuid, json);

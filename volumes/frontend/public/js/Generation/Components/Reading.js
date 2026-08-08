@@ -6,7 +6,12 @@ export default class Reading extends Generic_Active_Component {
 
         This component can be invoked using the following type:
 
-        "TYPE" : "Reading"
+        "Reading Name" : {
+            "TYPE" : "Reading"
+        }
+
+        This element doesnt take an IO as a parameter.
+        It is a text element intended to receive text output from the device.
 
         */
         super(uuid, json);

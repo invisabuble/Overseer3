@@ -2,6 +2,11 @@ import { Generic_Generation } from "../Generic_Generation/Generic_Generation.js"
 
 export default class Login extends Generic_Generation {
     constructor () {
+        /* Create the login component.
+
+        This component is not to be used. Its purpose is for logging into the Overseer daashboard and nothing else.
+
+        */
         super("LOGIN");
 
         if (!window.LOGIN_PAGE) {

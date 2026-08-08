@@ -6,7 +6,10 @@ export default class Bar extends Generic_Active_Component {
 
         This component can be invoked using the following type:
 
-        "TYPE" : "Bar"
+        "Bar Name" : {
+            "TYPE" : "Bar"
+            "IO"   : 4        <-- IO on the device you wish to toggle.
+        }
 
         */
         super(uuid, json);

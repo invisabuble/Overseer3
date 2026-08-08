@@ -5,7 +5,14 @@ export default class Terminal extends Generic_Commander {
 
     This component can be invoked using the following type:
 
-    "TYPE" : "Terminal"
+    "Terminal Name" : {
+        "TYPE" : "Terminal"
+    }
+
+    This element doesnt take an IO as an input.
+    It is intended to send commands directly to the device, then receive their output.
+    Enter 'help' in the terminal to see a list of commands the device is capable of.
+    Additionally extended commands can be added to facilitate any device behaviour the user wishes.
 
     */
 

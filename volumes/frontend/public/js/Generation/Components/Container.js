@@ -3,6 +3,25 @@ import { Generic_Commander } from "../Generic_Generation/Generic_Commander.js";
 export default class Container extends Generic_Commander {
 
     constructor (parent, config, uuid, ip="") {
+        /* Create a Container component.
+
+        This component can be invoked using the following type:
+
+        "Container Name" : {
+            "TYPE" : "Container",
+
+            "Child 1" : {},
+            "Child 2" : {}
+
+        }
+
+        This element does not take an IO input/output. It is intended for grouping child components together.
+
+        This element is also the parent element to all other created elements within the config.
+        Sub-Containers with no "__CONFIG__" property are rendered without the ability to change the config.
+        Adding a "__CONFIG__" property to sub containers is untested and the resulting behaviour is unknown.
+
+        */
         super(uuid, config);
         
         // Extract information needed to build the container.
