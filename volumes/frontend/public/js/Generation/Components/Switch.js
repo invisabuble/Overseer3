@@ -5,7 +5,13 @@ export default class Switch extends Generic_Commander {
 
     This component can be invoked using the following type:
 
-    "TYPE" : "Switch"
+    "Switch Name" : {
+        "TYPE" : "Switch"
+        "IO"   : 4        <-- IO on the device you wish to toggle.
+    }
+
+    This element can also take multiple IO inputs like : [4, 5, 6, ...]
+    When toggled all of the entered IO will also toggle
 
     */
     constructor (parent, json, uuid) {
