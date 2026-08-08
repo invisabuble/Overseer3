@@ -67,7 +67,7 @@ class Front_Connection (OSS_Connection) :
         if (self.user != OSS_Connection.ADMIN_USER) :
             return
         
-        ret = await OSS_CMD_Parser.CMD_Parse(self.ODB, command)
+        ret = await OSS_CMD_Parser.CMD_Parse(self.ODB, self, command)
         
         # Create the OSS Control message and send it to the front.
         data = {

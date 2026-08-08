@@ -66,6 +66,6 @@ class Device_Connection (OSS_Connection) :
         # Close a device connection.
         logger.warning(f"\033[01;95mClosed Device Connection : {self.uuid}\033[0;0m")
         data = {
-            "CLOSED" : self.uuid
+            "CLOSED" : ""
         }
-        await self.broadcast("front", self.OSS_Message(self, json.dumps(data)))
+        await self.broadcast("device", self.OSS_Message(self, json.dumps(data)))

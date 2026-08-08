@@ -1,4 +1,5 @@
 import functools
+import json
 
 # Lives at module level so the decorator can write to it while the class is still being built.
 registered_commands = {}
@@ -11,7 +12,7 @@ def OSS_CMD(arg_len, help_msg):
     def decorator(method):
 
         @functools.wraps(method)
-        async def wrapper(ODB, *args, help=False):
+        async def wrapper(ODB, connection, *args, help=False):
             # Process arg checking and help message here.
             if len(args) != arg_len:
                 help = True
@@ -19,7 +20,7 @@ def OSS_CMD(arg_len, help_msg):
                 return help_msg
             
             # Execute the passed method.
-            return await method(ODB, *args, help=help)
+            return await method(ODB, connection, *args, help=help)
         
         # Register the passed method in the registered commands dict.
         registered_commands[method.__name__] = wrapper
@@ -34,7 +35,7 @@ class OSS_CMD_Parser:
     registered_commands = registered_commands
 
     @staticmethod
-    async def CMD_Parse(ODB, command) :
+    async def CMD_Parse(ODB, connection, command) :
         # Parse the passed command and hand it to the appropriate method.
 
         command = command.split()
@@ -46,10 +47,10 @@ class OSS_CMD_Parser:
         CMD_Method = command[0]
         del command[0]
 
-        return await OSS_CMD_Parser.CMD_Caller(CMD_Method, ODB, command)
+        return await OSS_CMD_Parser.CMD_Caller(CMD_Method, ODB, connection, command)
 
     @staticmethod
-    async def CMD_Caller(CMD_Method, ODB, command, help=False) :
+    async def CMD_Caller(CMD_Method, ODB, connection, command, help=False) :
         # Call the passed command with the passed arguments.
 
         method = OSS_CMD_Parser.registered_commands.get(CMD_Method)
@@ -58,7 +59,7 @@ class OSS_CMD_Parser:
             return f"Unknown Command : {CMD_Method}"
 
         try:
-            return await method(ODB, *command, help=help)
+            return await method(ODB, connection, *command, help=help)
 
         except Exception as e:
             return f"Error running : {CMD_Method} : {e}"
@@ -80,20 +81,20 @@ class OSS_CMD_Parser:
 
 
     @OSS_CMD(0, "Display this help message : help")
-    async def help(ODB, *args, help=False):
+    async def help(ODB, connection, *args, help=False):
         # Return the help message of each method within the CMD_Parser to the front.
 
         ret = ""
 
         for method in OSS_CMD_Parser.registered_commands.values():
-            ret += await method(ODB, help=True) + "\n\n"
+            ret += await method(ODB, connection, help=True) + "\n\n"
 
         # Strip off the trailing newline character and return all the help messages.
         return ret.strip()
 
 
     @OSS_CMD(2, "Create an overseer user : create_user [username] [password]")
-    async def create_user(ODB, *args, help=False) :
+    async def create_user(ODB, connection, *args, help=False) :
         # Create an OS user.
 
         NEW_USER = args[0]
@@ -114,7 +115,7 @@ class OSS_CMD_Parser:
 
 
     @OSS_CMD(2, "Change a users password : change_password [username] [new_password]")
-    async def change_password (ODB, *args, help=False) :
+    async def change_password (ODB, connection, *args, help=False) :
         # Change a users password.
 
         USER     = args[0]
@@ -135,7 +136,7 @@ class OSS_CMD_Parser:
 
 
     @OSS_CMD(2, "Change a users permission level : change_permission [username] [permission level]")
-    async def change_permission (ODB, *args, help=False) :
+    async def change_permission (ODB, connection, *args, help=False) :
         # Change the permission level of a user
 
         USER = args[0]
@@ -157,7 +158,7 @@ class OSS_CMD_Parser:
 
 
     @OSS_CMD(1, "Delete an Overseer user : delete_user [username]")
-    async def delete_user (ODB, *args, help=False) :
+    async def delete_user (ODB, connection, *args, help=False) :
         # Delete an OS user.
 
         USER = args[0]
@@ -171,3 +172,28 @@ class OSS_CMD_Parser:
             ret = f"Error deleting user : {USER} : {e}"
 
         return ret
+    
+    @OSS_CMD(2, "Broadcast a command to every front/device : broadcast [front/device] [command]")
+    async def broadcast (ODB, connection, *args, help=False) :
+        # Send a command to a device
+
+        TARGET = args[0]
+        CMD    = args[1]
+
+        # Check that the target is valid.
+        if (TARGET not in ["front", "device"]) :
+            return f"Unrecognised target type : {TARGET}"
+        
+        if (TARGET == "front") :
+            data = {
+                    "Server Terminal" : "[AYYYY wassup!!!]"
+                }
+            await connection.broadcast("front", connection.OSS_Control_Message(json.dumps(data)))
+
+        if (TARGET == "device") :
+            data = {
+                "CONTROL" : CMD
+            }
+            await connection.broadcast("device", data)
+
+        return "sent command"
