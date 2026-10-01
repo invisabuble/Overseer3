@@ -460,17 +460,16 @@ export default class Container extends Generic_Commander {
         if (window.OS_DEBUG) {
             console.log(message);
         }
+
+        // If an update is received then the device must be connected to the server.
+        this.is_connected(true);
         
         const json_message = JSON.parse(message);
         const gpio_states = Object.entries(json_message);
 
         if (gpio_states[0][0] == "CLOSED") {
-            // Delete the device from the frontend.
-            this.COM.container.style.animation = "fade_out 0.5s ease"
-            setTimeout(() => {
-                delete window.Controllables[this.UUID];
-                this.COM.container.remove()
-            }, 501);
+            // If the server sends the CLOSED status then the device has lost connection.
+            this.is_connected(false);
             return;
         }
 

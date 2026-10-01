@@ -72,4 +72,7 @@ class Device_Connection (OSS_Connection) :
         data = {
             "CLOSED" : ""
         }
+        
+        # Broadcast the closure to the connections.
         await self.broadcast("device", self.OSS_Message(self, json.dumps(data)))
+        await self.broadcast("front", self.OSS_Message(self, json.dumps(data)))
