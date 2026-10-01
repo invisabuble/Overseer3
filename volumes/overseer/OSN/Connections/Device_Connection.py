@@ -14,6 +14,10 @@ class Device_Connection (OSS_Connection) :
 
 
     async def initialise (self) :
+        # If the server generated this device's uuid, send the updated config back so it gets stored.
+        if self.uuid_generated :
+            await self.send({"CONFIG" : json.dumps(self.config, separators=(",", ":"))})
+            
         # Initialise the Device connection.
         await self.update_control()
 

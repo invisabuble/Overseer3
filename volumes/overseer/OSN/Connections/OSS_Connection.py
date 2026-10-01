@@ -21,29 +21,29 @@ class OSS_Connection:
         self.OSS_All_Connections = OSS_All_Connections
         self.websocket = websocket
         self.type = type
-        self.uuid = ''.join(secrets.choice(alphabet) for _ in range(15))
         self.IP = websocket.remote_address[0]
         self.ODB = ODB
-        
-        # Process the path to determine the connection type and get the config.
-        self.config = parse_qs(urlparse(path).query).get("CONF", [None])[0]
 
-        self.user = self.extract_user()
+        # Parse the config once and keep a reference to its __CONFIG__ block.
+        self.config = json.loads(parse_qs(urlparse(path).query).get("CONF", [None])[0])
+        self.config_block = next(
+            (cnf_block["__CONFIG__"] for cnf_block in self.config.values() if isinstance(cnf_block, dict) and "__CONFIG__" in cnf_block), {}
+        )
+
+        self.user = self.config_block.get("USER")
+        if not self.user :
+            raise ValueError("No user found.")
+
+        # Use the uuid from the config, or generate one and write it into the config.
+        self.uuid = self.config_block.get("UUID")
+        self.uuid_generated = False
+        if not self.uuid :
+            self.uuid = ''.join(secrets.choice(alphabet) for _ in range(15))
+            self.config_block["UUID"] = self.uuid
 
         # Setup the message queue and writer task.
         self._send_queue = asyncio.Queue(maxsize=queue_maxsize)
         self._writer_task = asyncio.create_task(self._writer())
-
-
-    def extract_user(self):
-        # Extract the username from the config.
-        for value in json.loads(self.config).values():
-            if isinstance(value, dict) and "__CONFIG__" in value:
-                user = value["__CONFIG__"].get("USER")
-                if not user:
-                    raise ValueError("Config found but no USER field present.")
-                return user
-        raise ValueError("No __CONFIG__ block found in config.")
 
 
     async def _writer (self) :
@@ -149,11 +149,15 @@ class OSS_Connection:
 
         await self.websocket.close()
 
-        del self.OSS_All_Connections[self.type][self.uuid]
+        # Only remove this connection if it's still the one registered under this uuid.
+        # A reconnecting device may already have replaced it with a new connection.
+        if self.OSS_All_Connections[self.type].get(self.uuid) is self :
+            del self.OSS_All_Connections[self.type][self.uuid]
 
         # Update the control panel after the connection has been deleted.
         await self.update_control()
         await self.derived_close()
+
 
     async def derived_close(self):
         # Overwritten derived close for connection specific close proceedures.
@@ -161,7 +165,6 @@ class OSS_Connection:
 
 
     # OSS Messages
-
     def OSS_Control_Message (self, DATA) :
         return {
             "UUID" : "__CONTROL__",
