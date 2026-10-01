@@ -38,6 +38,7 @@ class OSS_Connection:
         self.uuid = self.config_block.get("UUID")
         self.uuid_generated = False
         if not self.uuid :
+            self.uuid_generated = True
             self.uuid = ''.join(secrets.choice(alphabet) for _ in range(15))
             self.config_block["UUID"] = self.uuid
 
