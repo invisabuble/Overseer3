@@ -20,7 +20,7 @@ class Front_Connection (OSS_Connection) :
         # Define helper function for asyncio gather.
         async def send_device(device):
             data = {
-                "Device_Config" : device.config
+                "Device_Config" : json.dumps(device.config)
             }
             await self.send(self.OSS_Message(device, data))
             await self.send(self.OSS_Message(

@@ -10,7 +10,7 @@ class Device_Connection (OSS_Connection) :
         logger.warning(f"\033[01;95mNew Device Connection : {self.uuid}\033[0;0m")
 
         # Store the state of the various GPIOs in the device to send to a front when it connects.
-        self.device_state = self.extract_keys(json.loads(self.config))
+        self.device_state = self.extract_keys(self.config)
 
 
     async def initialise (self) :
@@ -23,7 +23,7 @@ class Device_Connection (OSS_Connection) :
 
         # Send this connections config to all connected fronts, concurrently.
         data = {
-            "Device_Config" : self.config
+            "Device_Config" : json.dumps(self.config)
         }
         await self.broadcast("front", self.OSS_Message(self, data))
         await self.broadcast("front", self.OSS_Message(
