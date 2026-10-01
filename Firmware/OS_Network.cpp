@@ -23,6 +23,7 @@ void OS_Network::Init () {
 
     // Initiate the WiFi connection.
     WiFi.mode(WIFI_STA);
+    WiFi.setHostname(DEFAULT_NAME);
     WiFi.begin(ssid.c_str(), pswd.c_str());
     WiFi.setAutoReconnect(true);
 
